@@ -2,6 +2,7 @@
 // 爻一律「自上而下」存储（index 0 = 上爻）：1 = 阳爻(实)，0 = 阴爻(断)。
 import { HEX_REST } from './hex-rest';
 import { HEX_GLOSS } from './hex-gloss';
+import { HEX_YILI } from './hex-yili';
 
 export type TrigramKey = 'qian' | 'dui' | 'li' | 'zhen' | 'xun' | 'kan' | 'gen' | 'kun';
 export type Line = 0 | 1;
@@ -38,12 +39,12 @@ export interface LinkSpec {
 }
 export interface Clause { text: string; gloss: string; link?: LinkSpec; }
 export interface Chapter { name: string; clauses: Clause[] | null; }
-export interface YaoLine { pos: string; text: string; gloss?: string; xiang?: string; }
+export interface YaoLine { pos: string; text: string; gloss?: string; xiang?: string; xiangGloss?: string; }
 
 export interface FullHex {
   id?: string; name: string; full: string; symbol: string; num: number;
   upper: TrigramKey; lower: TrigramKey;
-  gua: string; guaGloss: string; tuan: string; xiang: string;
+  gua: string; guaGloss: string; tuan: string; xiang: string; tuanGloss?: string; xiangGloss?: string;
   yaos: YaoLine[]; yongjiu?: YaoLine; yongliu?: YaoLine; lines?: number[];
 }
 
@@ -140,7 +141,17 @@ const REST_GLOSSED: FullHex[] = HEX_REST.map((h) => {
   if (!g) return h;
   return { ...h, guaGloss: g.gua, yaos: h.yaos.map((y, i) => ({ ...y, gloss: g.yao[i] })) as FullHex['yaos'] };
 });
-export const HEX_FULL_LIST: FullHex[] = [QIAN, KUN, TAI, PI, JIJI, WEIJI, ...REST_GLOSSED];
+const withYili = (h: FullHex): FullHex => {
+  const y = HEX_YILI[h.num];
+  if (!y) return h;
+  return {
+    ...h,
+    tuanGloss: y.tuan ?? h.tuanGloss,
+    xiangGloss: y.daxiang ?? h.xiangGloss,
+    yaos: h.yaos.map((yo, i) => (y.xiaoxiang?.[i] ? { ...yo, xiangGloss: y.xiaoxiang[i] } : yo)) as FullHex['yaos'],
+  };
+};
+export const HEX_FULL_LIST: FullHex[] = [QIAN, KUN, TAI, PI, JIJI, WEIJI, ...REST_GLOSSED].map(withYili);
 export const HEX_FULL: Record<number, FullHex> = Object.fromEntries(HEX_FULL_LIST.map((h) => [h.num, h]));
 export const HEX_FULL_BY_PAIR: Record<string, FullHex> = Object.fromEntries(HEX_FULL_LIST.map((h) => [h.upper + '_' + h.lower, h]));
 

@@ -76,5 +76,10 @@ assert(cardCheng === 64, `jizhu.ts 程颐卦辞注应=64 卦，实得 ${cardChen
 assert(yaoTotal === 386, `jizhu.ts 爻级集注应=386 条（62×6+乾坤各7），实得 ${yaoTotal}`);
 assert(!!JIZHU[1].yao?.['用九'] && !!JIZHU[2].yao?.['用六'], 'jizhu.ts 乾用九/坤用六爻注应齐备');
 
+// 6. 义理白话（hex-yili.ts，本项目原创简译）：大象 64 全备（彖/小象逐阶段补）。
+const yili = file('../src/components/atlas/hex-yili.ts');
+const daxiangN = (yili.match(/daxiang:/g) || []).length;
+assert(daxiangN === 64, `hex-yili.ts 大象白话应=64 卦，实得 ${daxiangN}`);
+
 if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性与历代易注（卦辞级+爻级 386 条）覆盖正确。');
 else throw new Error(`结构自检失败：共 ${failures} 项`);

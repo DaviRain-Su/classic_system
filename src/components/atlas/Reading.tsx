@@ -77,13 +77,15 @@ export function ReadingGua({ data, bmKey, onBack, onOpen, onOpenHex, onOpenTrigr
         <div style={{ flex: 1, padding: '40px 56px', display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', gap: 40 }}>
             <div style={{ flex: 1 }}>
-              <Mono>象传</Mono>
+              <Mono>象传 · 大象</Mono>
               <div style={{ fontFamily: 'var(--font-serif)', fontSize: 16, lineHeight: 1.8, marginTop: 6, color: 'var(--ink-2)' }}>{q.xiang}</div>
+              {q.xiangGloss && <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, lineHeight: 1.8, marginTop: 6, color: 'var(--ink-3)' }}>{q.xiangGloss}</div>}
               {q.id === 'yi' && <div style={{ marginTop: 10 }}><LinkChip link={{ kind: 'school', label: '儒家修身之本由此出', onClick: () => onOpenSchool('ru') }} onOpen={onOpen} onOpenHex={onOpenHex} /></div>}
             </div>
             <div style={{ flex: 1 }}>
               <Mono>彖传</Mono>
               <div style={{ fontFamily: 'var(--font-serif)', fontSize: 16, lineHeight: 1.8, marginTop: 6, color: 'var(--ink-2)' }}>{q.tuan}</div>
+              {q.tuanGloss && <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, lineHeight: 1.8, marginTop: 6, color: 'var(--ink-3)' }}>{q.tuanGloss}</div>}
             </div>
           </div>
 
@@ -131,6 +133,7 @@ export function ReadingGua({ data, bmKey, onBack, onOpen, onOpenHex, onOpenTrigr
                 <div style={{ flex: 1 }}>
                   <Mono dim>小象</Mono>
                   <div style={{ fontFamily: 'var(--font-serif)', fontSize: 15, lineHeight: 1.85, marginTop: 7, color: 'var(--ink-2)' }}>{cur.xiang}</div>
+                  {cur.xiangGloss && <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, lineHeight: 1.8, marginTop: 5, color: 'var(--ink-3)' }}>{cur.xiangGloss}</div>}
                 </div>
               )}
             </div>
