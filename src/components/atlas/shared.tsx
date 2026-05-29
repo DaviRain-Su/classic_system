@@ -5,6 +5,7 @@ import { HexFigure } from './primitives';
 import { bian, relatives, yaoName, type HexInfo } from './hex';
 import { SCHOOL_INFO, type TrigramKey, type LinkSpec } from './data';
 import { useProgress } from './progress';
+import { JIZHU } from './jizhu';
 
 export type OpenHex = (upper: TrigramKey, lower: TrigramKey) => void;
 export type OpenNode = (id: string) => void;
@@ -45,6 +46,29 @@ export function Slot({ label, style = {} }: { label: string; style?: CSSProperti
   return (
     <div style={{ padding: '11px 14px', border: '1px dashed var(--hair-2)', borderRadius: 6, ...style }}>
       <Mono dim>{label}</Mono>
+    </div>
+  );
+}
+
+// 历代易注（卦级真注）：程颐《伊川易传》 / 朱熹《周易本义》。按可用项显示 tab。
+export function YiZhu({ num }: { num: number }) {
+  const z = JIZHU[num] || {};
+  const tabs: [string, string][] = [];
+  if (z.cheng) tabs.push(['程颐《伊川易传》', z.cheng]);
+  if (z.zhu) tabs.push(['朱熹《周易本义》', z.zhu]);
+  const [t, setT] = useState(0);
+  if (tabs.length === 0) {
+    return <div style={{ marginTop: 10, padding: '12px 14px', border: '1px dashed var(--hair-2)', borderRadius: 6 }}><Mono dim>历代易注 · 此卦待补</Mono></div>;
+  }
+  const cur = tabs[Math.min(t, tabs.length - 1)];
+  return (
+    <div style={{ marginTop: 10 }}>
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+        {tabs.map(([label], i) => (
+          <button key={label} onClick={() => setT(i)} style={{ border: '1px solid ' + (i === t ? 'var(--accent)' : 'var(--hair-2)'), background: i === t ? 'var(--accent-soft)' : 'transparent', color: i === t ? 'var(--ink)' : 'var(--ink-3)', borderRadius: 999, padding: '4px 12px', cursor: 'pointer', fontFamily: 'var(--font-serif)', fontSize: 12.5 }}>{label}</button>
+        ))}
+      </div>
+      <div style={{ marginTop: 10, maxHeight: 168, overflowY: 'auto', padding: '12px 14px', border: '1px solid var(--hair-2)', borderRadius: 8, background: 'var(--paper-2)', fontFamily: 'var(--font-serif)', fontSize: 14, lineHeight: 1.9, color: 'var(--ink-2)' }}>{cur[1]}</div>
     </div>
   );
 }

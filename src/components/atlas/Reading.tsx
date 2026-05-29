@@ -9,7 +9,7 @@ import {
 import { Mono } from './chrome';
 import { MorphYao } from './primitives';
 import { TermText, ModeToggle, ParallelView } from './reading-modes';
-import { TopBar, JiZhu, LinkChip, RelChips, BianPanel, GuaFamily, type OpenNode, type OpenHex } from './shared';
+import { TopBar, JiZhu, YiZhu, LinkChip, RelChips, BianPanel, GuaFamily, type OpenNode, type OpenHex } from './shared';
 
 type OpenTrigram = (t: TrigramKey) => void;
 type OpenSchool = (id: string) => void;
@@ -103,9 +103,9 @@ function ReadingGua({ data, bmKey, onBack, onOpen, onOpenHex, onOpenTrigram, onO
             </div>
             <div style={{ marginTop: 12 }}>
               <button onClick={() => setShowZhu((s) => !s)} style={{ border: 'none', background: 'transparent', color: 'var(--accent)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: 13, padding: 0 }}>
-                {showZhu ? '收起历代集注 ▴' : '展开历代集注 ▾'}
+                {showZhu ? '收起历代易注 ▴' : '展开历代易注（程颐 · 朱熹）▾'}
               </button>
-              {showZhu && <JiZhu names={['王弼', '孔颖达', '程颐', '朱熹']} />}
+              {showZhu && <YiZhu num={q.num || 1} />}
             </div>
           </div>
 
