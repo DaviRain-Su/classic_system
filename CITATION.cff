@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use Classical Atlas in research, teaching, or digital humanities work, please cite it."
+title: "Classical Atlas: I Ching / Yijing Systems Thinking Map"
+abstract: "An interactive digital humanities atlas for the I Ching, 64 hexagrams, Chinese classics, and systems-thinking visualization."
+authors:
+  - name: "DaviRain-Su"
+version: 0.1.0
+date-released: "2026-05-29"
+repository-code: "https://github.com/DaviRain-Su/classic_system"
+url: "https://davirain-su.github.io/classic_system/"
+license: MIT
+keywords:
+  - "I Ching"
+  - "Yijing"
+  - "Zhouyi"
+  - "Book of Changes"
+  - "Chinese classics"
+  - "Chinese philosophy"
+  - "digital humanities"
+  - "systems thinking"
+  - "64 hexagrams"
+  - "knowledge graph"

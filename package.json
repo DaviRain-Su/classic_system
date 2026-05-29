@@ -3,7 +3,31 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
-  "description": "以《周易》为骨干的中国系统思维学习平台",
+  "description": "Interactive I Ching / Yijing systems-thinking atlas for Chinese classics, hexagrams, and digital humanities.",
+  "license": "MIT",
+  "homepage": "https://davirain-su.github.io/classic_system/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DaviRain-Su/classic_system.git"
+  },
+  "keywords": [
+    "i-ching",
+    "yijing",
+    "zhouyi",
+    "book-of-changes",
+    "chinese-classics",
+    "chinese-philosophy",
+    "daoism",
+    "confucianism",
+    "buddhism",
+    "digital-humanities",
+    "knowledge-graph",
+    "systems-thinking",
+    "hexagrams",
+    "astro",
+    "react",
+    "typescript"
+  ],
   "packageManager": "pnpm@10.33.0",
   "scripts": {
     "dev": "astro dev",

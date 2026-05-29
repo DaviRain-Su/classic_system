@@ -1,5 +1,12 @@
 # Classical Atlas
 
+[![Deploy to GitHub Pages](https://github.com/DaviRain-Su/classic_system/actions/workflows/deploy.yml/badge.svg)](https://github.com/DaviRain-Su/classic_system/actions/workflows/deploy.yml)
+![Astro](https://img.shields.io/badge/Astro-5-ff5d01?logo=astro&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=1b1b19)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/code-MIT-green.svg)](LICENSE)
+[![Content: CC BY-SA 4.0](https://img.shields.io/badge/content-CC%20BY--SA%204.0-3a5f5a.svg)](CONTENT_LICENSE.md)
+
 > An interactive I Ching / Yijing systems-thinking atlas that connects the Book of Changes with Daoist, Confucian, Buddhist, and Western systems traditions.
 
 [English](README.md) | [简体中文](README.zh-CN.md)
@@ -9,6 +16,8 @@ Classical Atlas is a digital humanities and learning platform for Chinese classi
 The project combines close reading, hexagram visualization, cross-text references, and mathematical structure. It is built as a static Astro + React application, with typed source data and no backend requirement.
 
 Live demo: <https://davirain-su.github.io/classic_system/>
+
+![Classical Atlas preview](public/og.png)
 
 ## Why This Exists
 
@@ -160,6 +169,7 @@ buddhism
 digital-humanities
 knowledge-graph
 systems-thinking
+hexagrams
 astro
 react
 typescript
@@ -169,6 +179,7 @@ static-site
 ## Roadmap
 
 - Maintain the English and Chinese READMEs in parallel.
+- Add a real screenshot gallery and short interaction clips.
 - Expand the I Ching commentary layer from hexagram-level notes to line-level notes.
 - Complete Dao De Jing, Zhuangzi, Platform Sutra, and Ten Wings coverage.
 - Split the growing data layer into domain modules as the corpus expands.
@@ -176,6 +187,13 @@ static-site
 - Improve accessibility with more semantic controls, labels, and keyboard navigation.
 - Add export/import for bookmarks and reading progress.
 - Add print styles and optional offline / PWA support.
+
+## Contributing And Citation
+
+- Contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Citation metadata: [CITATION.cff](CITATION.cff)
+- Code license: [MIT](LICENSE)
+- Content license and source policy: [CONTENT_LICENSE.md](CONTENT_LICENSE.md)
 
 ## Sources And Copyright
 

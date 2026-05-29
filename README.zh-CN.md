@@ -2,6 +2,10 @@
 
 [English README](README.md) | 简体中文
 
+[![Deploy to GitHub Pages](https://github.com/DaviRain-Su/classic_system/actions/workflows/deploy.yml/badge.svg)](https://github.com/DaviRain-Su/classic_system/actions/workflows/deploy.yml)
+[![License: MIT](https://img.shields.io/badge/code-MIT-green.svg)](LICENSE)
+[![Content: CC BY-SA 4.0](https://img.shields.io/badge/content-CC%20BY--SA%204.0-3a5f5a.svg)](CONTENT_LICENSE.md)
+
 > 以《周易》为骨干、各家经典为连线之星、并向西方系统思维辐射「对照枝」的中国系统思维学习平台。
 
 **核心立意**：《易经》是中国系统思维理论的结晶，作为骨干；道、儒、佛各家以「关联网络」与之相系，西方系统思维则作主干外侧的「对照枝」（殊途同归，非子节点）。

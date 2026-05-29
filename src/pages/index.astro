@@ -1,6 +1,44 @@
 ---
 import '../styles/global.css';
 import App from '../components/atlas/App';
+
+const siteUrl = 'https://davirain-su.github.io/classic_system/';
+const title = 'Classical Atlas · I Ching / Yijing Systems Thinking Map';
+const description =
+  'Classical Atlas is an interactive I Ching / Yijing systems-thinking atlas for the Book of Changes, 64 hexagrams, Chinese classics, and digital humanities.';
+const keywords = [
+  'I Ching',
+  'Yijing',
+  'Zhouyi',
+  'Book of Changes',
+  'Chinese classics',
+  'Chinese philosophy',
+  'Daoism',
+  'Confucianism',
+  'Buddhism',
+  'systems thinking',
+  '64 hexagrams',
+  'bagua',
+  'digital humanities',
+  'knowledge graph',
+  'GF(2)',
+  'Cayley graph',
+  'hypercube visualization',
+].join(', ');
+const imageUrl = `${siteUrl}og.png`;
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Classical Atlas',
+  alternateName: ['I Ching Systems Thinking Map', 'Yijing Atlas', 'Zhouyi Atlas'],
+  url: siteUrl,
+  applicationCategory: 'EducationalApplication',
+  operatingSystem: 'Any',
+  inLanguage: ['zh-Hans', 'en'],
+  description,
+  image: imageUrl,
+  keywords,
+};
 ---
 
 <!doctype html>
@@ -8,14 +46,32 @@ import App from '../components/atlas/App';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="经典图谱 · 以《周易》为骨干、关联各家经典的中国系统思维学习平台" />
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <meta name="author" content="DaviRain-Su" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={siteUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Classical Atlas" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={siteUrl} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:alt" content="Classical Atlas preview card with I Ching hexagram and systems graph" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Ma+Shan+Zheng&family=Space+Mono:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <title>经典图谱 · 易经系统思维</title>
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
+    <title>{title}</title>
   </head>
   <body>
     <App client:load />
