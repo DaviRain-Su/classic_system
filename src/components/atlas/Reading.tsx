@@ -76,7 +76,7 @@ function ReadingGua({ data, bmKey, onBack, onOpen, onOpenHex, onOpenTrigram, onO
             <div style={{ flex: 1 }}>
               <Mono>象传</Mono>
               <div style={{ fontFamily: 'var(--font-serif)', fontSize: 16, lineHeight: 1.8, marginTop: 6, color: 'var(--ink-2)' }}>{q.xiang}</div>
-              <div style={{ marginTop: 10 }}><LinkChip link={{ kind: 'school', label: '儒家修身之本由此出', onClick: () => onOpenSchool('ru') }} onOpen={onOpen} onOpenHex={onOpenHex} /></div>
+              {q.id === 'yi' && <div style={{ marginTop: 10 }}><LinkChip link={{ kind: 'school', label: '儒家修身之本由此出', onClick: () => onOpenSchool('ru') }} onOpen={onOpen} onOpenHex={onOpenHex} /></div>}
             </div>
             <div style={{ flex: 1 }}>
               <Mono>彖传</Mono>
@@ -88,14 +88,18 @@ function ReadingGua({ data, bmKey, onBack, onOpen, onOpenHex, onOpenTrigram, onO
             <Mono>爻辞 · {cur.pos}</Mono>
             <div style={{ fontFamily: 'var(--font-serif)', fontSize: 30, fontWeight: 600, lineHeight: 1.5, marginTop: 12, letterSpacing: '0.02em' }}>{cur.text}</div>
             <div style={{ display: 'flex', gap: 30, marginTop: 16 }}>
-              <div style={{ flex: 1 }}>
-                <Mono dim>白话</Mono>
-                <div style={{ fontFamily: 'var(--font-serif)', fontSize: 15, lineHeight: 1.85, marginTop: 7, color: 'var(--ink-2)' }}>{cur.gloss}</div>
-              </div>
-              <div style={{ flex: 1 }}>
-                <Mono dim>小象</Mono>
-                <div style={{ fontFamily: 'var(--font-serif)', fontSize: 15, lineHeight: 1.85, marginTop: 7, color: 'var(--ink-2)' }}>{cur.xiang}</div>
-              </div>
+              {cur.gloss && (
+                <div style={{ flex: 1 }}>
+                  <Mono dim>白话</Mono>
+                  <div style={{ fontFamily: 'var(--font-serif)', fontSize: 15, lineHeight: 1.85, marginTop: 7, color: 'var(--ink-2)' }}>{cur.gloss}</div>
+                </div>
+              )}
+              {cur.xiang && (
+                <div style={{ flex: 1 }}>
+                  <Mono dim>小象</Mono>
+                  <div style={{ fontFamily: 'var(--font-serif)', fontSize: 15, lineHeight: 1.85, marginTop: 7, color: 'var(--ink-2)' }}>{cur.xiang}</div>
+                </div>
+              )}
             </div>
             <div style={{ marginTop: 12 }}>
               <button onClick={() => setShowZhu((s) => !s)} style={{ border: 'none', background: 'transparent', color: 'var(--accent)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: 13, padding: 0 }}>

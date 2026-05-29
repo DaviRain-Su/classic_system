@@ -1,5 +1,6 @@
 // 数据层 — 八卦、六十四卦全文、各家经典、星图节点(家)、作品注册、词条、东西对照、八卦属性。
 // 爻一律「自上而下」存储（index 0 = 上爻）：1 = 阳爻(实)，0 = 阴爻(断)。
+import { HEX_REST } from './hex-rest';
 
 export type TrigramKey = 'qian' | 'dui' | 'li' | 'zhen' | 'xun' | 'kan' | 'gen' | 'kun';
 export type Line = 0 | 1;
@@ -131,7 +132,8 @@ export const WEIJI: FullHex = {
   ],
 };
 
-export const HEX_FULL_LIST: FullHex[] = [QIAN, KUN, TAI, PI, JIJI, WEIJI];
+// 乾坤泰否既济未济为手工精校（含逐爻白话）；其余 58 卦原文由 scripts/build_hex.mjs 生成。
+export const HEX_FULL_LIST: FullHex[] = [QIAN, KUN, TAI, PI, JIJI, WEIJI, ...HEX_REST];
 export const HEX_FULL: Record<number, FullHex> = Object.fromEntries(HEX_FULL_LIST.map((h) => [h.num, h]));
 export const HEX_FULL_BY_PAIR: Record<string, FullHex> = Object.fromEntries(HEX_FULL_LIST.map((h) => [h.upper + '_' + h.lower, h]));
 
