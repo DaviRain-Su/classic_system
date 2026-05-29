@@ -2,6 +2,7 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import {
   XINJING, JINGANG, BUER, BASHI, RUPUSA, ZHENGJIAN, QINGJING, YINFU, CANTONGQI, XICI,
+  SHUOGUA, XUGUA, ZAGUA,
   ZHONGYONG, TAIJITU, XIMING, HUANGJI, YANGMING, DAODE, TANJING, ZHUANGZI,
   HEX_FULL_LIST, type ClauseWork, type ChapterWork, type FullHex,
 } from './data';
@@ -17,7 +18,8 @@ function buildCorpus(): Item[] {
   const clauseWorks: [string, ClauseWork][] = [
     ['xinjing', XINJING], ['jingang', JINGANG], ['buer', BUER], ['bashi', BASHI],
     ['rupusa', RUPUSA], ['zhengjian', ZHENGJIAN], ['qjing', QINGJING], ['yinfu', YINFU],
-    ['cantongqi', CANTONGQI], ['xici', XICI], ['zhongyong', ZHONGYONG], ['taijitu', TAIJITU],
+    ['cantongqi', CANTONGQI], ['xici', XICI], ['shuogua', SHUOGUA], ['xugua', XUGUA], ['zagua', ZAGUA],
+    ['zhongyong', ZHONGYONG], ['taijitu', TAIJITU],
     ['ximing', XIMING], ['huangji', HUANGJI], ['yangming', YANGMING],
   ];
   clauseWorks.forEach(([route, d]) => {

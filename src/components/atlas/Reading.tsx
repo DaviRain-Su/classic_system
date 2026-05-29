@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import {
   QIAN, KUN, HEX_FULL, DAODE, ZHUANGZI, TANJING, YINFU, CANTONGQI, XINJING, QINGJING, YANGMING, XICI,
+  SHUOGUA, XUGUA, ZAGUA,
   JINGANG, BUER, BASHI, RUPUSA, ZHENGJIAN, ZHONGYONG, TAIJITU, XIMING,
   TRIGRAMS, SCHOOL_INFO, WORK_BY_ID, NODE_BY_ID,
   type FullHex, type ClauseWork, type ChapterWork, type TrigramKey,
@@ -217,8 +218,9 @@ function ChapterReader({ data, glyph, sideSub, school, bmKey, zhuNames, footLabe
 }
 
 // ── 逐句通用阅读（心经 / 常清静 / 系辞 / 阳明 / 阴符 / 参同契）──
-function ClauseReader({ data, glyph, sideTitle, sideSub, school, bmKey, zhuNames, footLabel, onBack, onOpen, onOpenHex, onOpenSchool, onOpenCube }: {
+function ClauseReader({ data, glyph, sideTitle, sideSub, school, bmKey, zhuNames, footLabel, siblings, onBack, onOpen, onOpenHex, onOpenSchool, onOpenCube }: {
   data: ClauseWork; glyph: string; sideTitle: string; sideSub?: string; school?: string; bmKey: string; zhuNames: string[]; footLabel: string;
+  siblings?: { id: string; label: string }[];
   onBack: () => void; onOpen: OpenNode; onOpenHex: OpenHex; onOpenSchool: OpenSchool; onOpenCube: () => void;
 }) {
   const x = data;
@@ -233,6 +235,16 @@ function ClauseReader({ data, glyph, sideTitle, sideSub, school, bmKey, zhuNames
           <div style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: 22, marginTop: 10 }}>{sideTitle}</div>
           <Mono dim style={{ marginTop: 4 }}>{sideSub}</Mono>
           {x.intro && <p style={{ fontSize: 13, lineHeight: 1.85, color: 'var(--ink-2)', marginTop: 16 }}>{x.intro}</p>}
+          {siblings && siblings.length > 0 && (
+            <div style={{ marginTop: 16 }}>
+              <Mono dim>十翼 · 互读</Mono>
+              <div style={{ marginTop: 8, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {siblings.map((s) => (
+                  <button key={s.id} onClick={() => onOpen(s.id)} disabled={s.id === x.id} style={{ border: '1px solid ' + (s.id === x.id ? 'var(--accent)' : 'var(--hair-2)'), background: s.id === x.id ? 'var(--accent-soft)' : 'transparent', color: s.id === x.id ? 'var(--ink)' : 'var(--ink-3)', borderRadius: 999, padding: '4px 11px', cursor: s.id === x.id ? 'default' : 'pointer', fontFamily: 'var(--font-serif)', fontSize: 12.5 }}>{s.label}</button>
+                ))}
+              </div>
+            </div>
+          )}
           {x.sijiao && (
             <div style={{ marginTop: 18, padding: '16px 18px', borderLeft: '2px solid var(--accent)', background: 'var(--accent-soft)', borderRadius: '0 8px 8px 0' }}>
               <Mono>四句教</Mono>
@@ -348,6 +360,10 @@ export function Reading({ id, onBack, onOpen, onOpenHex, onOpenTrigram, onOpenSc
   if (id === 'taijitu') return <ClauseReader data={TAIJITU} glyph="儒" sideTitle={TAIJITU.full!} sideSub={TAIJITU.author} school="ru" bmKey="taijitu" zhuNames={['朱熹']} footLabel="理学 · 太极图说" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'ximing') return <ClauseReader data={XIMING} glyph="儒" sideTitle={XIMING.full!} sideSub={XIMING.author} school="ru" bmKey="ximing" zhuNames={['朱熹', '王夫之']} footLabel="理学 · 西铭" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'huangji') return <HuangjiPan onBack={onBack} onOpenHex={onOpenHex} onOpenCube={onOpenCube} />;
-  if (id === 'xici') return <ClauseReader data={XICI} glyph="系" sideTitle={XICI.title} sideSub={XICI.full} bmKey="xici" zhuNames={['韩康伯', '孔颖达', '朱熹']} footLabel="十翼 · 系辞传" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
+  const shiyi = [{ id: 'xici', label: '系辞' }, { id: 'shuogua', label: '说卦' }, { id: 'xugua', label: '序卦' }, { id: 'zagua', label: '杂卦' }];
+  if (id === 'xici') return <ClauseReader data={XICI} glyph="系" sideTitle={XICI.title} sideSub={XICI.full} bmKey="xici" zhuNames={['韩康伯', '孔颖达', '朱熹']} footLabel="十翼 · 系辞传" siblings={shiyi} onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
+  if (id === 'shuogua') return <ClauseReader data={SHUOGUA} glyph="说" sideTitle={SHUOGUA.title} sideSub={SHUOGUA.full} bmKey="shuogua" zhuNames={['韩康伯', '孔颖达', '朱熹']} footLabel="十翼 · 说卦传" siblings={shiyi} onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
+  if (id === 'xugua') return <ClauseReader data={XUGUA} glyph="序" sideTitle={XUGUA.title} sideSub={XUGUA.full} bmKey="xugua" zhuNames={['韩康伯', '孔颖达', '朱熹']} footLabel="十翼 · 序卦传" siblings={shiyi} onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
+  if (id === 'zagua') return <ClauseReader data={ZAGUA} glyph="杂" sideTitle={ZAGUA.title} sideSub={ZAGUA.full} bmKey="zagua" zhuNames={['韩康伯', '孔颖达', '朱熹']} footLabel="十翼 · 杂卦传" siblings={shiyi} onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   return <ReadingSoon id={id} onBack={onBack} onOpenSchool={onOpenSchool} />;
 }
