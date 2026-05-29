@@ -122,9 +122,9 @@ export function ReadingGua({ data, bmKey, onBack, onOpen, onOpenHex, onOpenTrigr
             </div>
             <div style={{ marginTop: 12 }}>
               <button onClick={() => setShowZhu((s) => !s)} style={{ border: 'none', background: 'transparent', color: 'var(--accent)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: 13, padding: 0 }}>
-                {showZhu ? '收起历代易注 ▴' : '展开历代易注（程颐 · 朱熹）▾'}
+                {showZhu ? '收起历代易注 ▴' : '展开历代易注（程颐 · 朱熹｜含本爻）▾'}
               </button>
-              {showZhu && <YiZhu num={q.num || 1} />}
+              {showZhu && <YiZhu num={q.num || 1} yao={cur.pos} />}
             </div>
           </div>
 

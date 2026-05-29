@@ -60,12 +60,21 @@ for (const n of expectedGenerated) {
 const app = file('../src/components/atlas/App.tsx');
 assert(/const full = HEX_FULL_BY_PAIR/.test(app) && /mode: 'reading', id: String\(full\.num\), from/.test(app), 'openHex 应优先把 64 卦导向完整 ReadingGua 数据页');
 
-// 5. 历代易注（卦辞级）覆盖：朱熹《周易本义》≥63、程颐《伊川易传》=64（御纂周易折中底本）。
-const jizhu = file('../src/components/atlas/jizhu.ts');
-const zhuCount = (jizhu.match(/"zhu":/g) || []).length;
-const chengCount = (jizhu.match(/"cheng":/g) || []).length;
-assert(zhuCount >= 63, `jizhu.ts 朱熹注应≥63 卦，实得 ${zhuCount}`);
-assert(chengCount >= 64, `jizhu.ts 程颐注应=64 卦，实得 ${chengCount}`);
+// 5. 历代易注（御纂周易折中底本）：卦辞级朱熹/程颐皆 64 卦；爻级集注每卦齐备（乾坤 7 含用九/用六，余 6）。
+const JIZHU = JSON.parse(file('../src/components/atlas/jizhu.ts').match(/JIZHU[^=]*=\s*(\{[\s\S]*\});/)![1]) as Record<string, { zhu?: string; cheng?: string; yao?: Record<string, { zhu?: string; cheng?: string }> }>;
+let cardZhu = 0, cardCheng = 0, yaoTotal = 0;
+for (let n = 1; n <= 64; n++) {
+  const e = JIZHU[n] || {};
+  if (e.zhu) cardZhu++;
+  if (e.cheng) cardCheng++;
+  const ks = Object.keys(e.yao || {});
+  yaoTotal += ks.length;
+  assert(ks.length >= (n === 1 || n === 2 ? 7 : 6), `jizhu.ts 第 ${n} 卦爻级集注不足（实得 ${ks.length}）`);
+}
+assert(cardZhu === 64, `jizhu.ts 朱熹卦辞注应=64 卦，实得 ${cardZhu}`);
+assert(cardCheng === 64, `jizhu.ts 程颐卦辞注应=64 卦，实得 ${cardCheng}`);
+assert(yaoTotal === 386, `jizhu.ts 爻级集注应=386 条（62×6+乾坤各7），实得 ${yaoTotal}`);
+assert(!!JIZHU[1].yao?.['用九'] && !!JIZHU[2].yao?.['用六'], 'jizhu.ts 乾用九/坤用六爻注应齐备');
 
-if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性与历代易注覆盖正确。');
+if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性与历代易注（卦辞级+爻级 386 条）覆盖正确。');
 else throw new Error(`结构自检失败：共 ${failures} 项`);
