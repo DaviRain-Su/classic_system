@@ -164,12 +164,14 @@ book-of-changes
 chinese-classics
 chinese-philosophy
 daoism
+taoism
 confucianism
 buddhism
 digital-humanities
 knowledge-graph
 systems-thinking
 hexagrams
+interactive-i-ching
 astro
 react
 typescript
