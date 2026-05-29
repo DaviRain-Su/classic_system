@@ -1,0 +1,93 @@
+---
+import type { LineValue } from '../lib/iching';
+
+interface Props {
+  lines: LineValue[]; // 自下而上（index 0 = 最下）
+  size?: number; // 宽度（px）
+  changing?: boolean[]; // 对应爻是否为动爻（自下而上）
+  highlight?: number; // 高亮某一爻（自下而上的 index，-1 不高亮）
+  class?: string;
+}
+
+const { lines, size = 120, changing = [], highlight = -1, class: className = '' } = Astro.props;
+
+const n = lines.length;
+const bar = size / 9; // 单爻高度
+const gap = bar * 0.62; // 爻间距
+const yinGap = size * 0.2; // 阴爻中缺口
+const height = n * bar + (n - 1) * gap;
+const segW = (size - yinGap) / 2;
+
+// 自上而下绘制：视觉第 r 行（0 在最上）对应爻 index = n-1-r（上爻在最上）
+const rows = Array.from({ length: n }, (_, r) => {
+  const idx = n - 1 - r;
+  return {
+    idx,
+    y: r * (bar + gap),
+    value: lines[idx],
+    changing: changing[idx] ?? false,
+    isHighlight: idx === highlight,
+  };
+});
+---
+
+<svg
+  class={`gua-symbol ${className}`}
+  width={size}
+  height={height}
+  viewBox={`0 0 ${size} ${height}`}
+  role="img"
+  aria-label="卦象"
+>
+  {
+    rows.map((row) => (
+      <g class={row.isHighlight ? 'is-highlight' : ''}>
+        {row.isHighlight && (
+          <rect x={-6} y={row.y - 4} width={size + 12} height={bar + 8} rx={3} class="gua-hl-bg" />
+        )}
+        {row.value === 1 ? (
+          <rect x={0} y={row.y} width={size} height={bar} rx={1.5} class={`gua-bar ${row.changing ? 'is-changing' : ''}`} />
+        ) : (
+          <>
+            <rect x={0} y={row.y} width={segW} height={bar} rx={1.5} class={`gua-bar ${row.changing ? 'is-changing' : ''}`} />
+            <rect x={size - segW} y={row.y} width={segW} height={bar} rx={1.5} class={`gua-bar ${row.changing ? 'is-changing' : ''}`} />
+          </>
+        )}
+        {row.changing && row.value === 1 && (
+          <circle cx={size / 2} cy={row.y + bar / 2} r={bar * 0.32} class="gua-mark" />
+        )}
+        {row.changing && row.value === 0 && (
+          <g class="gua-mark-x" transform={`translate(${size / 2}, ${row.y + bar / 2})`}>
+            <line x1={-bar * 0.3} y1={-bar * 0.3} x2={bar * 0.3} y2={bar * 0.3} />
+            <line x1={-bar * 0.3} y1={bar * 0.3} x2={bar * 0.3} y2={-bar * 0.3} />
+          </g>
+        )}
+      </g>
+    ))
+  }
+</svg>
+
+<style>
+  .gua-symbol {
+    display: block;
+  }
+  .gua-bar {
+    fill: var(--ink, #2b2622);
+  }
+  .gua-bar.is-changing {
+    fill: var(--accent, #a8322d);
+  }
+  .gua-mark {
+    fill: none;
+    stroke: var(--paper, #f6f1e7);
+    stroke-width: 2;
+  }
+  .gua-mark-x line {
+    stroke: var(--paper, #f6f1e7);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  .gua-hl-bg {
+    fill: var(--accent-soft, rgba(168, 50, 45, 0.12));
+  }
+</style>

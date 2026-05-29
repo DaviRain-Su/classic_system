@@ -1,0 +1,68 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  // 支持 .mdx 页面通过 frontmatter 传入
+  frontmatter?: { title?: string; description?: string };
+}
+
+const { title, description, frontmatter } = Astro.props;
+const pageTitle = title ?? frontmatter?.title ?? '观象';
+const pageDesc =
+  description ?? frontmatter?.description ?? '以《周易》为骨干的中国系统思维学习平台';
+const fullTitle = pageTitle === '观象' ? '观象 · 易经系统思维' : `${pageTitle} · 观象`;
+
+const nav = [
+  { href: '/', label: '首页' },
+  { href: '/gua', label: '六十四卦' },
+  { href: '/bagua', label: '八卦' },
+  { href: '/cast', label: '起卦' },
+  { href: '/fangfa', label: '系统思维' },
+];
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={pageDesc} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <title>{fullTitle}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="inner">
+        <a class="brand" href="/"><span class="seal">☯</span> 观象</a>
+        <nav class="site-nav">
+          {
+            nav.map((item) => (
+              <a href={item.href} aria-current={path === item.href ? 'page' : undefined}>
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+    </header>
+    <main class="container">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <p>
+          观象 · 以《周易》为骨干的中国系统思维学习平台。骨干立，则道、儒、佛诸家为四肢，渐次辐辏。
+        </p>
+        <p class="muted">经文以可靠底本为准，逐卦校订录入；结构与卦变关系由程序推导。</p>
+      </div>
+    </footer>
+  </body>
+</html>

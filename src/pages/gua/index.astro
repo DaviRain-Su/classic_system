@@ -1,0 +1,188 @@
+---
+import Base from '../../layouts/Base.astro';
+import GuaSymbol from '../../components/GuaSymbol.astro';
+import { HEXAGRAMS, getTrigram, hexagramByTrigrams } from '../../lib/iching';
+import { XIANTIAN_ORDER } from '../../data/trigrams';
+import { hasText } from '../../data/hexagram-text';
+
+// 方阵：行 = 上卦，列 = 下卦（先天八卦次序）
+const order = XIANTIAN_ORDER;
+const matrix = order.map((upper) =>
+  order.map((lower) => hexagramByTrigrams(upper, lower)),
+);
+---
+
+<Base title="六十四卦">
+  <h1>六十四卦</h1>
+  <p class="lead">
+    八卦两两相重，得六十四卦——这便是一个完备的「系统状态空间」：上卦为外、为已显，下卦为内、为根基。
+  </p>
+
+  <h2>方阵：上卦 × 下卦</h2>
+  <p class="muted">
+    横看同一上卦，纵看同一下卦。这张 8×8 方阵正是六十四卦组合结构的全貌，也是「系统思维」的直观呈现。
+  </p>
+  <div class="matrix-wrap">
+    <table class="matrix">
+      <thead>
+        <tr>
+          <th class="corner"><span>上→<br />下↓</span></th>
+          {
+            order.map((id) => {
+              const t = getTrigram(id);
+              return (
+                <th class="axis">
+                  <span class="axis-sym">{t.symbol}</span>
+                  <span class="axis-name">{t.name}</span>
+                </th>
+              );
+            })
+          }
+        </tr>
+      </thead>
+      <tbody>
+        {
+          matrix[0].map((_, col) => (
+            <tr>
+              <th class="axis">
+                <span class="axis-sym">{getTrigram(order[col]).symbol}</span>
+                <span class="axis-name">{getTrigram(order[col]).name}</span>
+              </th>
+              {order.map((_, row) => {
+                const h = matrix[row][col];
+                return (
+                  <td>
+                    <a class="cell" href={`/gua/${h.id}`} title={`${h.fullName}（第${h.id}卦）`}>
+                      <GuaSymbol lines={h.lines} size={30} />
+                      <span class="cell-name">{h.name}</span>
+                      <span class="cell-id">{h.id}</span>
+                    </a>
+                  </td>
+                );
+              })}
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <h2>序卦：六十四卦序列</h2>
+  <p class="muted">《序卦传》以「有天地，然后万物生焉」起，叙六十四卦相生相成之序。</p>
+  <div class="seq-grid">
+    {
+      HEXAGRAMS.map((h) => (
+        <a class="seq-card" href={`/gua/${h.id}`}>
+          <span class="seq-id">{h.id}</span>
+          <GuaSymbol lines={h.lines} size={36} />
+          <span class="seq-name">{h.name}</span>
+          <span class="seq-full">{h.fullName}</span>
+          {hasText(h.id) && <span class="seq-dot" title="经文已录入">●</span>}
+        </a>
+      ))
+    }
+  </div>
+</Base>
+
+<style>
+  .matrix-wrap {
+    overflow-x: auto;
+    margin: 1rem 0 2rem;
+  }
+  .matrix {
+    border-collapse: collapse;
+    margin: 0 auto;
+  }
+  .matrix th,
+  .matrix td {
+    border: 1px solid var(--line);
+    text-align: center;
+  }
+  .matrix .corner {
+    background: var(--paper-2);
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+    line-height: 1.2;
+  }
+  .matrix .axis {
+    background: var(--paper-2);
+    padding: 0.3rem 0.4rem;
+    min-width: 2.4rem;
+  }
+  .axis-sym {
+    display: block;
+    font-size: 1.05rem;
+    color: var(--accent);
+  }
+  .axis-name {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+  }
+  .cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0.35rem 0.3rem;
+    color: var(--ink);
+    position: relative;
+  }
+  .cell:hover {
+    background: var(--accent-soft);
+    text-decoration: none;
+  }
+  .cell-name {
+    font-size: 0.82rem;
+  }
+  .cell-id {
+    position: absolute;
+    top: 1px;
+    right: 3px;
+    font-size: 0.6rem;
+    color: var(--ink-soft);
+  }
+  .seq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+    gap: 0.7rem;
+    margin-top: 1rem;
+  }
+  .seq-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.8rem 0.4rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--ink);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  .seq-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+    text-decoration: none;
+  }
+  .seq-id {
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+  }
+  .seq-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+  .seq-full {
+    font-size: 0.74rem;
+    color: var(--ink-soft);
+  }
+  .seq-dot {
+    position: absolute;
+    top: 5px;
+    right: 7px;
+    font-size: 0.5rem;
+    color: var(--accent);
+  }
+</style>

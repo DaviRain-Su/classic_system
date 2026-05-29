@@ -1,0 +1,103 @@
+---
+import Base from '../../layouts/Base.astro';
+import GuaSymbol from '../../components/GuaSymbol.astro';
+import { TRIGRAMS } from '../../data/trigrams';
+---
+
+<Base title="八卦">
+  <h1>八卦</h1>
+  <p class="lead">
+    乾、兑、离、震、巽、坎、艮、坤——八个三爻之卦，是构成六十四卦的基元，也是中国人为万象建立的第一套「编码」。
+  </p>
+  <p>
+    每卦三爻，自下而上。阳爻（—）一、阴爻（- -）一，三爻排列共 2³ = 8 种，故为八卦。
+    两卦相重则成六爻之卦，2⁶ = 64，即六十四卦。识八卦之象与德，是读《易》的起点。
+  </p>
+
+  <div class="bagua-grid">
+    {
+      TRIGRAMS.map((t) => (
+        <div class="bagua-card">
+          <div class="bagua-top">
+            <GuaSymbol lines={t.lines} size={70} />
+            <div class="bagua-symbol">{t.symbol}</div>
+          </div>
+          <h3>{t.name}</h3>
+          <div class="bagua-mnemonic">{t.mnemonic}</div>
+          <dl class="bagua-attrs">
+            <div><dt>自然</dt><dd>{t.nature}</dd></div>
+            <div><dt>卦德</dt><dd>{t.attribute}</dd></div>
+            <div><dt>家庭</dt><dd>{t.family}</dd></div>
+            <div><dt>方位</dt><dd>{t.direction}</dd></div>
+          </dl>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="insight">
+    <div class="label">系统思维 · 导读</div>
+    <p>
+      八卦之妙，在于用「阴 / 阳」这一最小二元，经三层叠加便穷尽了八种基本态——这正是系统思维「以简驭繁」的范式：
+      不必罗列万物，只需把握生成万物的规则。乾健、坤顺为两极，其余六卦为「父母」所生之「六子」，
+      象天地之间动、陷、止、入、丽、说诸般情状。
+    </p>
+  </div>
+</Base>
+
+<style>
+  .bagua-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .bagua-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .bagua-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+  }
+  .bagua-symbol {
+    font-size: 2.4rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .bagua-card h3 {
+    margin: 0.6rem 0 0.1rem;
+    font-size: 1.6rem;
+  }
+  .bagua-mnemonic {
+    color: var(--gold);
+    font-size: 0.95rem;
+    margin-bottom: 0.6rem;
+  }
+  .bagua-attrs {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3rem 0.6rem;
+    text-align: left;
+    font-size: 0.88rem;
+  }
+  .bagua-attrs > div {
+    display: flex;
+    gap: 0.4rem;
+  }
+  .bagua-attrs dt {
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .bagua-attrs dd {
+    margin: 0;
+    font-weight: 500;
+  }
+</style>

@@ -1,0 +1,46 @@
+---
+import Base from '../layouts/Base.astro';
+import CastingTool from '../components/CastingTool.tsx';
+---
+
+<Base title="起卦">
+  <h1>起卦</h1>
+  <p class="lead">
+    以三枚铜钱起卦，演本卦、动爻与之卦。占问吉凶之外，更要紧的是借此体会《易》的核心机制——<strong>变</strong>。
+  </p>
+
+  <CastingTool client:load />
+
+  <h2>三枚铜钱法</h2>
+  <p>
+    取三枚铜钱合于掌中，掷六次，自下而上记为六爻。每次以正面计三、反面计二，三枚之和定此爻之性：
+  </p>
+  <ul class="rule-list">
+    <li><b>六（老阴 ✗）</b>：三枚皆反，阴极而动，将变为阳。</li>
+    <li><b>七（少阳）</b>：阳爻，不变。</li>
+    <li><b>八（少阴）</b>：阴爻，不变。</li>
+    <li><b>九（老阳 ○）</b>：三枚皆正，阳极而动，将变为阴。</li>
+  </ul>
+  <p>
+    六爻既成，即得<strong>本卦</strong>。其中老阴、老阳为「动爻」；将动爻阴阳互易，所成新卦即<strong>之卦</strong>。
+    无动爻则以本卦卦辞为占；动爻愈多，其象愈在「之卦」一边。
+  </p>
+
+  <div class="insight">
+    <div class="label">系统思维 · 导读</div>
+    <p>
+      起卦真正演示的，是一套「状态—扰动—演化」的模型：本卦是系统当下之态，动爻是触发变化的关键变量，之卦是演化所趋之态。
+      《易》不预言唯一的未来，而是揭示「在何种位置、受何种扰动、将向何处演化」——这正是动态系统的思维方式。
+      故学《易》者，重点不在「算得准」，而在养成「见其当下、察其将变」的眼光。
+    </p>
+  </div>
+</Base>
+
+<style>
+  .rule-list {
+    line-height: 2;
+  }
+  .rule-list b {
+    color: var(--accent);
+  }
+</style>
