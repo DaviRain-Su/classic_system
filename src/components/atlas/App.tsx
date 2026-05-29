@@ -1,6 +1,6 @@
 // 交互原型外壳：星图 ⇆ 阅读 ⇆ 卦阵 ⇆ 立体图 ⇆ 方圆图 ⇆ 起卦 ⇆ 西方对照，含转场、背景、引导、进度。
-import { useState, useEffect, useCallback, type ReactNode } from 'react';
-import { SCHOOL_INFO, WORK_BY_ID, HEX_FULL_BY_PAIR, type TrigramKey, type LinkSpec } from './data';
+import { Component, useState, useEffect, useCallback, type ErrorInfo, type ReactNode } from 'react';
+import { SCHOOL_INFO, WORK_BY_ID, HEX_FULL, HEX_FULL_BY_PAIR, TRIGRAMS, WEST_MAP, type TrigramKey, type LinkSpec } from './data';
 import { hexInfo } from './hex';
 import { markRead } from './progress';
 import { StarMap } from './StarMap';
@@ -33,23 +33,198 @@ type Screen = ScreenBase & (
   | { mode: 'school'; id: string }
 );
 
+const STORAGE_VERSION = 1;
 const SCREEN_KEY = 'jdt-proto-screen';
 const TWEAK_KEY = 'jdt-tweaks';
 const ONBOARD_KEY = 'jdt-onboarded';
+const DEFAULT_SCREEN: Screen = { mode: 'map' };
+const DEFAULT_TWEAKS: TweakState = { font: 'song', dark: false, accent: '#3a5f5a', motif: 'bagua', sound: 'off' };
+const hasWindow = () => typeof window !== 'undefined';
 const hasLS = () => typeof window !== 'undefined' && !!window.localStorage;
 
-function loadScreen(): Screen {
-  if (hasLS()) {
-    try { const s = JSON.parse(localStorage.getItem(SCREEN_KEY) || 'null'); if (s && s.mode) return s as Screen; } catch { /* ignore */ }
-  }
-  return { mode: 'map' };
+function isTrigramKey(value: string): value is TrigramKey {
+  return Object.prototype.hasOwnProperty.call(TRIGRAMS, value);
 }
-function loadTweaks(): TweakState {
-  const d: TweakState = { font: 'song', dark: false, accent: '#3a5f5a', motif: 'bagua', sound: 'off' };
-  if (hasLS()) {
-    try { const s = JSON.parse(localStorage.getItem(TWEAK_KEY) || 'null'); if (s) return { ...d, ...s }; } catch { /* ignore */ }
+
+function screenForHexNum(num: number, from?: string): Screen | null {
+  if (!HEX_FULL[num]) return null;
+  const id = num === 1 ? 'yi' : num === 2 ? 'kun' : String(num);
+  return from ? { mode: 'reading', id, from } : { mode: 'reading', id };
+}
+
+function persistableScreen(screen: Screen): Screen {
+  const copy: Screen = { ...screen };
+  delete copy.ret;
+  return copy;
+}
+
+function normalizeScreen(screen: Screen | null): Screen {
+  if (!screen || !screen.mode) return DEFAULT_SCREEN;
+  if (screen.mode === 'hex') {
+    const full = HEX_FULL_BY_PAIR[screen.upper + '_' + screen.lower];
+    return full ? (screenForHexNum(full.num, screen.from) || DEFAULT_SCREEN) : screen;
   }
-  return d;
+  if (screen.mode === 'reading') {
+    if (screen.id === 'yi' || screen.id === 'kun') return screen;
+    const num = Number(screen.id);
+    if (Number.isFinite(num) && HEX_FULL[num]) return screenForHexNum(num, screen.from) || DEFAULT_SCREEN;
+    return screen.id ? screen : DEFAULT_SCREEN;
+  }
+  if (screen.mode === 'westItem') {
+    return WEST_MAP[screen.idx] ? screen : { mode: 'west' };
+  }
+  if (screen.mode === 'trigram') {
+    return isTrigramKey(screen.tkey) ? screen : DEFAULT_SCREEN;
+  }
+  return screen;
+}
+
+function saveScreen(screen: Screen) {
+  if (!hasLS()) return;
+  try {
+    localStorage.setItem(SCREEN_KEY, JSON.stringify({ version: STORAGE_VERSION, screen: persistableScreen(screen) }));
+  } catch { /* ignore */ }
+}
+
+function loadStoredScreen(): Screen {
+  if (hasLS()) {
+    try {
+      const raw = JSON.parse(localStorage.getItem(SCREEN_KEY) || 'null');
+      const s = raw && raw.version === STORAGE_VERSION && raw.screen ? raw.screen : raw;
+      if (s && s.mode) return normalizeScreen(s as Screen);
+    } catch { /* ignore */ }
+  }
+  return DEFAULT_SCREEN;
+}
+
+function normalizeTweaks(value: Partial<TweakState> | null): TweakState {
+  const font = value && ['song', 'hei', 'kai'].includes(String(value.font)) ? value.font as TweakState['font'] : DEFAULT_TWEAKS.font;
+  const motif = value && ['bagua', 'ink', 'none'].includes(String(value.motif)) ? value.motif as TweakState['motif'] : DEFAULT_TWEAKS.motif;
+  const sound = value && ['off', 'guqin'].includes(String(value.sound)) ? value.sound as TweakState['sound'] : DEFAULT_TWEAKS.sound;
+  return {
+    font,
+    dark: !!value?.dark,
+    accent: typeof value?.accent === 'string' && value.accent ? value.accent : DEFAULT_TWEAKS.accent,
+    motif,
+    sound,
+  };
+}
+
+function saveTweaks(tweaks: TweakState) {
+  if (!hasLS()) return;
+  try {
+    localStorage.setItem(TWEAK_KEY, JSON.stringify({ version: STORAGE_VERSION, tweaks }));
+  } catch { /* ignore */ }
+}
+
+function loadTweaks(): TweakState {
+  if (hasLS()) {
+    try {
+      const raw = JSON.parse(localStorage.getItem(TWEAK_KEY) || 'null');
+      const s = raw && raw.version === STORAGE_VERSION && raw.tweaks ? raw.tweaks : raw;
+      if (s) return normalizeTweaks(s);
+    } catch { /* ignore */ }
+  }
+  return DEFAULT_TWEAKS;
+}
+
+const enc = (value: string) => encodeURIComponent(value);
+const dec = (value: string) => {
+  try { return decodeURIComponent(value); } catch { return value; }
+};
+
+function screenToHash(screen: Screen): string {
+  const s = normalizeScreen(screen);
+  if (s.mode === 'map') return '#/';
+  if (s.mode === 'matrix') return '#/matrix';
+  if (s.mode === 'cube') return '#/cube';
+  if (s.mode === 'square') return '#/square';
+  if (s.mode === 'cast') return '#/cast';
+  if (s.mode === 'west') return '#/west';
+  if (s.mode === 'search') return '#/search';
+  if (s.mode === 'relations') return '#/relations';
+  if (s.mode === 'westItem') return '#/west/' + s.idx;
+  if (s.mode === 'school') return '#/school/' + enc(s.id);
+  if (s.mode === 'trigram') return '#/trigram/' + s.tkey;
+  if (s.mode === 'hex') return '#/hex-pair/' + s.upper + '/' + s.lower;
+  if (s.mode === 'reading') {
+    const num = s.id === 'yi' ? 1 : s.id === 'kun' ? 2 : Number(s.id);
+    if (Number.isInteger(num) && HEX_FULL[num]) return '#/hex/' + num;
+    return '#/reading/' + enc(s.id);
+  }
+  return '#/';
+}
+
+function screenFromHash(): Screen | null {
+  if (!hasWindow()) return null;
+  const raw = window.location.hash.replace(/^#\/?/, '');
+  if (!raw) return window.location.hash ? DEFAULT_SCREEN : null;
+  const parts = raw.split('/').filter(Boolean).map(dec);
+  const [kind, a, b] = parts;
+  if (kind === 'matrix') return { mode: 'matrix' };
+  if (kind === 'cube') return { mode: 'cube' };
+  if (kind === 'square') return { mode: 'square' };
+  if (kind === 'cast') return { mode: 'cast' };
+  if (kind === 'west') return a == null ? { mode: 'west' } : normalizeScreen({ mode: 'westItem', idx: Number(a) });
+  if (kind === 'search') return { mode: 'search' };
+  if (kind === 'relations') return { mode: 'relations' };
+  if (kind === 'reading' && a) return { mode: 'reading', id: a };
+  if (kind === 'school' && a) return { mode: 'school', id: a };
+  if (kind === 'trigram' && a && isTrigramKey(a)) return { mode: 'trigram', tkey: a };
+  if (kind === 'hex' && a) return screenForHexNum(Number(a));
+  if (kind === 'hex-pair' && a && b && isTrigramKey(a) && isTrigramKey(b)) {
+    return normalizeScreen({ mode: 'hex', upper: a, lower: b });
+  }
+  return DEFAULT_SCREEN;
+}
+
+function writeHash(screen: Screen, replace = false) {
+  if (!hasWindow()) return;
+  const hash = screenToHash(screen);
+  if (window.location.hash === hash) return;
+  const url = new URL(window.location.href);
+  url.hash = hash;
+  if (replace) window.history.replaceState(null, '', url);
+  else window.history.pushState(null, '', url);
+}
+
+function loadInitialScreen(): Screen {
+  return normalizeScreen(screenFromHash() || loadStoredScreen());
+}
+
+class AtlasErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
+  state: { error: Error | null } = { error: null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error('Atlas render failed', error, info);
+  }
+
+  reset = () => {
+    if (hasLS()) {
+      try { localStorage.removeItem(SCREEN_KEY); } catch { /* ignore */ }
+    }
+    if (hasWindow()) {
+      window.location.hash = '#/';
+      window.location.reload();
+    }
+  };
+
+  render() {
+    if (!this.state.error) return this.props.children;
+    return (
+      <div style={{ position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--canvas-bg)', color: 'var(--ink)', fontFamily: 'var(--font-body)', padding: 24 }}>
+        <div style={{ width: 520, maxWidth: '100%', border: '1px solid var(--hair-2)', borderRadius: 12, background: 'var(--paper)', padding: 28, boxShadow: '0 20px 70px rgba(0,0,0,.16)' }}>
+          <div style={{ fontFamily: 'var(--font-serif)', fontSize: 22, fontWeight: 700 }}>页面暂时无法显示</div>
+          <p style={{ color: 'var(--ink-2)', lineHeight: 1.8, margin: '12px 0 0' }}>当前视图渲染失败。可以先回到星图，避免整座应用白屏。</p>
+          <button onClick={this.reset} style={{ marginTop: 20, border: 'none', background: 'var(--accent)', color: '#fff', borderRadius: 999, padding: '10px 22px', cursor: 'pointer', fontFamily: 'var(--font-serif)', fontSize: 15 }}>回到星图</button>
+        </div>
+      </div>
+    );
+  }
 }
 
 // 当前视图对应的主题字 (道/儒/佛/易/西)
@@ -110,7 +285,7 @@ function useIsMobile() {
 export default function App() {
   const [tw, setTw] = useState<TweakState>(loadTweaks);
   const isMobile = useIsMobile();
-  const [screen, setScreen] = useState<Screen>(loadScreen);
+  const [screen, setScreen] = useState<Screen>(loadInitialScreen);
   const [onboard, setOnboard] = useState(() => {
     if (hasLS()) { try { return localStorage.getItem(ONBOARD_KEY) !== '1'; } catch { return true; } }
     return false; // SSR: 默认不弹，hydrate 后由 effect 决定
@@ -124,7 +299,7 @@ export default function App() {
   const setTweak = useCallback(<K extends keyof TweakState>(k: K, v: TweakState[K]) => {
     setTw((prev) => {
       const next = { ...prev, [k]: v };
-      if (hasLS()) { try { localStorage.setItem(TWEAK_KEY, JSON.stringify(next)); } catch { /* ignore */ } }
+      saveTweaks(next);
       return next;
     });
   }, []);
@@ -139,37 +314,60 @@ export default function App() {
   useAmbient(tw.sound === 'guqin');
 
   const go = useCallback((next: Screen) => {
-    setScreen(next);
-    if (hasLS()) { try { localStorage.setItem(SCREEN_KEY, JSON.stringify(next)); } catch { /* ignore */ } }
+    const normalized = normalizeScreen(next);
+    setScreen(normalized);
+    saveScreen(normalized);
+    writeHash(normalized);
   }, []);
 
-  const openNode = (id: string) => {
+  const openNode = useCallback((id: string) => {
     if (id === 'west') return go({ mode: 'west' });
     if (SCHOOL_INFO[id]) return go({ mode: 'school', id });
     go({ mode: 'reading', id });
-  };
-  const openMatrix = () => go({ mode: 'matrix' });
-  const openCube = () => go({ mode: 'cube' });
-  const openCast = () => go({ mode: 'cast' });
-  const openSquare = () => go({ mode: 'square' });
-  const openSearch = () => go({ mode: 'search' });
-  const openRelations = () => go({ mode: 'relations' });
-  const openHex = (upper: TrigramKey, lower: TrigramKey, from = 'matrix') => {
+  }, [go]);
+  const openMatrix = useCallback(() => go({ mode: 'matrix' }), [go]);
+  const openCube = useCallback(() => go({ mode: 'cube' }), [go]);
+  const openCast = useCallback(() => go({ mode: 'cast' }), [go]);
+  const openSquare = useCallback(() => go({ mode: 'square' }), [go]);
+  const openSearch = useCallback(() => go({ mode: 'search' }), [go]);
+  const openRelations = useCallback(() => go({ mode: 'relations' }), [go]);
+  const openHex = useCallback((upper: TrigramKey, lower: TrigramKey, from = 'matrix') => {
     if (upper === 'qian' && lower === 'qian') return go({ mode: 'reading', id: 'yi', from });
     if (upper === 'kun' && lower === 'kun') return go({ mode: 'reading', id: 'kun', from });
     const full = HEX_FULL_BY_PAIR[upper + '_' + lower];
     if (full) return go({ mode: 'reading', id: String(full.num), from });
     go({ mode: 'hex', upper, lower, from });
-  };
-  const setScreenWithRet = (next: Screen) => go({ ...next, ret: screen });
-  const openTrigram = (tkey: TrigramKey) => setScreenWithRet({ mode: 'trigram', tkey });
-  const openSchool = (id: string) => setScreenWithRet({ mode: 'school', id });
-  const back = () => {
+  }, [go]);
+  const setScreenWithRet = useCallback((next: Screen) => go({ ...next, ret: screen }), [go, screen]);
+  const openTrigram = useCallback((tkey: TrigramKey) => setScreenWithRet({ mode: 'trigram', tkey }), [setScreenWithRet]);
+  const openSchool = useCallback((id: string) => setScreenWithRet({ mode: 'school', id }), [setScreenWithRet]);
+  const back = useCallback(() => {
     if (screen.ret) return go(screen.ret);
     if (screen.from === 'cube') return go({ mode: 'cube' });
     if (screen.from === 'matrix') return go({ mode: 'matrix' });
     return go({ mode: 'map' });
-  };
+  }, [go, screen]);
+
+  useEffect(() => {
+    saveScreen(screen);
+    if (hasWindow() && !window.location.hash) writeHash(screen, true);
+  }, [screen]);
+
+  useEffect(() => {
+    const syncFromHash = () => {
+      const next = screenFromHash();
+      if (!next) return;
+      const normalized = normalizeScreen(next);
+      setScreen(normalized);
+      saveScreen(normalized);
+    };
+    window.addEventListener('popstate', syncFromHash);
+    window.addEventListener('hashchange', syncFromHash);
+    return () => {
+      window.removeEventListener('popstate', syncFromHash);
+      window.removeEventListener('hashchange', syncFromHash);
+    };
+  }, []);
 
   useEffect(() => {
     if (screen.mode === 'reading' && screen.id) markRead(screen.id);
@@ -185,8 +383,7 @@ export default function App() {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && (screen.mode === 'reading' || screen.mode === 'hex')) back(); };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [screen]);
+  }, [back, screen.mode]);
 
   const key = screen.mode === 'reading' ? 'r-' + screen.id
     : screen.mode === 'hex' ? 'h-' + screen.upper + screen.lower
@@ -195,16 +392,16 @@ export default function App() {
     : screen.mode === 'westItem' ? 'wi-' + screen.idx
     : screen.mode;
 
-  const hexFrom = (u: TrigramKey, l: TrigramKey) => openHex(u, l, screen.from || 'matrix');
+  const hexFrom = useCallback((u: TrigramKey, l: TrigramKey) => openHex(u, l, screen.from || 'matrix'), [openHex, screen.from]);
 
-  const routeJump = (j: LinkSpec) => {
+  const routeJump = useCallback((j: LinkSpec) => {
     if (j.kind === 'west') go({ mode: 'west' });
     else if (j.kind === 'hex' && j.upper && j.lower) openHex(j.upper, j.lower, 'west');
     else if (j.kind === 'cube') go({ mode: 'cube' });
     else if (j.kind === 'square') go({ mode: 'square' });
     else if (j.kind === 'matrix') go({ mode: 'matrix' });
     else if (j.id) openNode(j.id);
-  };
+  }, [go, openHex, openNode]);
 
   if (isMobile) {
     return (
@@ -216,7 +413,7 @@ export default function App() {
   }
 
   return (
-    <>
+    <AtlasErrorBoundary>
       <Stage motif={tw.motif} glyph={motifGlyphFor(screen)}>
         <div key={key} className="view-enter" style={{ position: 'absolute', inset: 0 }}>
           {screen.mode === 'map' && <StarMap onOpen={openNode} onMatrix={openMatrix} onCube={openCube} onCast={openCast} onXici={() => openNode('xici')} onSearch={openSearch} onRelations={openRelations} />}
@@ -236,6 +433,6 @@ export default function App() {
       </Stage>
       {onboard && <Onboard onClose={closeOnboard} />}
       <Tweaks value={tw} onChange={setTweak} />
-    </>
+    </AtlasErrorBoundary>
   );
 }

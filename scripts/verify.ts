@@ -1,5 +1,6 @@
-// 结构自检（自包含、独立于源码）：八卦/六十四卦模式互异，错/综/交对合，互卦点验。
+// 结构自检：八卦/六十四卦模式互异，错/综/交对合，互卦点验，并检查生成内容完整性。
 // 运行：node --experimental-strip-types scripts/verify.ts
+import { readFileSync } from 'node:fs';
 
 type Key = 'qian' | 'dui' | 'li' | 'zhen' | 'xun' | 'kan' | 'gen' | 'kun';
 const LINES: Record<Key, number[]> = {
@@ -37,5 +38,27 @@ assert(eq(hu(linesOf('kan', 'li')), linesOf('li', 'kan')), '既济之互卦应�
 assert(eq(cuo(linesOf('qian', 'qian')), linesOf('kun', 'kun')), '乾之错卦应为坤');
 assert(eq(jiao(linesOf('qian', 'qian')), linesOf('qian', 'qian')), '乾之交卦应为乾');
 
-if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验正确。');
+// 4. 生成内容完整性：58 个非手工卦必须同时有原文与白话，避免回退到占位阅读。
+const manualNums = new Set([1, 2, 11, 12, 63, 64]);
+const expectedGenerated = Array.from({ length: 64 }, (_, i) => i + 1).filter((n) => !manualNums.has(n));
+const file = (path: string) => readFileSync(new URL(path, import.meta.url), 'utf8');
+const hexRest = file('../src/components/atlas/hex-rest.ts');
+const hexGloss = file('../src/components/atlas/hex-gloss.ts');
+const generatedNums = [...hexRest.matchAll(/"num":\s*(\d+)/g)].map((m) => Number(m[1]));
+const glossNums = [...hexGloss.matchAll(/^\s*(\d+):\s*\{/gm)].map((m) => Number(m[1]));
+const generatedSet = new Set(generatedNums);
+const glossSet = new Set(glossNums);
+
+assert(generatedNums.length === 58, `hex-rest.ts 应含 58 个生成卦，实得 ${generatedNums.length}`);
+assert(generatedSet.size === 58, 'hex-rest.ts 生成卦序应互异');
+assert(glossNums.length === 58, `hex-gloss.ts 应含 58 个白话条目，实得 ${glossNums.length}`);
+assert(glossSet.size === 58, 'hex-gloss.ts 白话卦序应互异');
+for (const n of expectedGenerated) {
+  assert(generatedSet.has(n), `hex-rest.ts 缺第 ${n} 卦`);
+  assert(glossSet.has(n), `hex-gloss.ts 缺第 ${n} 卦白话`);
+}
+const app = file('../src/components/atlas/App.tsx');
+assert(/const full = HEX_FULL_BY_PAIR/.test(app) && /mode: 'reading', id: String\(full\.num\), from/.test(app), 'openHex 应优先把 64 卦导向完整 ReadingGua 数据页');
+
+if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验与 64 卦内容完整性正确。');
 else throw new Error(`结构自检失败：共 ${failures} 项`);

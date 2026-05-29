@@ -73,21 +73,10 @@ export function YiZhu({ num }: { num: number }) {
   );
 }
 
-// 集注 placeholder — commentator tabs.
+// 逐句集注待接入真实底本。避免展示“编撰中”假标签误导读者。
 export function JiZhu({ names }: { names: string[] }) {
-  const [t, setT] = useState(0);
-  return (
-    <div style={{ marginTop: 12 }}>
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-        {names.map((n, i) => (
-          <button key={n} onClick={() => setT(i)} style={{ border: '1px solid ' + (i === t ? 'var(--accent)' : 'var(--hair-2)'), background: i === t ? 'var(--accent-soft)' : 'transparent', color: i === t ? 'var(--ink)' : 'var(--ink-3)', borderRadius: 999, padding: '4px 12px', cursor: 'pointer', fontFamily: 'var(--font-serif)', fontSize: 12.5 }}>{n}</button>
-        ))}
-      </div>
-      <div style={{ marginTop: 10, padding: '12px 14px', border: '1px dashed var(--hair-2)', borderRadius: 6 }}>
-        <Mono dim>{names[t]} 注 · 编撰中</Mono>
-      </div>
-    </div>
-  );
+  void names;
+  return null;
 }
 
 export function LinkChip({ link, onOpen, onOpenHex }: { link?: LinkSpec; onOpen: OpenNode; onOpenHex: OpenHex }) {

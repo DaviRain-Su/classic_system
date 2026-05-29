@@ -1,15 +1,32 @@
 // 阅读进度 / 收藏 本地存储 + 订阅 hook。
 import { useState, useEffect } from 'react';
 
+const STORAGE_VERSION = 1;
 const PKEY = 'jdt-progress';
 interface PState { read: Record<string, number>; mark: Record<string, number>; }
 const hasLS = () => typeof window !== 'undefined' && !!window.localStorage;
 
+function normalizeRecord(value: unknown): Record<string, number> {
+  if (!value || typeof value !== 'object') return {};
+  const out: Record<string, number> = {};
+  for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+    if (typeof k === 'string' && typeof v === 'number' && Number.isFinite(v)) out[k] = v;
+  }
+  return out;
+}
+
+function normalizeP(value: unknown): PState {
+  if (!value || typeof value !== 'object') return { read: {}, mark: {} };
+  const raw = value as { read?: unknown; mark?: unknown };
+  return { read: normalizeRecord(raw.read), mark: normalizeRecord(raw.mark) };
+}
+
 function loadP(): PState {
   if (hasLS()) {
     try {
-      const s = JSON.parse(localStorage.getItem(PKEY) || 'null');
-      if (s && s.read && s.mark) return s as PState;
+      const raw = JSON.parse(localStorage.getItem(PKEY) || 'null');
+      const s = raw && raw.version === STORAGE_VERSION && raw.state ? raw.state : raw;
+      return normalizeP(s);
     } catch { /* ignore */ }
   }
   return { read: {}, mark: {} };
@@ -17,7 +34,9 @@ function loadP(): PState {
 let _p = loadP();
 const subs = new Set<() => void>();
 function saveP() {
-  if (hasLS()) { try { localStorage.setItem(PKEY, JSON.stringify(_p)); } catch { /* ignore */ } }
+  if (hasLS()) {
+    try { localStorage.setItem(PKEY, JSON.stringify({ version: STORAGE_VERSION, state: _p })); } catch { /* ignore */ }
+  }
   subs.forEach((f) => f());
 }
 

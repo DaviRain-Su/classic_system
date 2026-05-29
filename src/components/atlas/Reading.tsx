@@ -16,7 +16,7 @@ type OpenTrigram = (t: TrigramKey) => void;
 type OpenSchool = (id: string) => void;
 
 // ── 通用完整卦阅读（乾/坤/泰/否/既济/未济）──
-function ReadingGua({ data, bmKey, onBack, onOpen, onOpenHex, onOpenTrigram, onOpenSchool }: {
+export function ReadingGua({ data, bmKey, onBack, onOpen, onOpenHex, onOpenTrigram, onOpenSchool }: {
   data: FullHex; bmKey: string; onBack: () => void; onOpen: OpenNode; onOpenHex: OpenHex; onOpenTrigram: OpenTrigram; onOpenSchool: OpenSchool;
 }) {
   const q = data;

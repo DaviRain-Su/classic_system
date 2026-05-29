@@ -33,7 +33,7 @@
 | **关系图谱** | 易居中、道儒佛西放射的家级总览 + 汇集各页逐句 ⟿ 跨经典关联清单，点击跳转。 |
 | **元会运世盘** | 皇极经世交互：十二消息卦圆环（乾顶坤底）+ 中心大卦象「演示阳长阴消」渐变 + 元会运世数表 + 回扣立体图/复卦。 |
 
-转场用 `view-enter` 动画，`Esc`/「‹ 星图」返回，当前画面 `localStorage` 记忆；首次进入弹**阴阳爻引导**。
+转场用 `view-enter` 动画，`Esc`/「‹ 星图」返回；当前画面既写入 URL hash（如 `#/hex/43`、`#/reading/xinjing`、`#/cube`，可刷新/分享直达），也写入版本化 `localStorage` 作为本机续读；首次进入弹**阴阳爻引导**。
 
 **桌面舞台全屏自适应**：不再是固定 `1440×900` 的缩放「画布卡片」（四周露米色边、节点被切），而是 `position:fixed inset:0` 铺满整窗——纸底铺满、文字 1:1 原生更清晰。星图首页用**百分比定位**（`1440×900` 设计坐标 ÷ `14.4`/`9` → `%`，连线 SVG 用 `preserveAspectRatio="none"` 随窗拉伸对齐），四家节点随窗分布到四角、易居中、页脚贴底；阅读/卦阵/立体/起卦等本就是 `inset:0` 弹性布局，同步铺满。
 
@@ -53,7 +53,7 @@ pnpm install
 pnpm dev        # http://localhost:4321
 pnpm build      # 构建到 dist/（GITHUB_PAGES=true 时走 /classic_system 子路径）
 pnpm check      # Astro + TypeScript 类型检查
-pnpm verify     # 结构自检（八卦/64卦模式互异、错/综/交对合、互卦点验）
+pnpm verify     # 结构自检 + 64卦生成内容完整性检查
 ```
 
 ## 目录结构

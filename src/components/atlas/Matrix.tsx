@@ -1,10 +1,11 @@
 // 六十四卦方阵(可搜索) + 单卦阅读页。
 import { useState } from 'react';
-import { TRIGRAMS, TRIGRAM_ORDER, type TrigramKey } from './data';
+import { HEX_FULL_BY_PAIR, TRIGRAMS, TRIGRAM_ORDER, type TrigramKey } from './data';
 import { HexFigure, MorphYao } from './primitives';
 import { Mono } from './chrome';
 import { hexInfo, yaoName, bian } from './hex';
 import { TopBar, Slot, RelChips, BianPanel, GuaFamily, type OpenNode, type OpenHex } from './shared';
+import { ReadingGua } from './Reading';
 
 type OpenTrigram = (t: TrigramKey) => void;
 
@@ -88,6 +89,11 @@ export function MatrixBrowse({ onBack, onOpenHex, onCube, onSquare }: { onBack: 
 }
 
 export function ReadingHex({ upper, lower, onBack, onOpen, onOpenHex, onOpenTrigram }: { upper: TrigramKey; lower: TrigramKey; onBack: () => void; onOpen: OpenNode; onOpenHex: OpenHex; onOpenTrigram: OpenTrigram }) {
+  const full = HEX_FULL_BY_PAIR[upper + '_' + lower];
+  if (full) {
+    return <ReadingGua data={full} bmKey={full.num === 1 ? 'yi' : 'gua:' + full.num} onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenTrigram={onOpenTrigram} onOpenSchool={onOpen} />;
+  }
+
   const info = hexInfo(upper, lower);
   const [sel, setSel] = useState(5);
   const [changed, setChanged] = useState(false);
