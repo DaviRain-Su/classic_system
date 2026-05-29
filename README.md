@@ -56,7 +56,7 @@ Ready or substantially implemented:
 
 - **I Ching / Zhouyi**: all 64 hexagrams include hexagram statements, line statements, Tuan Zhuan, Da Xiang, Xiao Xiang, and project-written plain-language glosses.
 - **Detailed I Ching samples**: Qian, Kun, Tai, Pi, Ji Ji, and Wei Ji have the most complete polished reading experience.
-- **Historical I Ching notes**: hexagram-level Zhu Xi and Cheng Yi notes are partially integrated where source coverage is available.
+- **Historical I Ching notes**: hexagram-statement-level commentary from Cheng Yi (*Yichuan Yizhuan*, 64/64) and Zhu Xi (*Zhouyi Benyi*, 63/64), drawn from the imperial *Yuzuan Zhouyi Zhezhong*.
 - **Ten Wings**: selected Xici Zhuan passages are present.
 - **Daoist texts**: Dao De Jing chapters 1-3, selected Zhuangzi chapters, Qingjing Jing, Yinfu Jing, and the opening of Zhouyi Cantong Qi.
 - **Confucian texts**: Zhongyong, Taiji Tushuo, Ximing, Huangji Jingshi material, and Wang Yangming learning notes.
@@ -202,7 +202,7 @@ static-site
 Chinese classical source texts used here are public-domain materials. The 64-hexagram corpus is assembled from public-domain/open repositories and processed by local build scripts:
 
 - `scripts/build_hex.mjs` composes hexagram and line text from [openqt/gua](https://github.com/openqt/gua) and Tuan / Xiang material from [bollwarm/ZHOUYI](https://github.com/bollwarm/ZHOUYI), with Traditional-to-Simplified conversion through [opencc-js](https://github.com/nk2028/opencc-js).
-- `scripts/build_jizhu.mjs` imports public-domain historical material from [CnPeng/AncientChineseBook](https://github.com/CnPeng/AncientChineseBook), including Zhu Xi's Zhouyi Benyi and Cheng Yi's Yichuan Yizhuan where available.
+- `scripts/build_jizhu.mjs` imports public-domain historical material from the imperial *Yuzuan Zhouyi Zhezhong* (御纂周易折中, Qing dynasty; held in the [garychowcmu/daizhigev20](https://github.com/garychowcmu/daizhigev20) Daizhige corpus), which prints Zhu Xi's *Zhouyi Benyi* (63/64) and Cheng Yi's *Yichuan Yizhuan* (64/64) per hexagram.
 - Plain-language hexagram glosses and Western comparison notes are original project material.
 - The interface was iterated with assistance from Claude Design.
 

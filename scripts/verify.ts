@@ -60,5 +60,12 @@ for (const n of expectedGenerated) {
 const app = file('../src/components/atlas/App.tsx');
 assert(/const full = HEX_FULL_BY_PAIR/.test(app) && /mode: 'reading', id: String\(full\.num\), from/.test(app), 'openHex 应优先把 64 卦导向完整 ReadingGua 数据页');
 
-if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验与 64 卦内容完整性正确。');
+// 5. 历代易注（卦辞级）覆盖：朱熹《周易本义》≥63、程颐《伊川易传》=64（御纂周易折中底本）。
+const jizhu = file('../src/components/atlas/jizhu.ts');
+const zhuCount = (jizhu.match(/"zhu":/g) || []).length;
+const chengCount = (jizhu.match(/"cheng":/g) || []).length;
+assert(zhuCount >= 63, `jizhu.ts 朱熹注应≥63 卦，实得 ${zhuCount}`);
+assert(chengCount >= 64, `jizhu.ts 程颐注应=64 卦，实得 ${chengCount}`);
+
+if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性与历代易注覆盖正确。');
 else throw new Error(`结构自检失败：共 ${failures} 项`);
