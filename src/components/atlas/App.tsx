@@ -85,20 +85,12 @@ function Backdrop({ motif, glyph }: { motif: string; glyph: string }) {
   );
 }
 
+// 全屏自适应舞台 — 内容随视口铺满（星图用百分比定位，其余视图 inset:0 弹性布局），不再是缩放卡片。
 function Stage({ children, motif, glyph }: { children: ReactNode; motif: string; glyph: string }) {
-  const [s, setS] = useState(1);
-  useEffect(() => {
-    const fit = () => setS(Math.min(window.innerWidth / 1440, window.innerHeight / 900, 1.25));
-    fit();
-    window.addEventListener('resize', fit);
-    return () => window.removeEventListener('resize', fit);
-  }, []);
   return (
-    <div style={{ position: 'fixed', inset: 0, background: 'radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--canvas-bg) 92%, #fff), var(--canvas-bg) 72%)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-      <div style={{ width: 1440, height: 900, transform: `scale(${s})`, transformOrigin: 'center', position: 'relative', background: 'var(--paper)', overflow: 'hidden', boxShadow: '0 30px 90px rgba(0,0,0,.16)' }}>
-        <Backdrop motif={motif} glyph={glyph} />
-        {children}
-      </div>
+    <div style={{ position: 'fixed', inset: 0, background: 'var(--paper)', overflow: 'hidden' }}>
+      <Backdrop motif={motif} glyph={glyph} />
+      {children}
     </div>
   );
 }

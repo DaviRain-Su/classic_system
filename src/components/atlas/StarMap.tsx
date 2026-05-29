@@ -17,6 +17,9 @@ export function StarMap({ onOpen, onMatrix, onCube, onCast, onXici, onSearch, on
     { x: 770, y: 540, on: 0 }, { x: 1048, y: 470, on: 1 }, { x: 470, y: 360, on: 1 },
   ];
   const dim = (id: string) => hover !== null && hover !== id;
+  // 1440×900 设计坐标 → 百分比，随全屏舞台铺满
+  const PX = (v: number) => v / 14.4 + '%';
+  const PY = (v: number) => v / 9 + '%';
   const pill = { display: 'flex', alignItems: 'center', gap: 8, border: '1px solid var(--hair-2)', background: 'transparent', borderRadius: 999, padding: '7px 14px', cursor: 'pointer', fontFamily: 'var(--font-body)' } as const;
   const pillLabel = { fontFamily: 'var(--font-serif)', fontSize: 13, color: 'var(--ink)' } as const;
 
@@ -54,7 +57,7 @@ export function StarMap({ onOpen, onMatrix, onCube, onCast, onXici, onSearch, on
         </div>
       </div>
 
-      <svg width={1440} height={900} viewBox="0 0 1440 900" style={{ position: 'absolute', inset: 0 }}>
+      <svg width="100%" height="100%" viewBox="0 0 1440 900" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0 }}>
         {sats.map((n) => {
           const on = hover === n.id;
           return (
@@ -69,7 +72,7 @@ export function StarMap({ onOpen, onMatrix, onCube, onCast, onXici, onSearch, on
       </svg>
 
       {stars.map((s, i) => (
-        <div key={i} style={{ position: 'absolute', left: s.x, top: s.y, transform: 'translate(-50%,-50%)', opacity: hover ? 0.16 : 0.3, transition: 'opacity .25s' }}>
+        <div key={i} style={{ position: 'absolute', left: PX(s.x), top: PY(s.y), transform: 'translate(-50%,-50%)', opacity: hover ? 0.16 : 0.3, transition: 'opacity .25s' }}>
           <Yao on={s.on} w={22} h={3} color="var(--ink-3)" />
         </div>
       ))}
@@ -78,14 +81,14 @@ export function StarMap({ onOpen, onMatrix, onCube, onCast, onXici, onSearch, on
         const mx = core.x + (n.x - core.x) * 0.5, my = core.y + (n.y - core.y) * 0.5;
         const on = hover === n.id;
         return (
-          <div key={n.id + 'l'} style={{ position: 'absolute', left: mx, top: my, transform: 'translate(-50%,-50%)', background: 'var(--paper)', padding: '2px 8px', opacity: dim(n.id) ? 0.2 : 1, transition: 'opacity .25s', zIndex: 2 }}>
+          <div key={n.id + 'l'} style={{ position: 'absolute', left: PX(mx), top: PY(my), transform: 'translate(-50%,-50%)', background: 'var(--paper)', padding: '2px 8px', opacity: dim(n.id) ? 0.2 : 1, transition: 'opacity .25s', zIndex: 2 }}>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, letterSpacing: '0.16em', textTransform: 'uppercase', color: on ? 'var(--accent)' : n.status === 'ghost' ? 'var(--ink-3)' : 'var(--ink-2)', fontWeight: on ? 700 : 400, whiteSpace: 'nowrap' }}>{n.rel}</span>
           </div>
         );
       })}
 
       <div onClick={() => onOpen('yi')} onMouseEnter={() => setHover('yi')} onMouseLeave={() => setHover(null)}
-        style={{ position: 'absolute', left: core.x, top: core.y, transform: `translate(-50%,-50%) scale(${hover === 'yi' ? 1.05 : 1})`, transition: 'transform .3s cubic-bezier(.3,.7,.3,1)', display: 'flex', flexDirection: 'column', alignItems: 'center', width: 240, cursor: 'pointer', zIndex: 3, opacity: dim('yi') ? 0.4 : 1 }}>
+        style={{ position: 'absolute', left: PX(core.x), top: PY(core.y), transform: `translate(-50%,-50%) scale(${hover === 'yi' ? 1.05 : 1})`, transition: 'transform .3s cubic-bezier(.3,.7,.3,1)', display: 'flex', flexDirection: 'column', alignItems: 'center', width: 240, cursor: 'pointer', zIndex: 3, opacity: dim('yi') ? 0.4 : 1 }}>
         <div style={{ position: 'relative', width: 134, height: 134 }}>
           <div className="pulse-ring" style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '1px solid var(--accent)' }} />
           <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: 'var(--paper)', border: '1.5px solid var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 0 7px var(--paper), 0 0 0 8px var(--accent-soft)' }}>
@@ -105,7 +108,7 @@ export function StarMap({ onOpen, onMatrix, onCube, onCast, onXici, onSearch, on
         const on = hover === n.id;
         return (
           <div key={n.id} onClick={() => !ghost && onOpen(n.id)} onMouseEnter={() => setHover(n.id)} onMouseLeave={() => setHover(null)}
-            style={{ position: 'absolute', left: n.x, top: n.y, transform: `translate(-50%,-50%) scale(${on ? 1.06 : 1})`, transition: 'transform .3s cubic-bezier(.3,.7,.3,1), opacity .25s', width: 200, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', cursor: ghost ? 'default' : 'pointer', opacity: dim(n.id) ? 0.38 : 1, zIndex: 3 }}>
+            style={{ position: 'absolute', left: PX(n.x), top: PY(n.y), transform: `translate(-50%,-50%) scale(${on ? 1.06 : 1})`, transition: 'transform .3s cubic-bezier(.3,.7,.3,1), opacity .25s', width: 200, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', cursor: ghost ? 'default' : 'pointer', opacity: dim(n.id) ? 0.38 : 1, zIndex: 3 }}>
             <div style={{ width: 48, height: 48, borderRadius: '50%', background: ghost ? 'var(--paper)' : 'var(--accent-soft)', border: `1px ${ghost ? 'dashed' : 'solid'} ${ghost ? 'var(--ink-3)' : 'var(--accent)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: on ? '0 6px 22px rgba(0,0,0,.12)' : 'none', transition: 'box-shadow .25s' }}>
               <span style={{ fontFamily: 'var(--font-display)', fontSize: 23, color: ghost ? 'var(--ink-3)' : 'var(--accent)', lineHeight: 1, marginTop: 2 }}>{n.glyph}</span>
             </div>
