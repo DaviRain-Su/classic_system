@@ -105,7 +105,7 @@ export function StarMap({ onOpen, onMatrix, onCube, onCast, onXici, onSearch, on
         const on = hover === n.id;
         return (
           <div key={n.id} onClick={() => !ghost && onOpen(n.id)} onMouseEnter={() => setHover(n.id)} onMouseLeave={() => setHover(null)}
-            style={{ position: 'absolute', left: n.x, top: n.y, transform: `translate(-50%,-50%) scale(${on ? 1.06 : 1})`, transition: 'transform .3s cubic-bezier(.3,.7,.3,1), opacity .25s', width: 176, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', cursor: ghost ? 'default' : 'pointer', opacity: dim(n.id) ? 0.38 : 1, zIndex: 3 }}>
+            style={{ position: 'absolute', left: n.x, top: n.y, transform: `translate(-50%,-50%) scale(${on ? 1.06 : 1})`, transition: 'transform .3s cubic-bezier(.3,.7,.3,1), opacity .25s', width: 200, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', cursor: ghost ? 'default' : 'pointer', opacity: dim(n.id) ? 0.38 : 1, zIndex: 3 }}>
             <div style={{ width: 48, height: 48, borderRadius: '50%', background: ghost ? 'var(--paper)' : 'var(--accent-soft)', border: `1px ${ghost ? 'dashed' : 'solid'} ${ghost ? 'var(--ink-3)' : 'var(--accent)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: on ? '0 6px 22px rgba(0,0,0,.12)' : 'none', transition: 'box-shadow .25s' }}>
               <span style={{ fontFamily: 'var(--font-display)', fontSize: 23, color: ghost ? 'var(--ink-3)' : 'var(--accent)', lineHeight: 1, marginTop: 2 }}>{n.glyph}</span>
             </div>
@@ -114,8 +114,8 @@ export function StarMap({ onOpen, onMatrix, onCube, onCast, onXici, onSearch, on
               {!ghost && prog.isMarked(n.id) && <span style={{ color: 'var(--seal)', fontSize: 13 }}>★</span>}
               {!ghost && prog.isRead(n.id) && !prog.isMarked(n.id) && <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block' }} />}
             </div>
-            <div style={{ fontSize: 11.5, color: 'var(--ink-3)', marginTop: 2 }}>{n.author}</div>
-            <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13, color: ghost ? 'var(--ink-3)' : 'var(--ink-2)', marginTop: 7, lineHeight: 1.55 }}>{n.frag}</div>
+            <div style={{ fontSize: 11.5, color: 'var(--ink-3)', marginTop: 2, whiteSpace: 'nowrap' }}>{n.author}</div>
+            <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13, color: ghost ? 'var(--ink-3)' : 'var(--ink-2)', marginTop: 7, lineHeight: 1.55, whiteSpace: 'nowrap' }}>{n.frag}</div>
             {n.status === 'soon' && <span style={{ marginTop: 8, fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.16em', color: 'var(--ink-3)', border: '1px solid var(--hair-2)', borderRadius: 999, padding: '2px 8px' }}>即将上线</span>}
             {n.status === 'west' && <span style={{ marginTop: 8, fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.16em', color: 'var(--accent)', border: '1px solid var(--accent)', borderRadius: 999, padding: '2px 8px' }}>对照地图</span>}
           </div>

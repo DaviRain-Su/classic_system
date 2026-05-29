@@ -15,6 +15,7 @@ import { RelationsView } from './Relations';
 import { SchoolView, TrigramView, Onboard } from './detail';
 import { Tweaks, type TweakState } from './Tweaks';
 import { useAmbient } from './ambient';
+import { MobileApp } from './Mobile';
 
 const FONT_MAP: Record<TweakState['font'], string> = {
   song: '"Noto Serif SC", serif',
@@ -102,8 +103,21 @@ function Stage({ children, motif, glyph }: { children: ReactNode; motif: string;
   );
 }
 
+// 窄视口（手机）检测：SSR 默认 false，hydrate 后由 resize 监听决定
+function useIsMobile() {
+  const [m, setM] = useState(false);
+  useEffect(() => {
+    const check = () => setM(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+  return m;
+}
+
 export default function App() {
   const [tw, setTw] = useState<TweakState>(loadTweaks);
+  const isMobile = useIsMobile();
   const [screen, setScreen] = useState<Screen>(loadScreen);
   const [onboard, setOnboard] = useState(() => {
     if (hasLS()) { try { return localStorage.getItem(ONBOARD_KEY) !== '1'; } catch { return true; } }
@@ -199,6 +213,15 @@ export default function App() {
     else if (j.kind === 'matrix') go({ mode: 'matrix' });
     else if (j.id) openNode(j.id);
   };
+
+  if (isMobile) {
+    return (
+      <>
+        <MobileApp />
+        <Tweaks value={tw} onChange={setTweak} />
+      </>
+    );
+  }
 
   return (
     <>

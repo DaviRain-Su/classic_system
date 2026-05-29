@@ -41,7 +41,7 @@ function ReadingGua({ data, bmKey, onBack, onOpen, onOpenHex, onOpenTrigram, onO
 
   return (
     <div style={{ position: 'absolute', inset: 0, fontFamily: 'var(--font-body)', color: 'var(--ink)' }}>
-      <TopBar title={'易经 · ' + q.full} sub={q.symbol + ' 第 ' + (q.num || 1) + ' 卦'} onBack={onBack} bookmarkKey={bmKey} />
+      <TopBar title={'易经 · ' + q.full} sub={'第 ' + (q.num || 1) + ' 卦'} onBack={onBack} bookmarkKey={bmKey} />
       <div style={{ position: 'absolute', top: 74, left: 0, right: 0, bottom: 0, display: 'flex' }}>
         <div style={{ width: 470, flex: '0 0 auto', borderRight: '1px solid var(--hair)', padding: '40px 48px', display: 'flex', flexDirection: 'column' }}>
           <Mono>骨干 · {q.name}</Mono>
@@ -88,6 +88,24 @@ function ReadingGua({ data, bmKey, onBack, onOpen, onOpenHex, onOpenTrigram, onO
           <div style={{ marginTop: 24, paddingTop: 22, borderTop: '1px solid var(--hair)' }}>
             <Mono>爻辞 · {cur.pos}</Mono>
             <div style={{ fontFamily: 'var(--font-serif)', fontSize: 30, fontWeight: 600, lineHeight: 1.5, marginTop: 12, letterSpacing: '0.02em' }}>{cur.text}</div>
+            <div style={{ marginTop: 16, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+              <Mono dim>爻位</Mono>
+              {(() => {
+                const posNum = 6 - sel; // sel 0=上爻→6, sel 5=初爻→1
+                const yangPos = posNum % 2 === 1;
+                const yang = baseLines[sel] === 1;
+                const dang = yang === yangPos;
+                const zhong = posNum === 2 || posNum === 5;
+                const tag = (lbl: string, on: boolean) => <span style={{ fontFamily: 'var(--font-serif)', fontSize: 12.5, color: on ? 'var(--accent)' : 'var(--ink-3)', border: '1px solid ' + (on ? 'var(--accent)' : 'var(--hair-2)'), borderRadius: 999, padding: '3px 10px', whiteSpace: 'nowrap' }}>{lbl}</span>;
+                return (
+                  <>
+                    <span style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, color: 'var(--ink-2)' }}>{yang ? '阳' : '阴'}爻居{yangPos ? '阳' : '阴'}位</span>
+                    {tag(dang ? '当位 · 得正' : '不当位', dang)}
+                    {zhong && tag('居中 · 得中', true)}
+                  </>
+                );
+              })()}
+            </div>
             <div style={{ display: 'flex', gap: 30, marginTop: 16 }}>
               {cur.gloss && (
                 <div style={{ flex: 1 }}>
@@ -116,7 +134,7 @@ function ReadingGua({ data, bmKey, onBack, onOpen, onOpenHex, onOpenTrigram, onO
               <BianPanel originName={q.full} lines={baseLines} sel={sel} changed={changed} onToggle={() => setChanged((c) => !c)} onOpenHex={onOpenHex} />
             </div>
           </div>
-          <div style={{ marginTop: 'auto', paddingTop: 20 }}>
+          <div style={{ marginTop: 28, paddingTop: 22, borderTop: '1px solid var(--hair)' }}>
             <Mono dim>由此辐射 · 各家经典</Mono>
             <div style={{ marginTop: 12 }}><RelChips onOpen={onOpenSchool} exclude={null} /></div>
           </div>

@@ -110,7 +110,7 @@ export function RelChips({ onOpen, exclude }: { onOpen: OpenNode; exclude?: stri
   return (
     <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
       {items.map((s) => (
-        <button key={s.id} onClick={() => onOpen(s.id)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 13px', border: '1px solid var(--hair-2)', borderRadius: 999, background: 'transparent', cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+        <button key={s.id} onClick={() => onOpen(s.id)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 13px', border: '1px solid var(--hair-2)', borderRadius: 999, background: 'transparent', cursor: 'pointer', fontFamily: 'var(--font-body)', whiteSpace: 'nowrap', flex: '0 0 auto' }}>
           <span style={{ fontFamily: 'var(--font-display)', fontSize: 16, color: 'var(--accent)' }}>{s.glyph}</span>
           <span style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, fontWeight: 600, color: 'var(--ink)' }}>{s.name}</span>
           <span style={{ fontSize: 11, color: 'var(--ink-3)' }}>{s.tagline}</span>

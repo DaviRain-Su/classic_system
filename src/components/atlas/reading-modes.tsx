@@ -1,14 +1,33 @@
-// 点读升级：词条释名(浮注) + 双栏对照。
-import { useState, useMemo } from 'react';
+// 点读升级：词条释名(浮注·Portal 视口定位) + 双栏对照。
+import { useState, useMemo, useCallback, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { TERMS, type Clause } from './data';
 import { Mono } from './chrome';
 import { LinkChip, type OpenNode, type OpenHex } from './shared';
 
-// 渲染一段经文，将 TERMS 中的术语高亮为可点词条（点击弹浮注）。
+interface Anchor { cx: number; top: number; bottom: number; below: boolean; }
+
+// 渲染一段经文，将 TERMS 中的术语高亮为可点词条（点击弹浮注，Portal 到 body、视口定位）。
 export function TermText({ text, size = 19, color = 'var(--ink)', lh = 1.7 }: { text: string; size?: number; color?: string; lh?: number }) {
   const terms = TERMS;
   const [open, setOpen] = useState(-1);
+  const [anchor, setAnchor] = useState<Anchor | null>(null);
   const keys = useMemo(() => Object.keys(terms).sort((a, b) => b.length - a.length), [terms]);
+
+  const close = useCallback(() => { setOpen(-1); setAnchor(null); }, []);
+  const onTermClick = (e: React.MouseEvent, idx: number) => {
+    e.stopPropagation();
+    if (open === idx) return close();
+    const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    setAnchor({ cx: r.left + r.width / 2, top: r.top, bottom: r.bottom, below: r.top < 200 });
+    setOpen(idx);
+  };
+  useEffect(() => {
+    if (open < 0) return;
+    window.addEventListener('resize', close);
+    window.addEventListener('scroll', close, true);
+    return () => { window.removeEventListener('resize', close); window.removeEventListener('scroll', close, true); };
+  }, [open, close]);
 
   const segs: { term?: string; plain?: string }[] = [];
   let i = 0;
@@ -23,25 +42,32 @@ export function TermText({ text, size = 19, color = 'var(--ink)', lh = 1.7 }: { 
       i++;
     }
   }
+  const openTerm = open >= 0 && segs[open] ? segs[open].term : null;
 
   return (
     <span style={{ fontFamily: 'var(--font-serif)', fontSize: size, lineHeight: lh, color, letterSpacing: '0.02em' }}>
       {segs.map((s, idx) => s.term ? (
-        <span key={idx} style={{ position: 'relative' }}>
-          <span onClick={(e) => { e.stopPropagation(); setOpen(open === idx ? -1 : idx); }}
-            style={{ color: 'var(--accent)', borderBottom: open === idx ? '1px solid var(--accent)' : '1px dotted var(--accent)', cursor: 'pointer', paddingBottom: 1 }}>{s.term}</span>
-          {open === idx && (
-            <span onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', bottom: '150%', left: '50%', transform: 'translateX(-50%)', zIndex: 40, width: 236, background: 'var(--paper)', border: '1px solid var(--accent)', borderRadius: 8, padding: '11px 13px', boxShadow: '0 12px 34px rgba(0,0,0,.2)', textAlign: 'left' }}>
-              <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: 14, color: 'var(--accent)' }}>{s.term}</span>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.14em', color: 'var(--ink-3)', textTransform: 'uppercase' }}>释名</span>
-              </span>
-              <span style={{ display: 'block', fontFamily: 'var(--font-body)', fontSize: 12.5, lineHeight: 1.75, color: 'var(--ink-2)', marginTop: 6 }}>{terms[s.term!]}</span>
-              <span style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', width: 0, height: 0, borderLeft: '6px solid transparent', borderRight: '6px solid transparent', borderTop: '6px solid var(--accent)' }} />
-            </span>
-          )}
-        </span>
+        <span key={idx} onClick={(e) => onTermClick(e, idx)}
+          style={{ color: 'var(--accent)', borderBottom: open === idx ? '1px solid var(--accent)' : '1px dotted var(--accent)', cursor: 'pointer', paddingBottom: 1 }}>{s.term}</span>
       ) : <span key={idx}>{s.plain}</span>)}
+      {open >= 0 && anchor && openTerm && createPortal(
+        <div onClick={close} style={{ position: 'fixed', inset: 0, zIndex: 200 }}>
+          <div onClick={(e) => e.stopPropagation()} style={{
+            position: 'fixed',
+            left: Math.max(12, Math.min(anchor.cx - 130, window.innerWidth - 272)),
+            ...(anchor.below ? { top: anchor.bottom + 10 } : { top: anchor.top - 10, transform: 'translateY(-100%)' }),
+            width: 260, maxWidth: 'calc(100vw - 24px)', background: 'var(--paper)', border: '1px solid var(--accent)',
+            borderRadius: 10, padding: '13px 15px', boxShadow: '0 16px 40px rgba(0,0,0,.22)', textAlign: 'left', fontFamily: 'var(--font-body)',
+          }}>
+            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: 15, color: 'var(--accent)' }}>{openTerm}</span>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.14em', color: 'var(--ink-3)', textTransform: 'uppercase' }}>释名</span>
+            </span>
+            <span style={{ display: 'block', fontFamily: 'var(--font-body)', fontSize: 13, lineHeight: 1.8, color: 'var(--ink-2)', marginTop: 8 }}>{terms[openTerm]}</span>
+          </div>
+        </div>,
+        document.body,
+      )}
     </span>
   );
 }
