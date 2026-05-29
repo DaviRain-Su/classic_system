@@ -2,12 +2,13 @@
 import { useState } from 'react';
 import {
   QIAN, KUN, HEX_FULL, DAODE, ZHUANGZI, TANJING, YINFU, CANTONGQI, XINJING, QINGJING, YANGMING, XICI,
-  SHUOGUA, XUGUA, ZAGUA,
+  SHUOGUA, XUGUA, ZAGUA, WENYAN,
   JINGANG, BUER, BASHI, RUPUSA, ZHENGJIAN, ZHONGYONG, TAIJITU, XIMING,
   TRIGRAMS, SCHOOL_INFO, WORK_BY_ID, NODE_BY_ID,
   type FullHex, type ClauseWork, type ChapterWork, type TrigramKey,
 } from './data';
 import { HuangjiPan } from './HuangjiPan';
+import { yaoName } from './hex';
 import { Mono } from './chrome';
 import { MorphYao } from './primitives';
 import { TermText, ModeToggle, ParallelView } from './reading-modes';
@@ -98,11 +99,23 @@ export function ReadingGua({ data, bmKey, onBack, onOpen, onOpenHex, onOpenTrigr
                 const dang = yang === yangPos;
                 const zhong = posNum === 2 || posNum === 5;
                 const tag = (lbl: string, on: boolean) => <span style={{ fontFamily: 'var(--font-serif)', fontSize: 12.5, color: on ? 'var(--accent)' : 'var(--ink-3)', border: '1px solid ' + (on ? 'var(--accent)' : 'var(--hair-2)'), borderRadius: 999, padding: '3px 10px', whiteSpace: 'nowrap' }}>{lbl}</span>;
+                // 承乘比应（爻际关系，由六爻直接推算）。posNum 1=初…6=上；yangAt(p) 取该位阴阳。
+                const yangAt = (p: number) => baseLines[6 - p] === 1;
+                const partner = posNum <= 3 ? posNum + 3 : posNum - 3;
+                const ying = yang !== yangAt(partner); // 一阴一阳为正应
+                const partnerName = yaoName(6 - partner, yangAt(partner));
+                const cheng = !yang && posNum < 6 && yangAt(posNum + 1); // 柔承刚（顺）
+                const sheng = !yang && posNum > 1 && yangAt(posNum - 1); // 柔乘刚（多厉）
+                const bi = (posNum < 6 && yang !== yangAt(posNum + 1)) || (posNum > 1 && yang !== yangAt(posNum - 1)); // 阴阳相邻为亲比
                 return (
                   <>
                     <span style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, color: 'var(--ink-2)' }}>{yang ? '阳' : '阴'}爻居{yangPos ? '阳' : '阴'}位</span>
                     {tag(dang ? '当位 · 得正' : '不当位', dang)}
                     {zhong && tag('居中 · 得中', true)}
+                    {tag('应 ' + partnerName + ' · ' + (ying ? '正应' : '敌应'), ying)}
+                    {cheng && tag('承刚 · 顺', true)}
+                    {sheng && tag('乘刚 · 多厉', false)}
+                    {bi && tag('比 · 亲比', true)}
                   </>
                 );
               })()}
@@ -360,10 +373,11 @@ export function Reading({ id, onBack, onOpen, onOpenHex, onOpenTrigram, onOpenSc
   if (id === 'taijitu') return <ClauseReader data={TAIJITU} glyph="儒" sideTitle={TAIJITU.full!} sideSub={TAIJITU.author} school="ru" bmKey="taijitu" zhuNames={['朱熹']} footLabel="理学 · 太极图说" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'ximing') return <ClauseReader data={XIMING} glyph="儒" sideTitle={XIMING.full!} sideSub={XIMING.author} school="ru" bmKey="ximing" zhuNames={['朱熹', '王夫之']} footLabel="理学 · 西铭" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'huangji') return <HuangjiPan onBack={onBack} onOpenHex={onOpenHex} onOpenCube={onOpenCube} />;
-  const shiyi = [{ id: 'xici', label: '系辞' }, { id: 'shuogua', label: '说卦' }, { id: 'xugua', label: '序卦' }, { id: 'zagua', label: '杂卦' }];
+  const shiyi = [{ id: 'xici', label: '系辞' }, { id: 'wenyan', label: '文言' }, { id: 'shuogua', label: '说卦' }, { id: 'xugua', label: '序卦' }, { id: 'zagua', label: '杂卦' }];
   if (id === 'xici') return <ClauseReader data={XICI} glyph="系" sideTitle={XICI.title} sideSub={XICI.full} bmKey="xici" zhuNames={['韩康伯', '孔颖达', '朱熹']} footLabel="十翼 · 系辞传" siblings={shiyi} onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'shuogua') return <ClauseReader data={SHUOGUA} glyph="说" sideTitle={SHUOGUA.title} sideSub={SHUOGUA.full} bmKey="shuogua" zhuNames={['韩康伯', '孔颖达', '朱熹']} footLabel="十翼 · 说卦传" siblings={shiyi} onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'xugua') return <ClauseReader data={XUGUA} glyph="序" sideTitle={XUGUA.title} sideSub={XUGUA.full} bmKey="xugua" zhuNames={['韩康伯', '孔颖达', '朱熹']} footLabel="十翼 · 序卦传" siblings={shiyi} onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'zagua') return <ClauseReader data={ZAGUA} glyph="杂" sideTitle={ZAGUA.title} sideSub={ZAGUA.full} bmKey="zagua" zhuNames={['韩康伯', '孔颖达', '朱熹']} footLabel="十翼 · 杂卦传" siblings={shiyi} onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
+  if (id === 'wenyan') return <ClauseReader data={WENYAN} glyph="文" sideTitle={WENYAN.title} sideSub={WENYAN.full} bmKey="wenyan" zhuNames={['韩康伯', '孔颖达', '朱熹']} footLabel="十翼 · 文言传" siblings={shiyi} onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   return <ReadingSoon id={id} onBack={onBack} onOpenSchool={onOpenSchool} />;
 }

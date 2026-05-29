@@ -2,7 +2,7 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import {
   XINJING, JINGANG, BUER, BASHI, RUPUSA, ZHENGJIAN, QINGJING, YINFU, CANTONGQI, XICI,
-  SHUOGUA, XUGUA, ZAGUA,
+  SHUOGUA, XUGUA, ZAGUA, WENYAN,
   ZHONGYONG, TAIJITU, XIMING, HUANGJI, YANGMING, DAODE, TANJING, ZHUANGZI,
   HEX_FULL_LIST, type ClauseWork, type ChapterWork, type FullHex,
 } from './data';
@@ -18,7 +18,7 @@ function buildCorpus(): Item[] {
   const clauseWorks: [string, ClauseWork][] = [
     ['xinjing', XINJING], ['jingang', JINGANG], ['buer', BUER], ['bashi', BASHI],
     ['rupusa', RUPUSA], ['zhengjian', ZHENGJIAN], ['qjing', QINGJING], ['yinfu', YINFU],
-    ['cantongqi', CANTONGQI], ['xici', XICI], ['shuogua', SHUOGUA], ['xugua', XUGUA], ['zagua', ZAGUA],
+    ['cantongqi', CANTONGQI], ['xici', XICI], ['wenyan', WENYAN], ['shuogua', SHUOGUA], ['xugua', XUGUA], ['zagua', ZAGUA],
     ['zhongyong', ZHONGYONG], ['taijitu', TAIJITU],
     ['ximing', XIMING], ['huangji', HUANGJI], ['yangming', YANGMING],
   ];
