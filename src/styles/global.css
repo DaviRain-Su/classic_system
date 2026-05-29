@@ -1,231 +1,54 @@
+/* 经典图谱 — 设计令牌（极简留白 · 当代东方） */
 :root {
-  --paper: #f6f1e7;
-  --paper-2: #efe7d6;
-  --ink: #2b2622;
-  --ink-soft: #5c534a;
-  --accent: #a8322d; /* 朱砂 */
-  --accent-soft: rgba(168, 50, 45, 0.12);
-  --gold: #9c7a3c;
-  --line: #d9cdb6;
-  --shadow: 0 1px 2px rgba(43, 38, 34, 0.06), 0 6px 24px rgba(43, 38, 34, 0.06);
-  --serif: 'Noto Serif SC', 'Songti SC', 'STSong', 'SimSun', 'Source Han Serif SC', serif;
-  --sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
-  --maxw: 920px;
+  --canvas-bg: #e7e4dc;
+  --paper: #f7f6f4;
+  --paper-2: #fdfcfa;
+  --ink: #1b1b19;
+  --ink-2: #6c6960;
+  --ink-3: #a39e92;
+  --hair: #e3dfd5;
+  --hair-2: #d3cec2;
+  --accent: #3a5f5a; /* 青瓷绿 */
+  --seal: #9c3a2f; /* 朱砂印 */
+  --font-display: "Ma Shan Zheng", cursive;
+  --font-serif: "Noto Serif SC", serif;
+  --font-sans: "Noto Sans SC", sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+  --font-body: var(--font-serif);
+  --accent-soft: color-mix(in srgb, var(--accent) 13%, var(--paper));
 }
 
-* {
-  box-sizing: border-box;
+html[data-theme="dark"] {
+  --canvas-bg: #0c0d0d;
+  --paper: #161819;
+  --paper-2: #1d2022;
+  --ink: #ece9e2;
+  --ink-2: #a39e92;
+  --ink-3: #6c6960;
+  --hair: #2a2d2f;
+  --hair-2: #383c3e;
+  --seal: #c45f4d;
+  --accent-soft: color-mix(in srgb, var(--accent) 22%, var(--paper));
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--canvas-bg); height: 100%; }
 body {
-  margin: 0;
-  background-color: var(--paper);
-  background-image: radial-gradient(rgba(43, 38, 34, 0.035) 1px, transparent 1px);
-  background-size: 22px 22px;
-  color: var(--ink);
-  font-family: var(--serif);
-  line-height: 1.85;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
+button { font-family: inherit; }
 
-a {
-  color: var(--accent);
-  text-decoration: none;
+@keyframes viewIn {
+  from { opacity: 0; transform: translateY(10px) scale(.992); }
+  to { opacity: 1; transform: none; }
 }
-a:hover {
-  text-decoration: underline;
-}
+.view-enter { animation: viewIn .44s cubic-bezier(.2,.7,.3,1) both; }
 
-.container {
-  max-width: var(--maxw);
-  margin: 0 auto;
-  padding: 0 1.25rem;
+@keyframes pulse {
+  0% { transform: scale(1); opacity: .5; }
+  70% { transform: scale(1.4); opacity: 0; }
+  100% { opacity: 0; }
 }
-
-/* —— 顶栏 —— */
-.site-header {
-  border-bottom: 1px solid var(--line);
-  background: rgba(246, 241, 231, 0.85);
-  backdrop-filter: blur(6px);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-.site-header .inner {
-  max-width: var(--maxw);
-  margin: 0 auto;
-  padding: 0.7rem 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-}
-.brand {
-  font-weight: 700;
-  font-size: 1.2rem;
-  color: var(--ink);
-  letter-spacing: 0.04em;
-}
-.brand .seal {
-  color: var(--accent);
-}
-.site-nav {
-  display: flex;
-  gap: 1.1rem;
-  margin-left: auto;
-  font-size: 0.98rem;
-}
-.site-nav a {
-  color: var(--ink-soft);
-}
-.site-nav a:hover,
-.site-nav a[aria-current='page'] {
-  color: var(--accent);
-  text-decoration: none;
-}
-
-/* —— 页脚 —— */
-.site-footer {
-  border-top: 1px solid var(--line);
-  margin-top: 4rem;
-  padding: 2rem 0;
-  color: var(--ink-soft);
-  font-size: 0.88rem;
-}
-
-main {
-  padding-top: 2rem;
-}
-
-h1,
-h2,
-h3 {
-  font-weight: 700;
-  line-height: 1.3;
-}
-h1 {
-  font-size: 2rem;
-  margin: 0 0 0.4rem;
-}
-h2 {
-  font-size: 1.4rem;
-  margin: 2.5rem 0 1rem;
-  padding-bottom: 0.4rem;
-  border-bottom: 1px solid var(--line);
-}
-
-.lead {
-  color: var(--ink-soft);
-  font-size: 1.08rem;
-}
-
-/* —— 卡片网格 —— */
-.grid {
-  display: grid;
-  gap: 1rem;
-}
-.cards-4 {
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-}
-.card {
-  display: block;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 1.1rem 1.2rem;
-  box-shadow: var(--shadow);
-  color: var(--ink);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(43, 38, 34, 0.1), 0 12px 30px rgba(43, 38, 34, 0.08);
-  text-decoration: none;
-}
-.card h3 {
-  margin: 0 0 0.3rem;
-  color: var(--accent);
-}
-.card p {
-  margin: 0;
-  color: var(--ink-soft);
-  font-size: 0.92rem;
-}
-
-/* —— 经文块 —— */
-.scripture {
-  background: var(--paper-2);
-  border-left: 3px solid var(--accent);
-  border-radius: 0 8px 8px 0;
-  padding: 0.8rem 1.1rem;
-  margin: 0.8rem 0;
-}
-.scripture .label {
-  display: inline-block;
-  font-size: 0.78rem;
-  color: var(--accent);
-  letter-spacing: 0.1em;
-  margin-bottom: 0.2rem;
-}
-.scripture p {
-  margin: 0.2rem 0;
-}
-.scripture .xiang {
-  color: var(--ink-soft);
-  font-size: 0.94rem;
-}
-
-/* —— 系统思维导读 —— */
-.insight {
-  background: linear-gradient(180deg, rgba(156, 122, 60, 0.08), rgba(156, 122, 60, 0.03));
-  border: 1px solid rgba(156, 122, 60, 0.35);
-  border-radius: 10px;
-  padding: 1.1rem 1.25rem;
-  margin: 1.2rem 0;
-}
-.insight .label {
-  font-size: 0.82rem;
-  color: var(--gold);
-  letter-spacing: 0.12em;
-  font-weight: 700;
-}
-
-/* —— 待补提示 —— */
-.todo-note {
-  border: 1px dashed var(--line);
-  border-radius: 8px;
-  padding: 1rem 1.2rem;
-  color: var(--ink-soft);
-  background: rgba(255, 255, 255, 0.4);
-}
-
-.meta-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1.4rem;
-  color: var(--ink-soft);
-  font-size: 0.95rem;
-}
-.pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  background: var(--paper-2);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 0.15rem 0.7rem;
-  font-size: 0.85rem;
-  color: var(--ink-soft);
-}
-
-.muted {
-  color: var(--ink-soft);
-}
-.center {
-  text-align: center;
-}
+.pulse-ring { animation: pulse 3.4s ease-out infinite; transform-origin: center; }

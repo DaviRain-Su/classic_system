@@ -1,129 +1,23 @@
 ---
-import Base from '../layouts/Base.astro';
-import GuaSymbol from '../components/GuaSymbol.astro';
-import { getHexagram } from '../lib/iching';
-import { withBase } from '../lib/url';
-
-const qian = getHexagram(1);
-const kun = getHexagram(2);
-const jiji = getHexagram(63);
-
-const entries = [
-  { href: withBase('/gua'), title: '六十四卦', desc: '由八卦两两相重而成的六十四种系统状态，含卦象、卦爻辞与错综互卦关系。' },
-  { href: withBase('/bagua'), title: '八卦', desc: '乾兑离震巽坎艮坤——构成万象的八个基元，识其象、德、口诀。' },
-  { href: withBase('/cast'), title: '起卦', desc: '三枚铜钱法，演本卦、动爻与之卦，体会「变」的机制。' },
-  { href: withBase('/fangfa'), title: '系统思维', desc: '从易经抽象出的六组思维原语：阴阳、变易、对待与流行、时位、中正、象数理。' },
-];
-
-const principles = [
-  { name: '阴阳', gloss: '二元互补，万象之纲' },
-  { name: '变易', gloss: '唯变不变，动态演化' },
-  { name: '对待·流行', gloss: '结构与过程之分' },
-  { name: '时·位', gloss: '同一德性，因境而异' },
-  { name: '中正', gloss: '过犹不及，求其最优' },
-  { name: '象数理', gloss: '以象build模，由数及理' },
-];
+import '../styles/global.css';
+import App from '../components/atlas/App';
 ---
 
-<Base title="观象">
-  <section class="hero">
-    <div class="hero-symbols">
-      <GuaSymbol lines={qian.lines} size={64} />
-      <GuaSymbol lines={kun.lines} size={64} />
-      <GuaSymbol lines={jiji.lines} size={64} />
-    </div>
-    <h1>观象</h1>
-    <p class="lead">
-      以《周易》为骨干，习中国之系统思维。<br />
-      易者，群经之首，亦是中国系统思维理论之结晶。
-    </p>
-  </section>
-
-  <section>
-    <p>
-      这里的核心立意只有一句：<strong>真正的「骨干」不是《周易》这本书的文字，而是从易经里抽象出的那套系统思维原语。</strong>
-      阴阳、变易、对待与流行、时位、中正、象数理——理解了它们，道家的「无为」、儒家的「中庸」、佛家的「无常」便能各自挂接到同一套坐标上。
-      骨干立，则四肢可渐次辐辏。
-    </p>
-  </section>
-
-  <section>
-    <h2>从何处入手</h2>
-    <div class="grid cards-4">
-      {
-        entries.map((e) => (
-          <a class="card" href={e.href}>
-            <h3>{e.title}</h3>
-            <p>{e.desc}</p>
-          </a>
-        ))
-      }
-    </div>
-  </section>
-
-  <section>
-    <h2>系统思维六原语</h2>
-    <div class="grid principles">
-      {
-        principles.map((p) => (
-          <div class="principle">
-            <span class="p-name">{p.name}</span>
-            <span class="p-gloss">{p.gloss}</span>
-          </div>
-        ))
-      }
-    </div>
-    <p class="muted" style="margin-top:1rem">
-      这六组原语是贯穿全站的「经线」；六十四卦、各家经典则是「纬线」。详见 <a href={withBase('/fangfa')}>系统思维</a>。
-    </p>
-  </section>
-
-  <section>
-    <h2>路线图</h2>
-    <p class="muted">
-      当前阶段：夯实易经主干（六十四卦结构、卦象与卦变可视化、起卦）。<br />
-      后续：经文逐卦校订录入 → 接入四肢（《道德经》《常清静经》《心经》、阳明心学）→ 建立「概念图谱」连接层 → 辐射西方系统论 / 控制论 / 辩证法。
-    </p>
-  </section>
-</Base>
-
-<style>
-  .hero {
-    text-align: center;
-    padding: 2.5rem 0 1rem;
-  }
-  .hero-symbols {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    margin-bottom: 1.2rem;
-  }
-  .hero h1 {
-    font-size: 2.8rem;
-    letter-spacing: 0.3em;
-    margin-bottom: 0.8rem;
-  }
-  .principles {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  }
-  .principle {
-    background: var(--paper-2);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 0.9rem 1rem;
-    text-align: center;
-  }
-  .p-name {
-    display: block;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--accent);
-    letter-spacing: 0.08em;
-  }
-  .p-gloss {
-    display: block;
-    font-size: 0.85rem;
-    color: var(--ink-soft);
-    margin-top: 0.25rem;
-  }
-</style>
+<!doctype html>
+<html lang="zh-Hans" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="经典图谱 · 以《周易》为骨干、关联各家经典的中国系统思维学习平台" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Ma+Shan+Zheng&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>经典图谱 · 易经系统思维</title>
+  </head>
+  <body>
+    <App client:load />
+  </body>
+</html>
