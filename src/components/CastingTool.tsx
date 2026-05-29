@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { castHexagram, resolveCast, YAO_INFO, type CastResult } from '../lib/cast';
 import { yaoTitle, type LineValue } from '../lib/iching';
+import { withBase } from '../lib/url';
 
 function MiniGua({ lines, changing = [] }: { lines: LineValue[]; changing?: boolean[] }) {
   const size = 92;
@@ -92,13 +93,13 @@ export default function CastingTool() {
       {result && revealed === 6 && resolved && (
         <div className="casting-result">
           <p className="casting-line-1">
-            <a href={`/gua/${resolved.primary.id}`}>
+            <a href={withBase(`/gua/${resolved.primary.id}`)}>
               第 {resolved.primary.id} 卦 · {resolved.primary.fullName}（{resolved.primary.name}）
             </a>
             {resolved.resulting && (
               <>
                 <span className="casting-bian"> 之 </span>
-                <a href={`/gua/${resolved.resulting.id}`}>
+                <a href={withBase(`/gua/${resolved.resulting.id}`)}>
                   第 {resolved.resulting.id} 卦 · {resolved.resulting.fullName}
                 </a>
               </>

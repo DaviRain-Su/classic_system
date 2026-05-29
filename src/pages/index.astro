@@ -2,16 +2,17 @@
 import Base from '../layouts/Base.astro';
 import GuaSymbol from '../components/GuaSymbol.astro';
 import { getHexagram } from '../lib/iching';
+import { withBase } from '../lib/url';
 
 const qian = getHexagram(1);
 const kun = getHexagram(2);
 const jiji = getHexagram(63);
 
 const entries = [
-  { href: '/gua', title: '六十四卦', desc: '由八卦两两相重而成的六十四种系统状态，含卦象、卦爻辞与错综互卦关系。' },
-  { href: '/bagua', title: '八卦', desc: '乾兑离震巽坎艮坤——构成万象的八个基元，识其象、德、口诀。' },
-  { href: '/cast', title: '起卦', desc: '三枚铜钱法，演本卦、动爻与之卦，体会「变」的机制。' },
-  { href: '/fangfa', title: '系统思维', desc: '从易经抽象出的六组思维原语：阴阳、变易、对待与流行、时位、中正、象数理。' },
+  { href: withBase('/gua'), title: '六十四卦', desc: '由八卦两两相重而成的六十四种系统状态，含卦象、卦爻辞与错综互卦关系。' },
+  { href: withBase('/bagua'), title: '八卦', desc: '乾兑离震巽坎艮坤——构成万象的八个基元，识其象、德、口诀。' },
+  { href: withBase('/cast'), title: '起卦', desc: '三枚铜钱法，演本卦、动爻与之卦，体会「变」的机制。' },
+  { href: withBase('/fangfa'), title: '系统思维', desc: '从易经抽象出的六组思维原语：阴阳、变易、对待与流行、时位、中正、象数理。' },
 ];
 
 const principles = [
@@ -73,7 +74,7 @@ const principles = [
       }
     </div>
     <p class="muted" style="margin-top:1rem">
-      这六组原语是贯穿全站的「经线」；六十四卦、各家经典则是「纬线」。详见 <a href="/fangfa">系统思维</a>。
+      这六组原语是贯穿全站的「经线」；六十四卦、各家经典则是「纬线」。详见 <a href={withBase('/fangfa')}>系统思维</a>。
     </p>
   </section>
 

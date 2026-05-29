@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import GuaSymbol from '../../components/GuaSymbol.astro';
 import { HEXAGRAMS, getHexagram, getTrigram, yaoTitle } from '../../lib/iching';
 import { getText } from '../../data/hexagram-text';
+import { withBase } from '../../lib/url';
 
 export function getStaticPaths() {
   return HEXAGRAMS.map((h) => ({ params: { id: String(h.id) } }));
@@ -117,7 +118,7 @@ const next = id < 64 ? getHexagram(id + 1) : null;
       <div class="rel-grid">
         {
           relations.map((r) => (
-            <a class="rel-card" href={`/gua/${r.hex.id}`}>
+            <a class="rel-card" href={withBase(`/gua/${r.hex.id}`)}>
               <div class="rel-key">{r.key}</div>
               <div class="rel-sub">{r.sub}</div>
               <GuaSymbol lines={r.hex.lines} size={44} />
@@ -134,9 +135,9 @@ const next = id < 64 ? getHexagram(id + 1) : null;
     </section>
 
     <nav class="gua-nav">
-      {prev ? <a href={`/gua/${prev.id}`}>← 第 {prev.id} 卦 {prev.name}</a> : <span></span>}
-      <a href="/gua">返回六十四卦</a>
-      {next ? <a href={`/gua/${next.id}`}>第 {next.id} 卦 {next.name} →</a> : <span></span>}
+      {prev ? <a href={withBase(`/gua/${prev.id}`)}>← 第 {prev.id} 卦 {prev.name}</a> : <span></span>}
+      <a href={withBase('/gua')}>返回六十四卦</a>
+      {next ? <a href={withBase(`/gua/${next.id}`)}>第 {next.id} 卦 {next.name} →</a> : <span></span>}
     </nav>
   </article>
 </Base>

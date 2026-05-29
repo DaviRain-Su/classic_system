@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { withBase } from '../lib/url';
 
 interface Props {
   title?: string;
@@ -15,13 +16,14 @@ const pageDesc =
 const fullTitle = pageTitle === '观象' ? '观象 · 易经系统思维' : `${pageTitle} · 观象`;
 
 const nav = [
-  { href: '/', label: '首页' },
-  { href: '/gua', label: '六十四卦' },
-  { href: '/bagua', label: '八卦' },
-  { href: '/cast', label: '起卦' },
-  { href: '/fangfa', label: '系统思维' },
+  { href: withBase('/'), label: '首页' },
+  { href: withBase('/gua'), label: '六十四卦' },
+  { href: withBase('/bagua'), label: '八卦' },
+  { href: withBase('/cast'), label: '起卦' },
+  { href: withBase('/fangfa'), label: '系统思维' },
 ];
-const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const current = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => current === (href.replace(/\/$/, '') || '/');
 ---
 
 <!doctype html>
@@ -41,11 +43,11 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
   <body>
     <header class="site-header">
       <div class="inner">
-        <a class="brand" href="/"><span class="seal">☯</span> 观象</a>
+        <a class="brand" href={withBase('/')}><span class="seal">☯</span> 观象</a>
         <nav class="site-nav">
           {
             nav.map((item) => (
-              <a href={item.href} aria-current={path === item.href ? 'page' : undefined}>
+              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
                 {item.label}
               </a>
             ))
