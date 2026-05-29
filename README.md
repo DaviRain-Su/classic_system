@@ -1,106 +1,189 @@
-# 经典图谱 · Classical Atlas
+# Classical Atlas
 
-> 以《周易》为骨干、各家经典为连线之星、并向西方系统思维辐射「对照枝」的中国系统思维学习平台。
+> An interactive I Ching / Yijing systems-thinking atlas that connects the Book of Changes with Daoist, Confucian, Buddhist, and Western systems traditions.
 
-**核心立意**：《易经》是中国系统思维理论的结晶，作为骨干；道、儒、佛各家以「关联网络」与之相系，西方系统思维则作主干外侧的「对照枝」（殊途同归，非子节点）。
+[English](README.md) | [简体中文](README.zh-CN.md)
 
-本仓库实现经 [Claude Design](https://claude.ai/design) 多轮迭代定稿的**交互原型「经典图谱」**：星图首页（关联网络）+ 经卷长轴阅读（沉浸阅读）的混搭，外加卦阵、立体图、先天方圆图、起卦、卦变与卦族、东西对照地图，并贯穿点读、收藏/进度、首次引导与背景纹样。
+Classical Atlas is a digital humanities and learning platform for Chinese classics. It treats the **I Ching** (also known as **Yijing**, **Zhouyi**, or the **Book of Changes**) as the structural trunk, then maps related Daoist, Confucian, Buddhist, and Western systems-thinking texts around it as an explorable knowledge network.
 
-## 设计系统（极简留白 · 当代东方）
+The project combines close reading, hexagram visualization, cross-text references, and mathematical structure. It is built as a static Astro + React application, with typed source data and no backend requirement.
 
-- **配色**：暖白 `#f7f6f4` + 浓墨 `#1b1b19` + 青瓷绿 `#3a5f5a`（唯一主强调）+ 朱砂 `#9c3a2f`（仅用于印章/动爻/错卦）。深色主题成套切换。
-- **字体**：标题书法 `Ma Shan Zheng` + 正文宋体 `Noto Serif SC`（可切黑/楷）+ 等宽 `Space Mono` 作「二进制/系统」标签。
-- **母题**：阴阳爻（实线=阳、断线=阴）以 `div` 拼搭，呼应二进制/系统逻辑。
-- **Tweaks**（右下角）：字体 宋/黑/楷、深色模式、主色四选（青瓷/黛蓝/陶/橄榄）、背景纹样（八卦环/水墨字/素净）、背景音（古琴留白，默认关），本地持久化。
-- **背景音**：`ambient.ts` 以 Web Audio 实时合成**古风生成乐**——D 羽五声调式乐句（古琴音色 + 长音吟猱微颤）+ 极轻低音根 + 偶尔古筝上行刮奏 + 空灵混响；无音频文件、无版权；默认关闭，开关触发（合规于浏览器自动播放策略）。若要换成真录音，可放 CC0/公有领域音轨（如维基共享的公有领域古琴曲）到 `public/audio/` 再接 `<audio>`。
+Live demo: <https://davirain-su.github.io/classic_system/>
 
-## 画面（单页 React SPA · 桌面全屏自适应 / 手机竖屏阅读版）
+## Why This Exists
 
-| 画面 | 说明 |
+The I Ching is not only a divination classic. It is also one of the earliest and most influential Chinese models of change, polarity, recursion, sequence, and relational thinking.
+
+This repository explores that systems layer through:
+
+- the **64 hexagrams** and the **eight trigrams** / **bagua**
+- King Wen sequence, Fuxi sequence, changing lines, inverse/opposite hexagrams, and hexagram families
+- textual layers such as the hexagram statements, line statements, Tuan Zhuan, Da Xiang, and Xiao Xiang
+- links to Daoism, Confucianism, Buddhism, Neo-Confucian thought, and selected Western systems ideas
+- mathematical parallels such as binary structure, **GF(2)**, **Cayley graphs**, and the six-dimensional hypercube
+
+## Highlights
+
+| Area | What is implemented |
 |---|---|
-| **星图首页** | 节点＝家：易经(脉冲核心) + 道/儒/佛 + 西方经典；连线带关系标签，悬停高亮；节点旁显示 ★收藏 / 已读点，底部「已读 N · 收藏 M」。 |
-| **经卷长轴 · 全卦** | 乾/坤/泰/否/既济/未济**六卦完整**：逐爻点击切爻辞 + 白话 + 小象 + **爻位分析**（阳/阴爻居阳/阴位·当位得正·居中得中）+ 用九/用六 + 历代集注 + 卦族(错/综/互/交) + 卦变；上下卦可点进八卦详情。 |
-| **逐句经文** | 心经/金刚经/维摩诘·不二/八识规矩颂/入菩萨行论/正见四法印 · 系辞传 · 中庸/太极图说/西铭/皇极经世 · 阳明心学 · 常清静经/阴符经/参同契：点句展开白话+集注，**词条释名**浮注（Portal 视口定位，不再被容器裁切），**双栏对照**可切换，行内 ⟿ 关联跳转。 |
-| **多章经文** | 道德经(前三章)/庄子(内篇精选)/六祖坛经(十品)：左章目录、右逐句点读。 |
-| **家级落地页** | 道/儒/佛 概览；旗下经典**按组分区**（佛＝汉传/藏传/导读，儒＝经传/理学/心学），卡片含可读/部分/导读/即将上线状态。 |
-| **六十四卦方阵** | 8×8 可搜索（卦名/卦序/八卦）；入口连通立体图、方圆图。 |
-| **卦象立体图** | 64卦＝六维超立方体；**四投影**：立方套立方 / 同心环 / 先天圆图 / 后天序；选中点亮 6 邻边 + 错卦对角；附「数理结构·群论」注解（64卦≅(ℤ/2)⁶，此图即其 Cayley 图）。 |
-| **先天方圆图** | 外圆(伏羲二进制次序，错卦对径) + 内方(8×8方图)，圆方相合。 |
-| **起卦 · 占问** | 三钱摇卦六次 → 本卦 + 动爻 → 之卦，可直接进卦页。 |
-| **西方对照枝** | 拆为**总览卡片 + 单条详情**（上下条切换）；9 条对照（含**群论 GF(2)**）↔《易》侧面，附「重合/分歧」评注与一键跳回（仅书目+原创评注，不含版权原文）。 |
-| **八卦详情** | 乾兑离震…《说卦》属性（卦德/取象/家人/方位/五行/取物）+ 含此卦的卦列表。 |
-| **全文检索** | 跨全平台真经文（六十四卦 + 道儒佛 + 系辞）一处搜尽，命中高亮、点击直达原句；附常用词快捷。 |
-| **关系图谱** | 易居中、道儒佛西放射的家级总览 + 汇集各页逐句 ⟿ 跨经典关联清单，点击跳转。 |
-| **元会运世盘** | 皇极经世交互：十二消息卦圆环（乾顶坤底）+ 中心大卦象「演示阳长阴消」渐变 + 元会运世数表 + 回扣立体图/复卦。 |
+| Network home | A star-map interface centered on the I Ching, with Daoist, Confucian, Buddhist, and Western branches. |
+| Hexagram reading | Full 64-hexagram access with original Chinese text, Tuan, Da Xiang, line statements, Xiao Xiang, project-written plain-language glosses, changing-line simulation, and hexagram family navigation. |
+| Rich model hexagrams | Qian, Kun, Tai, Pi, Jiji, and Weiji include more polished interactive line reading and commentary treatment. |
+| Hexagram matrix | Searchable 8 x 8 matrix by hexagram name, number, upper trigram, and lower trigram. |
+| 3D / graph views | Six-dimensional hypercube-inspired visualization with multiple projections, neighbor highlighting, and opposite-hexagram relationships. |
+| Fuxi circle-square diagram | Outer circular Fuxi sequence and inner 8 x 8 square diagram. |
+| Casting tool | Three-coin style hexagram casting with changing lines and resulting hexagram navigation. |
+| Classical readings | Selected Daoist, Confucian, and Buddhist works with sentence-level reading, glosses, notes, and cross-links. |
+| Western comparison branch | Original commentary comparing the I Ching with selected Western systems and philosophy references. |
+| Search | Full-text search across the current corpus of Chinese classics and hexagram material. |
+| Mobile reading mode | A dedicated narrow-screen layout focused on readable vertical navigation instead of shrinking the desktop canvas. |
+| Shareable routes | Hash routes such as `#/hex/43`, `#/reading/xinjing`, and `#/cube` can be refreshed and shared. |
 
-转场用 `view-enter` 动画，`Esc`/「‹ 星图」返回；当前画面既写入 URL hash（如 `#/hex/43`、`#/reading/xinjing`、`#/cube`，可刷新/分享直达），也写入版本化 `localStorage` 作为本机续读；首次进入弹**阴阳爻引导**。
+## Current Content Coverage
 
-**桌面舞台全屏自适应**：不再是固定 `1440×900` 的缩放「画布卡片」（四周露米色边、节点被切），而是 `position:fixed inset:0` 铺满整窗——纸底铺满、文字 1:1 原生更清晰。星图首页用**百分比定位**（`1440×900` 设计坐标 ÷ `14.4`/`9` → `%`，连线 SVG 用 `preserveAspectRatio="none"` 随窗拉伸对齐），四家节点随窗分布到四角、易居中、页脚贴底；阅读/卦阵/立体/起卦等本就是 `inset:0` 弹性布局，同步铺满。
+The interaction system is already broad, but the content layer is intentionally still growing.
 
-### 手机版（`< 768px` 自动切换 · `Mobile.tsx`）
+Ready or substantially implemented:
 
-窄视口下，`App.tsx` 经 `useIsMobile()`（监听 `resize`、SSR 安全默认桌面）自动改渲染**手机原生竖屏版**——不是把桌面布局塞进窄屏，而是另一套**阅读优先**的卡片式信息架构：首页（易经主干 hero + 道儒佛三家 + 系辞/西方/大画幅入口）、主干页、家级落地页（按组分区）、读经页（卦＝逐爻手风琴展开白话/小象；经＝逐句/多章手风琴）、西方对照（逐条展开重合/分歧）。**卦阵/立体图/方圆图/元会运世/起卦**等大画幅空间可视化在手机给「请横屏 / 桌面查看」的优雅占位（务实取舍：手机先把「读」做扎实）。顶栏 sticky 毛玻璃 + `‹` 返回（自维护页面栈，`localStorage` 记忆）；右下角 **Tweaks**（字体/深色/主色/背景音）与桌面共用、同步生效。
+- **I Ching / Zhouyi**: all 64 hexagrams include hexagram statements, line statements, Tuan Zhuan, Da Xiang, Xiao Xiang, and project-written plain-language glosses.
+- **Detailed I Ching samples**: Qian, Kun, Tai, Pi, Ji Ji, and Wei Ji have the most complete polished reading experience.
+- **Historical I Ching notes**: hexagram-level Zhu Xi and Cheng Yi notes are partially integrated where source coverage is available.
+- **Ten Wings**: selected Xici Zhuan passages are present.
+- **Daoist texts**: Dao De Jing chapters 1-3, selected Zhuangzi chapters, Qingjing Jing, Yinfu Jing, and the opening of Zhouyi Cantong Qi.
+- **Confucian texts**: Zhongyong, Taiji Tushuo, Ximing, Huangji Jingshi material, and Wang Yangming learning notes.
+- **Buddhist texts**: Heart Sutra, Diamond Sutra, Vimalakirti non-duality passage, Verses on the Eight Consciousnesses, selected Platform Sutra material, selected Bodhicaryavatara material, and a Four Dharma Seals guide.
+- **Western comparison**: original bibliographic and conceptual commentary only; no copyrighted Western source text is bundled.
 
-## 技术栈
+Still expanding:
 
-- [Astro](https://astro.build) 5 + [@astrojs/react](https://docs.astro.build/en/guides/integrations-guide/react/)（整套原型为一个 `client:load` React island，SSR 首屏 + 客户端交互）
-- 无后端、无数据库：经典内容、卦表、词条、对照均为类型化数据模块
+- full Dao De Jing chapters 4-81
+- remaining Zhuangzi inner chapters and Platform Sutra sections
+- full Ten Wings coverage, including Shuo Gua, Xu Gua, and Za Gua
+- line-level historical commentaries across all 64 hexagrams
+- stronger search ranking, pinyin search, fuzzy matching, and sentence-level deep linking
 
-## 开发
+## Tech Stack
+
+- [Astro](https://astro.build) 5
+- [React](https://react.dev) 19 via `@astrojs/react`
+- TypeScript
+- Static site output, no backend, no database
+- Typed local data modules for classics, hexagrams, graph nodes, glossary terms, and comparison notes
+- GitHub Pages deployment support under `/classic_system`
+
+## Getting Started
 
 ```bash
 pnpm install
-pnpm dev        # http://localhost:4321
-pnpm build      # 构建到 dist/（GITHUB_PAGES=true 时走 /classic_system 子路径）
-pnpm check      # Astro + TypeScript 类型检查
-pnpm verify     # 结构自检 + 64卦生成内容完整性检查
+pnpm dev
 ```
 
-## 目录结构
+The local development server defaults to:
 
+```text
+http://localhost:4321
 ```
+
+Useful commands:
+
+```bash
+pnpm check      # Astro + TypeScript checks
+pnpm verify     # content and hexagram structure verification
+pnpm build      # production build into dist/
+pnpm preview    # preview the production build
+```
+
+This repository declares `pnpm@10.33.0` in `package.json`. If your local pnpm version is older, either upgrade pnpm or temporarily run commands with:
+
+```bash
+pnpm --config.package-manager-strict=false check
+```
+
+## Project Structure
+
+```text
 src/components/atlas/
-├─ data.ts          # 八卦/64卦全文/各家经典/星图节点(家)/作品注册/词条/东西对照/八卦属性
-├─ hex.ts           # 64卦名表、由爻查卦、卦变、卦族、爻位名
-├─ progress.ts      # 阅读进度/收藏 本地存储 + hook
-├─ primitives.tsx   # 阴阳爻 / 卦象 / 动爻形变
-├─ chrome.tsx       # wordmark / mono 标签 / 印章
-├─ reading-modes.tsx# 词条释名(浮注) / 双栏对照 / 模式切换
-├─ shared.tsx       # 顶栏(收藏+面包屑) / 集注 / 关联 chip / 卦变面板 / 卦族面板
-├─ StarMap.tsx      # 星图首页
-├─ Reading.tsx      # 长轴阅读（全卦 / 逐句 / 多章 / 占位）
-├─ Matrix.tsx       # 八八卦阵 + 单卦页
-├─ Cube.tsx         # 立体图（四投影）
-├─ CircleSquare.tsx # 先天方圆图
-├─ cast.tsx         # 起卦
-├─ West.tsx         # 西方对照地图
-├─ detail.tsx       # 家级落地页 / 八卦详情 / 首次引导
-├─ Tweaks.tsx       # 字体/深色/主色/背景 控件
-├─ Mobile.tsx       # 手机竖屏阅读版（< 768px 自切）：首页/主干/家/读经/西方/横屏占位
-└─ App.tsx          # 外壳：全屏自适应舞台/背景、路由、转场、主题、进度；useIsMobile 切手机版
-src/pages/index.astro # 挂载 <App client:load>
-src/styles/global.css # 设计令牌 + 深色主题 + 关键帧
+├─ App.tsx              # application shell, hash routing, layout switching, theme state
+├─ StarMap.tsx          # network home
+├─ Reading.tsx          # hexagram, sentence, and chapter reading views
+├─ Matrix.tsx           # 64-hexagram matrix and single-hexagram entry
+├─ Cube.tsx             # hypercube / graph projections
+├─ CircleSquare.tsx     # Fuxi circle-square diagram
+├─ cast.tsx             # hexagram casting tool
+├─ Search.tsx           # corpus search
+├─ Relations.tsx        # cross-text relation map
+├─ Mobile.tsx           # mobile-first reading layout
+├─ data.ts              # core classics, works registry, graph nodes, glossary, comparisons
+├─ hex.ts               # 64-hexagram table and transformations
+├─ hex-rest.ts          # generated 64-hexagram source text supplement
+├─ hex-gloss.ts         # project-written hexagram glosses
+├─ jizhu.ts             # generated historical I Ching commentary data
+└─ progress.ts          # local reading progress and bookmarks
 ```
 
-爻一律「自上而下」存储（index 0 = 上爻），与渲染叠放一致。
+## Shareable Routes
 
-## 已贴真实经文
+The app uses hash routes so individual views can be shared even when deployed as a static site:
 
-- **易经**：**六十四卦全文**（卦辞·彖·大象·爻辞·小象 全备；乾坤泰否既济未济另含逐爻白话）+ 系辞传精选；
-- **道家**（7）：道德经前三章 · 庄子三篇 · 常清静经 · 阴符经 · 参同契开篇（列子/太乙占位）；
-- **儒家**（5，经传/理学/心学）：中庸 · 太极图说 · 西铭 · 皇极经世(加一倍法·与立体图互跳) · 阳明心学；
-- **佛家**（7，汉传/藏传/导读）：心经 · 金刚经 · 维摩诘·不二 · 八识规矩颂 · 六祖坛经｜入菩萨行论｜正见·四法印（依宗萨钦哲《正见》导读，非原文转录）；
-- **西方对照枝**：9 条（含群论 GF(2)）。
+```text
+#/hex/1
+#/hex/43
+#/reading/daode
+#/reading/xinjing
+#/matrix
+#/cube
+#/circle
+#/cast
+#/west
+#/search
+#/relations
+```
 
-## 路线图
+## Search And Discovery Terms
 
-1. **（已上线）原型骨架 + 样板内容**：见上表。
-2. **内容做厚**：64 卦全卦爻辞 ✓ + 白话 ✓ + 历代易注(程颐/朱熹，卦辞级，部分卦) ✓；尚余十翼全文、道德经 81 章、各家其余经典、爻级集注。
-3. **检索**：全文检索已上线（跨经文搜原文/白话）；可继续做检索高亮跳到具体句、模糊匹配。
-4. **工程化**：接入完整经文库 + 数据库 + 账号云端收藏/进度（开发交接）。
+This project is relevant to readers and researchers looking for:
 
-## 内容来源与版权
+I Ching, Yijing, Zhouyi, Book of Changes, Chinese classics, Chinese philosophy, Daoism, Taoism, Confucianism, Buddhism, Neo-Confucianism, Chinese systems thinking, divination, 64 hexagrams, bagua, eight trigrams, King Wen sequence, Fuxi sequence, Ten Wings, Xici Zhuan, hexagram visualization, digital humanities, knowledge graph, Astro React TypeScript static site, GF(2), Cayley graph, binary philosophy, and hypercube visualization.
 
-所列中国经典均属公有领域。**六十四卦原文**由 `scripts/build_hex.mjs` 从公有领域底本汇编：卦辞/爻辞/用九六取自 [openqt/gua](https://github.com/openqt/gua)（简体），彖/大象/小象取自 [bollwarm/ZHOUYI](https://github.com/bollwarm/ZHOUYI)（繁体经 [opencc-js](https://github.com/nk2028/opencc-js) 转简）；并以乾坤泰否既济未济 6 卦做端到端校验。**六十四卦白话**为本项目原创简译（`hex-gloss.ts`）。**历代易注**由 `scripts/build_jizhu.mjs` 取自 [CnPeng/AncientChineseBook](https://github.com/CnPeng/AncientChineseBook) 的公有领域古籍——朱熹《周易本义》、程颐《伊川易传》。西方对照仅含书目信息与本项目原创评注，不含任何版权原文。设计稿由 Claude Design 协助生成。
+For GitHub repository topics, good candidates are:
 
-> 注：**历代易注**（卦页「展开历代易注」）现为卦辞级——朱熹《周易本义》覆盖 55 卦、程颐《伊川易传》覆盖 14 卦（所用程颐底本残缺，其余卦标「待补」，后续接更全底本补齐）；卦级**简介**沿用底本编辑性描述，个别或有错字，待校订。
+```text
+i-ching
+yijing
+zhouyi
+book-of-changes
+chinese-classics
+chinese-philosophy
+daoism
+confucianism
+buddhism
+digital-humanities
+knowledge-graph
+systems-thinking
+astro
+react
+typescript
+static-site
+```
+
+## Roadmap
+
+- Maintain the English and Chinese READMEs in parallel.
+- Expand the I Ching commentary layer from hexagram-level notes to line-level notes.
+- Complete Dao De Jing, Zhuangzi, Platform Sutra, and Ten Wings coverage.
+- Split the growing data layer into domain modules as the corpus expands.
+- Add stronger search: pinyin lookup, fuzzy matching, ranking, and sentence-level route anchors.
+- Improve accessibility with more semantic controls, labels, and keyboard navigation.
+- Add export/import for bookmarks and reading progress.
+- Add print styles and optional offline / PWA support.
+
+## Sources And Copyright
+
+Chinese classical source texts used here are public-domain materials. The 64-hexagram corpus is assembled from public-domain/open repositories and processed by local build scripts:
+
+- `scripts/build_hex.mjs` composes hexagram and line text from [openqt/gua](https://github.com/openqt/gua) and Tuan / Xiang material from [bollwarm/ZHOUYI](https://github.com/bollwarm/ZHOUYI), with Traditional-to-Simplified conversion through [opencc-js](https://github.com/nk2028/opencc-js).
+- `scripts/build_jizhu.mjs` imports public-domain historical material from [CnPeng/AncientChineseBook](https://github.com/CnPeng/AncientChineseBook), including Zhu Xi's Zhouyi Benyi and Cheng Yi's Yichuan Yizhuan where available.
+- Plain-language hexagram glosses and Western comparison notes are original project material.
+- The interface was iterated with assistance from Claude Design.
+
+Please verify source editions before using this project for scholarly citation. The current goal is an interactive reading and systems-thinking atlas, not a critical academic edition.
