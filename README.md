@@ -54,10 +54,11 @@ The interaction system is already broad, but the content layer is intentionally 
 
 Ready or substantially implemented:
 
-- **I Ching / Zhouyi**: all 64 hexagrams include hexagram statements, line statements, Tuan Zhuan, Da Xiang, Xiao Xiang, and project-written plain-language glosses.
+- **I Ching / Zhouyi**: all 64 hexagrams include hexagram statements, line statements, Tuan Zhuan, Da Xiang, Xiao Xiang — each with project-written plain-language glosses (hexagram statement, lines, **and Tuan / Da Xiang / Xiao Xiang: 64 + 64 + 384 vernacular renderings**).
+- **Line-position analysis**: each line shows centrality/correctness plus the classic relational reading — correspondence (Ying), riding/supported (Cheng / Sheng), and proximity (Bi) — computed from the six lines.
 - **Detailed I Ching samples**: Qian, Kun, Tai, Pi, Ji Ji, and Wei Ji have the most complete polished reading experience.
 - **Historical I Ching notes**: both hexagram-statement-level and **line-level** commentary from Cheng Yi (*Yichuan Yizhuan*) and Zhu Xi (*Zhouyi Benyi*) — 64/64 hexagrams at the statement level, plus all 386 lines/uses at the line level — drawn mainly from the imperial *Yuzuan Zhouyi Zhezhong*.
-- **Ten Wings**: selected Xici Zhuan passages are present.
+- **Ten Wings (complete set)**: Tuan and Xiang are embedded per hexagram; Xici Zhuan (expanded), Wenyan, Shuo Gua, Xu Gua, and Za Gua are readable as cross-linked texts with vernacular glosses.
 - **Daoist texts**: Dao De Jing chapters 1-3, selected Zhuangzi chapters, Qingjing Jing, Yinfu Jing, and the opening of Zhouyi Cantong Qi.
 - **Confucian texts**: Zhongyong, Taiji Tushuo, Ximing, Huangji Jingshi material, and Wang Yangming learning notes.
 - **Buddhist texts**: Heart Sutra, Diamond Sutra, Vimalakirti non-duality passage, Verses on the Eight Consciousnesses, selected Platform Sutra material, selected Bodhicaryavatara material, and a Four Dharma Seals guide.
@@ -67,8 +68,7 @@ Still expanding:
 
 - full Dao De Jing chapters 4-81
 - remaining Zhuangzi inner chapters and Platform Sutra sections
-- full Ten Wings coverage, including Shuo Gua, Xu Gua, and Za Gua
-- line-level historical commentaries across all 64 hexagrams
+- fuller Xici / Shuo Gua coverage beyond the current representative selections
 - stronger search ranking, pinyin search, fuzzy matching, and sentence-level deep linking
 
 ## Tech Stack
