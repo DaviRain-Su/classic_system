@@ -5,7 +5,7 @@ on:
     branches: [claude/lucid-fermat-f0kES]
   workflow_dispatch:
 
-# 允许工作流开启并部署 Pages
+# 允许部署 Pages
 permissions:
   contents: read
   pages: write
@@ -23,33 +23,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      # 官方 Astro action：自动按 lockfile 选包管理器（pnpm），安装、构建并上传 Pages 产物
+      - name: Build with Astro
+        uses: withastro/action@v3
         with:
+          path: .
           node-version: 22
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
-      - name: Verify engine
-        run: pnpm verify
-
-      - name: Build
-        run: pnpm build
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
 
   deploy:
     needs: build
