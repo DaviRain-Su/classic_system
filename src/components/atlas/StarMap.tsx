@@ -1,12 +1,14 @@
-// 星图首页 — 易经为最亮核心，各家经典如连线之星。
+// 星图首页 — 易经为最亮核心，各家(节点=家)如连线之星。
 import { useState } from 'react';
 import { NODES, NODE_BY_ID } from './data';
 import { Yao } from './primitives';
 import { Wordmark, Mono } from './chrome';
+import { useProgress } from './progress';
 import type { OpenNode } from './shared';
 
-export function StarMap({ onOpen, onMatrix, onCube }: { onOpen: OpenNode; onMatrix: () => void; onCube: () => void }) {
+export function StarMap({ onOpen, onMatrix, onCube, onCast, onXici }: { onOpen: OpenNode; onMatrix: () => void; onCube: () => void; onCast: () => void; onXici: () => void }) {
   const [hover, setHover] = useState<string | null>(null);
+  const prog = useProgress();
   const core = NODE_BY_ID.yi;
   const sats = NODES.filter((n) => n.id !== 'yi');
   const stars = [
@@ -15,27 +17,35 @@ export function StarMap({ onOpen, onMatrix, onCube }: { onOpen: OpenNode; onMatr
     { x: 770, y: 540, on: 0 }, { x: 1048, y: 470, on: 1 }, { x: 470, y: 360, on: 1 },
   ];
   const dim = (id: string) => hover !== null && hover !== id;
+  const pill = { display: 'flex', alignItems: 'center', gap: 9, border: '1px solid var(--hair-2)', background: 'transparent', borderRadius: 999, padding: '7px 15px', cursor: 'pointer', fontFamily: 'var(--font-body)' } as const;
+  const pillLabel = { fontFamily: 'var(--font-serif)', fontSize: 13.5, color: 'var(--ink)' } as const;
 
   return (
     <div style={{ position: 'absolute', inset: 0, fontFamily: 'var(--font-body)', color: 'var(--ink)' }}>
-      {/* top bar */}
       <div style={{ position: 'absolute', top: 34, left: 56, right: 56, display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 5 }}>
         <Wordmark />
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button onClick={onMatrix} style={{ display: 'flex', alignItems: 'center', gap: 9, border: '1px solid var(--hair-2)', background: 'transparent', borderRadius: 999, padding: '7px 15px', cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+          <button onClick={onXici} style={pill}>
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: 15, color: 'var(--accent)', lineHeight: 1 }}>系</span>
+            <span style={pillLabel}>系辞传</span>
+          </button>
+          <button onClick={onCast} style={pill}>
+            <span style={{ width: 12, height: 12, borderRadius: '50%', border: '1.4px solid var(--seal)', display: 'inline-block' }} />
+            <span style={pillLabel}>起卦</span>
+          </button>
+          <button onClick={onMatrix} style={pill}>
             <span style={{ display: 'grid', gridTemplateColumns: 'repeat(3,3px)', gap: 1.5 }}>
               {Array.from({ length: 9 }).map((_, i) => <span key={i} style={{ width: 3, height: 3, background: 'var(--accent)' }} />)}
             </span>
-            <span style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, color: 'var(--ink)' }}>六十四卦</span>
+            <span style={pillLabel}>六十四卦</span>
           </button>
-          <button onClick={onCube} style={{ display: 'flex', alignItems: 'center', gap: 9, border: '1px solid var(--hair-2)', background: 'transparent', borderRadius: 999, padding: '7px 15px', cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+          <button onClick={onCube} style={pill}>
             <span style={{ width: 13, height: 13, border: '1.4px solid var(--accent)', transform: 'rotate(45deg)', display: 'inline-block' }} />
-            <span style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, color: 'var(--ink)' }}>立体图</span>
+            <span style={pillLabel}>立体图</span>
           </button>
         </div>
       </div>
 
-      {/* edges */}
       <svg width={1440} height={900} viewBox="0 0 1440 900" style={{ position: 'absolute', inset: 0 }}>
         {sats.map((n) => {
           const on = hover === n.id;
@@ -50,17 +60,14 @@ export function StarMap({ onOpen, onMatrix, onCube }: { onOpen: OpenNode; onMatr
         })}
       </svg>
 
-      {/* faint 爻 stars */}
       {stars.map((s, i) => (
         <div key={i} style={{ position: 'absolute', left: s.x, top: s.y, transform: 'translate(-50%,-50%)', opacity: hover ? 0.16 : 0.3, transition: 'opacity .25s' }}>
           <Yao on={s.on} w={22} h={3} color="var(--ink-3)" />
         </div>
       ))}
 
-      {/* relation labels */}
       {sats.map((n) => {
-        const mx = core.x + (n.x - core.x) * 0.5;
-        const my = core.y + (n.y - core.y) * 0.5;
+        const mx = core.x + (n.x - core.x) * 0.5, my = core.y + (n.y - core.y) * 0.5;
         const on = hover === n.id;
         return (
           <div key={n.id + 'l'} style={{ position: 'absolute', left: mx, top: my, transform: 'translate(-50%,-50%)', background: 'var(--paper)', padding: '2px 8px', opacity: dim(n.id) ? 0.2 : 1, transition: 'opacity .25s', zIndex: 2 }}>
@@ -69,7 +76,6 @@ export function StarMap({ onOpen, onMatrix, onCube }: { onOpen: OpenNode; onMatr
         );
       })}
 
-      {/* center 易经 */}
       <div onClick={() => onOpen('yi')} onMouseEnter={() => setHover('yi')} onMouseLeave={() => setHover(null)}
         style={{ position: 'absolute', left: core.x, top: core.y, transform: `translate(-50%,-50%) scale(${hover === 'yi' ? 1.05 : 1})`, transition: 'transform .3s cubic-bezier(.3,.7,.3,1)', display: 'flex', flexDirection: 'column', alignItems: 'center', width: 240, cursor: 'pointer', zIndex: 3, opacity: dim('yi') ? 0.4 : 1 }}>
         <div style={{ position: 'relative', width: 134, height: 134 }}>
@@ -78,11 +84,14 @@ export function StarMap({ onOpen, onMatrix, onCube }: { onOpen: OpenNode; onMatr
             <span style={{ fontFamily: 'var(--font-display)', fontSize: 78, color: 'var(--accent)', lineHeight: 1, marginTop: 4 }}>易</span>
           </div>
         </div>
-        <div style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: 20, marginTop: 16, whiteSpace: 'nowrap' }}>易经 · 周易</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 16 }}>
+          <span style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: 20, whiteSpace: 'nowrap' }}>易经 · 周易</span>
+          {prog.isMarked('yi') && <span style={{ color: 'var(--seal)', fontSize: 14 }}>★</span>}
+          {prog.isRead('yi') && !prog.isMarked('yi') && <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block' }} />}
+        </div>
         <Mono dim style={{ marginTop: 5 }}>系统思维 · 骨干</Mono>
       </div>
 
-      {/* satellites */}
       {sats.map((n) => {
         const ghost = n.status === 'ghost';
         const on = hover === n.id;
@@ -92,18 +101,22 @@ export function StarMap({ onOpen, onMatrix, onCube }: { onOpen: OpenNode; onMatr
             <div style={{ width: 48, height: 48, borderRadius: '50%', background: ghost ? 'var(--paper)' : 'var(--accent-soft)', border: `1px ${ghost ? 'dashed' : 'solid'} ${ghost ? 'var(--ink-3)' : 'var(--accent)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: on ? '0 6px 22px rgba(0,0,0,.12)' : 'none', transition: 'box-shadow .25s' }}>
               <span style={{ fontFamily: 'var(--font-display)', fontSize: 23, color: ghost ? 'var(--ink-3)' : 'var(--accent)', lineHeight: 1, marginTop: 2 }}>{n.glyph}</span>
             </div>
-            <div style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: 16.5, marginTop: 10, color: ghost ? 'var(--ink-3)' : 'var(--ink)' }}>{n.name}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginTop: 10 }}>
+              <span style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: 16.5, color: ghost ? 'var(--ink-3)' : 'var(--ink)' }}>{n.name}</span>
+              {!ghost && prog.isMarked(n.id) && <span style={{ color: 'var(--seal)', fontSize: 13 }}>★</span>}
+              {!ghost && prog.isRead(n.id) && !prog.isMarked(n.id) && <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block' }} />}
+            </div>
             <div style={{ fontSize: 11.5, color: 'var(--ink-3)', marginTop: 2 }}>{n.author}</div>
             <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13, color: ghost ? 'var(--ink-3)' : 'var(--ink-2)', marginTop: 7, lineHeight: 1.55 }}>{n.frag}</div>
             {n.status === 'soon' && <span style={{ marginTop: 8, fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.16em', color: 'var(--ink-3)', border: '1px solid var(--hair-2)', borderRadius: 999, padding: '2px 8px' }}>即将上线</span>}
+            {n.status === 'west' && <span style={{ marginTop: 8, fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.16em', color: 'var(--accent)', border: '1px solid var(--accent)', borderRadius: 999, padding: '2px 8px' }}>对照地图</span>}
           </div>
         );
       })}
 
-      {/* footer */}
       <div style={{ position: 'absolute', bottom: 30, left: 56, right: 56, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ fontFamily: 'var(--font-serif)', fontSize: 14.5, color: 'var(--ink-2)' }}>关联网络 · 以《易经》为核心，点击节点进入阅读</div>
-        <Mono dim>{hover ? NODE_BY_ID[hover].name : '经纬星图'}</Mono>
+        <Mono dim>{`已读 ${prog.counts().read} · 收藏 ${prog.counts().mark}`}</Mono>
       </div>
     </div>
   );

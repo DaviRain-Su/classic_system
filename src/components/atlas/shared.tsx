@@ -1,26 +1,42 @@
-// 共享视图组件：TopBar / Slot / RelChips / BianPanel / GuaFamily。
-import type { CSSProperties } from 'react';
+// 共享视图组件：TopBar / Slot / JiZhu / LinkChip / RelChips / BianPanel / GuaFamily。
+import { useState, type CSSProperties } from 'react';
 import { Mono, NavRail } from './chrome';
 import { HexFigure } from './primitives';
 import { bian, relatives, yaoName, type HexInfo } from './hex';
-import { NODES, type TrigramKey } from './data';
+import { SCHOOL_INFO, type TrigramKey, type LinkSpec } from './data';
+import { useProgress } from './progress';
 
 export type OpenHex = (upper: TrigramKey, lower: TrigramKey) => void;
 export type OpenNode = (id: string) => void;
 
-export function TopBar({ title, sub, onBack }: { title: string; sub?: string; onBack: () => void }) {
+export function TopBar({ title, sub, onBack, bookmarkKey, school, onOpenSchool }: {
+  title: string; sub?: string; onBack: () => void; bookmarkKey?: string; school?: string; onOpenSchool?: (id: string) => void;
+}) {
+  const prog = useProgress();
+  const marked = bookmarkKey ? prog.isMarked(bookmarkKey) : false;
+  const sName = school && SCHOOL_INFO[school] ? SCHOOL_INFO[school].name : null;
   return (
     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 74, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 56px', borderBottom: '1px solid var(--hair)', zIndex: 5 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
         <button onClick={onBack} style={{ display: 'flex', alignItems: 'center', gap: 8, border: '1px solid var(--hair-2)', background: 'transparent', color: 'var(--ink-2)', borderRadius: 999, padding: '7px 14px', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: 13.5 }}>
           <span style={{ fontSize: 15 }}>‹</span> 星图
         </button>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+          {sName && (
+            <span onClick={() => onOpenSchool && onOpenSchool(school!)} style={{ fontFamily: 'var(--font-serif)', fontSize: 14, color: 'var(--ink-3)', cursor: 'pointer' }}>{sName} <span style={{ margin: '0 2px' }}>›</span></span>
+          )}
           <span style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: 17, whiteSpace: 'nowrap' }}>{title}</span>
           {sub && <Mono dim>{sub}</Mono>}
         </div>
       </div>
-      <NavRail items={['读', '经', '索', '占']} />
+      <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+        {bookmarkKey && (
+          <button onClick={() => prog.toggleMark(bookmarkKey)} title="收藏" style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontSize: 18, lineHeight: 1, color: marked ? 'var(--seal)' : 'var(--ink-3)', padding: 2 }}>
+            {marked ? '★' : '☆'}
+          </button>
+        )}
+        <NavRail items={['读', '经', '索', '占']} />
+      </div>
     </div>
   );
 }
@@ -33,22 +49,54 @@ export function Slot({ label, style = {} }: { label: string; style?: CSSProperti
   );
 }
 
-export function RelChips({ onOpen, exclude }: { onOpen: OpenNode; exclude?: string }) {
-  const items = NODES.filter((n) => n.status !== 'ghost' && n.id !== exclude);
+// 集注 placeholder — commentator tabs.
+export function JiZhu({ names }: { names: string[] }) {
+  const [t, setT] = useState(0);
+  return (
+    <div style={{ marginTop: 12 }}>
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+        {names.map((n, i) => (
+          <button key={n} onClick={() => setT(i)} style={{ border: '1px solid ' + (i === t ? 'var(--accent)' : 'var(--hair-2)'), background: i === t ? 'var(--accent-soft)' : 'transparent', color: i === t ? 'var(--ink)' : 'var(--ink-3)', borderRadius: 999, padding: '4px 12px', cursor: 'pointer', fontFamily: 'var(--font-serif)', fontSize: 12.5 }}>{n}</button>
+        ))}
+      </div>
+      <div style={{ marginTop: 10, padding: '12px 14px', border: '1px dashed var(--hair-2)', borderRadius: 6 }}>
+        <Mono dim>{names[t]} 注 · 编撰中</Mono>
+      </div>
+    </div>
+  );
+}
+
+export function LinkChip({ link, onOpen, onOpenHex }: { link?: LinkSpec; onOpen: OpenNode; onOpenHex: OpenHex }) {
+  if (!link) return null;
+  const go = () => {
+    if (link.onClick) return link.onClick();
+    if (link.kind === 'hex' && link.upper && link.lower) return onOpenHex(link.upper, link.lower);
+    if (link.id) return onOpen(link.id);
+  };
+  return (
+    <button onClick={go} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, border: '1px solid var(--accent)', background: 'var(--accent-soft)', color: 'var(--ink)', borderRadius: 999, padding: '5px 13px', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: 12.5 }}>
+      <span style={{ color: 'var(--accent)' }}>⟿</span> {link.label}
+    </button>
+  );
+}
+
+// 由此辐射 · 各家 chips（点击进家级落地页）
+export function RelChips({ onOpen, exclude }: { onOpen: OpenNode; exclude?: string | null }) {
+  const items = Object.values(SCHOOL_INFO).filter((s) => s.id !== exclude);
   return (
     <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-      {items.map((n) => (
-        <button key={n.id} onClick={() => onOpen(n.id)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 13px', border: '1px solid var(--hair-2)', borderRadius: 999, background: 'transparent', cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
-          <span style={{ fontFamily: 'var(--font-display)', fontSize: 16, color: 'var(--accent)' }}>{n.glyph}</span>
-          <span style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, fontWeight: 600, color: 'var(--ink)' }}>{n.name.replace('易经 · ', '')}</span>
-          <span style={{ fontSize: 11, color: 'var(--ink-3)' }}>{n.rel}</span>
+      {items.map((s) => (
+        <button key={s.id} onClick={() => onOpen(s.id)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 13px', border: '1px solid var(--hair-2)', borderRadius: 999, background: 'transparent', cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+          <span style={{ fontFamily: 'var(--font-display)', fontSize: 16, color: 'var(--accent)' }}>{s.glyph}</span>
+          <span style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, fontWeight: 600, color: 'var(--ink)' }}>{s.name}</span>
+          <span style={{ fontSize: 11, color: 'var(--ink-3)' }}>{s.tagline}</span>
         </button>
       ))}
     </div>
   );
 }
 
-// 卦变面板（乾卦 & 单卦页共用）
+// 卦变面板
 export function BianPanel({ originName, lines, sel, changed, onToggle, onOpenHex }: {
   originName: string; lines: number[]; sel: number; changed: boolean; onToggle: () => void; onOpenHex: OpenHex;
 }) {

@@ -6,8 +6,9 @@ import { Mono } from './chrome';
 import { hexInfo, yaoName, bian } from './hex';
 import { TopBar, Slot, RelChips, BianPanel, GuaFamily, type OpenNode, type OpenHex } from './shared';
 
-// 六十四卦方阵
-export function MatrixBrowse({ onBack, onOpenHex, onCube }: { onBack: () => void; onOpenHex: OpenHex; onCube: () => void }) {
+type OpenTrigram = (t: TrigramKey) => void;
+
+export function MatrixBrowse({ onBack, onOpenHex, onCube, onSquare }: { onBack: () => void; onOpenHex: OpenHex; onCube: () => void; onSquare: () => void }) {
   const order = TRIGRAM_ORDER;
   const [q, setQ] = useState('');
   const [hover, setHover] = useState<string | null>(null);
@@ -33,7 +34,6 @@ export function MatrixBrowse({ onBack, onOpenHex, onCube }: { onBack: () => void
     <div style={{ position: 'absolute', inset: 0, fontFamily: 'var(--font-body)', color: 'var(--ink)' }}>
       <TopBar title="六十四卦" sub="8 × 8 · 上卦 × 下卦" onBack={onBack} />
       <div style={{ position: 'absolute', top: 74, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 18 }}>
-        {/* search */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, border: '1px solid var(--hair-2)', borderRadius: 999, padding: '8px 16px', background: 'var(--paper-2)', width: 320 }}>
             <span style={{ color: 'var(--ink-3)', fontSize: 14 }}>⌕</span>
@@ -45,9 +45,11 @@ export function MatrixBrowse({ onBack, onOpenHex, onCube }: { onBack: () => void
           <button onClick={onCube} style={{ display: 'flex', alignItems: 'center', gap: 8, border: '1px solid var(--hair-2)', background: 'transparent', borderRadius: 999, padding: '7px 14px', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: 12.5, color: 'var(--ink)' }}>
             <span style={{ width: 11, height: 11, border: '1.3px solid var(--accent)', transform: 'rotate(45deg)', display: 'inline-block' }} /> 立体图
           </button>
+          <button onClick={onSquare} style={{ display: 'flex', alignItems: 'center', gap: 8, border: '1px solid var(--hair-2)', background: 'transparent', borderRadius: 999, padding: '7px 14px', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: 12.5, color: 'var(--ink)' }}>
+            <span style={{ position: 'relative', width: 12, height: 12, display: 'inline-block' }}><span style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '1.3px solid var(--accent)' }} /><span style={{ position: 'absolute', inset: 3, border: '1.1px solid var(--accent)' }} /></span> 方圆图
+          </button>
         </div>
 
-        {/* grid */}
         <div>
           <div style={{ display: 'flex', marginLeft: 44 }}>
             {order.map((k) => <Axis key={k} k={k} />)}
@@ -85,8 +87,7 @@ export function MatrixBrowse({ onBack, onOpenHex, onCube }: { onBack: () => void
   );
 }
 
-// 单卦阅读页 (占位文本 + 可演示卦变)
-export function ReadingHex({ upper, lower, onBack, onOpen, onOpenHex }: { upper: TrigramKey; lower: TrigramKey; onBack: () => void; onOpen: OpenNode; onOpenHex: OpenHex }) {
+export function ReadingHex({ upper, lower, onBack, onOpen, onOpenHex, onOpenTrigram }: { upper: TrigramKey; lower: TrigramKey; onBack: () => void; onOpen: OpenNode; onOpenHex: OpenHex; onOpenTrigram: OpenTrigram }) {
   const info = hexInfo(upper, lower);
   const [sel, setSel] = useState(5);
   const [changed, setChanged] = useState(false);
@@ -106,7 +107,7 @@ export function ReadingHex({ upper, lower, onBack, onOpen, onOpenHex }: { upper:
 
   return (
     <div style={{ position: 'absolute', inset: 0, fontFamily: 'var(--font-body)', color: 'var(--ink)' }}>
-      <TopBar title={'易经 · ' + info.name} sub={'第 ' + info.num + ' 卦'} onBack={onBack} />
+      <TopBar title={'易经 · ' + info.name} sub={'第 ' + info.num + ' 卦'} onBack={onBack} bookmarkKey={'gua:' + info.num} />
       <div style={{ position: 'absolute', top: 74, left: 0, right: 0, bottom: 0, display: 'flex' }}>
         <div style={{ width: 470, flex: '0 0 auto', borderRight: '1px solid var(--hair)', padding: '40px 48px' }}>
           <Mono>卦象 · {info.name}</Mono>
@@ -115,13 +116,14 @@ export function ReadingHex({ upper, lower, onBack, onOpen, onOpenHex }: { upper:
           </div>
           <div style={{ display: 'flex', gap: 12, marginTop: 22 }}>
             {([['上卦', upper], ['下卦', lower]] as [string, TrigramKey][]).map(([lab, tk]) => (
-              <div key={lab} style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', border: '1px solid var(--hair)', borderRadius: 8 }}>
+              <button key={lab} onClick={() => onOpenTrigram(tk)} style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', border: '1px solid var(--hair)', borderRadius: 8, background: 'transparent', cursor: 'pointer', fontFamily: 'var(--font-body)', textAlign: 'left' }}>
                 <span style={{ fontSize: 20, color: 'var(--accent)' }}>{TRIGRAMS[tk].glyph}</span>
-                <div>
+                <div style={{ flex: 1 }}>
                   <Mono dim>{lab}</Mono>
                   <div style={{ fontFamily: 'var(--font-serif)', fontSize: 15, fontWeight: 600 }}>{TRIGRAMS[tk].name} · {TRIGRAMS[tk].nature}</div>
                 </div>
-              </div>
+                <span style={{ color: 'var(--ink-3)', fontSize: 15 }}>›</span>
+              </button>
             ))}
           </div>
           <div style={{ marginTop: 26 }}>

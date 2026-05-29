@@ -1,10 +1,16 @@
-// 交互原型外壳：星图 ⇆ 经卷长轴 ⇆ 卦阵 ⇆ 立体图，含转场与 Tweaks。
+// 交互原型外壳：星图 ⇆ 阅读 ⇆ 卦阵 ⇆ 立体图 ⇆ 方圆图 ⇆ 起卦 ⇆ 西方对照，含转场、背景、引导、进度。
 import { useState, useEffect, useCallback, type ReactNode } from 'react';
-import type { TrigramKey } from './data';
+import { SCHOOL_INFO, WORK_BY_ID, HEX_FULL_BY_PAIR, type TrigramKey, type LinkSpec } from './data';
+import { hexInfo } from './hex';
+import { markRead } from './progress';
 import { StarMap } from './StarMap';
 import { Reading } from './Reading';
 import { MatrixBrowse, ReadingHex } from './Matrix';
 import { CubeView } from './Cube';
+import { CircleSquare } from './CircleSquare';
+import { CastView } from './cast';
+import { WestView } from './West';
+import { SchoolView, TrigramView, Onboard } from './detail';
 import { Tweaks, type TweakState } from './Tweaks';
 
 const FONT_MAP: Record<TweakState['font'], string> = {
@@ -13,39 +19,68 @@ const FONT_MAP: Record<TweakState['font'], string> = {
   kai: '"Kaiti SC", "STKaiti", "KaiTi", "楷体", "Noto Serif SC", serif',
 };
 
-type Screen =
-  | { mode: 'map' }
-  | { mode: 'matrix' }
-  | { mode: 'cube' }
-  | { mode: 'reading'; id: string; from?: string }
-  | { mode: 'hex'; upper: TrigramKey; lower: TrigramKey; from?: string };
+type ScreenBase = { from?: string; ret?: Screen };
+type Screen = ScreenBase & (
+  | { mode: 'map' | 'matrix' | 'cube' | 'square' | 'cast' | 'west' }
+  | { mode: 'reading'; id: string }
+  | { mode: 'hex'; upper: TrigramKey; lower: TrigramKey }
+  | { mode: 'trigram'; tkey: TrigramKey }
+  | { mode: 'school'; id: string }
+);
 
 const SCREEN_KEY = 'jdt-proto-screen';
 const TWEAK_KEY = 'jdt-tweaks';
+const ONBOARD_KEY = 'jdt-onboarded';
 const hasLS = () => typeof window !== 'undefined' && !!window.localStorage;
 
 function loadScreen(): Screen {
   if (hasLS()) {
-    try {
-      const s = JSON.parse(localStorage.getItem(SCREEN_KEY) || 'null');
-      if (s && s.mode) return s as Screen;
-    } catch { /* ignore */ }
+    try { const s = JSON.parse(localStorage.getItem(SCREEN_KEY) || 'null'); if (s && s.mode) return s as Screen; } catch { /* ignore */ }
   }
   return { mode: 'map' };
 }
 function loadTweaks(): TweakState {
-  const d: TweakState = { font: 'song', dark: false, accent: '#3a5f5a' };
+  const d: TweakState = { font: 'song', dark: false, accent: '#3a5f5a', motif: 'bagua' };
   if (hasLS()) {
-    try {
-      const s = JSON.parse(localStorage.getItem(TWEAK_KEY) || 'null');
-      if (s) return { ...d, ...s };
-    } catch { /* ignore */ }
+    try { const s = JSON.parse(localStorage.getItem(TWEAK_KEY) || 'null'); if (s) return { ...d, ...s }; } catch { /* ignore */ }
   }
   return d;
 }
 
-// 把 1440×900 舞台缩放进视口
-function Stage({ children }: { children: ReactNode }) {
+// 当前视图对应的主题字 (道/儒/佛/易/西)
+function motifGlyphFor(screen: Screen): string {
+  if (screen.mode === 'west') return '西';
+  if (screen.mode === 'school' && SCHOOL_INFO[screen.id]) return SCHOOL_INFO[screen.id].glyph;
+  if (screen.mode === 'reading' && screen.id) {
+    const w = WORK_BY_ID[screen.id];
+    if (w && SCHOOL_INFO[w.school]) return SCHOOL_INFO[w.school].glyph;
+  }
+  return '易';
+}
+
+const BAGUA = ['☰', '☱', '☲', '☳', '☴', '☵', '☶', '☷'];
+
+// 极淡东方纹样背景
+function Backdrop({ motif, glyph }: { motif: string; glyph: string }) {
+  if (motif === 'none') return null;
+  return (
+    <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', zIndex: 0 }}>
+      <div style={{ position: 'absolute', right: -60, bottom: -120, fontFamily: 'var(--font-display)', fontSize: 560, lineHeight: 0.8, color: 'var(--ink)', opacity: 0.04, userSelect: 'none' }}>{glyph}</div>
+      {motif === 'bagua' && (
+        <svg width="520" height="520" viewBox="0 0 520 520" style={{ position: 'absolute', left: -150, top: -150, opacity: 0.05 }}>
+          <circle cx="260" cy="260" r="210" fill="none" stroke="var(--ink)" strokeWidth="1.5" />
+          <circle cx="260" cy="260" r="150" fill="none" stroke="var(--ink)" strokeWidth="1" />
+          {BAGUA.map((g, i) => {
+            const a = (i * 45 - 90) * Math.PI / 180;
+            return <text key={i} x={260 + Math.cos(a) * 180} y={260 + Math.sin(a) * 180 + 12} textAnchor="middle" style={{ fontSize: 34, fill: 'var(--ink)' }}>{g}</text>;
+          })}
+        </svg>
+      )}
+    </div>
+  );
+}
+
+function Stage({ children, motif, glyph }: { children: ReactNode; motif: string; glyph: string }) {
   const [s, setS] = useState(1);
   useEffect(() => {
     const fit = () => setS(Math.min(window.innerWidth / 1440, window.innerHeight / 900, 1.25));
@@ -54,8 +89,9 @@ function Stage({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('resize', fit);
   }, []);
   return (
-    <div style={{ position: 'fixed', inset: 0, background: 'var(--canvas-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+    <div style={{ position: 'fixed', inset: 0, background: 'radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--canvas-bg) 92%, #fff), var(--canvas-bg) 72%)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
       <div style={{ width: 1440, height: 900, transform: `scale(${s})`, transformOrigin: 'center', position: 'relative', background: 'var(--paper)', overflow: 'hidden', boxShadow: '0 30px 90px rgba(0,0,0,.16)' }}>
+        <Backdrop motif={motif} glyph={glyph} />
         {children}
       </div>
     </div>
@@ -65,6 +101,15 @@ function Stage({ children }: { children: ReactNode }) {
 export default function App() {
   const [tw, setTw] = useState<TweakState>(loadTweaks);
   const [screen, setScreen] = useState<Screen>(loadScreen);
+  const [onboard, setOnboard] = useState(() => {
+    if (hasLS()) { try { return localStorage.getItem(ONBOARD_KEY) !== '1'; } catch { return true; } }
+    return false; // SSR: 默认不弹，hydrate 后由 effect 决定
+  });
+
+  // hydrate 后再决定是否首次引导（避免 SSR 闪烁）
+  useEffect(() => {
+    if (hasLS()) { try { setOnboard(localStorage.getItem(ONBOARD_KEY) !== '1'); } catch { /* ignore */ } }
+  }, []);
 
   const setTweak = useCallback(<K extends keyof TweakState>(k: K, v: TweakState[K]) => {
     setTw((prev) => {
@@ -86,16 +131,40 @@ export default function App() {
     if (hasLS()) { try { localStorage.setItem(SCREEN_KEY, JSON.stringify(next)); } catch { /* ignore */ } }
   }, []);
 
-  const openNode = (id: string) => go({ mode: 'reading', id });
+  const openNode = (id: string) => {
+    if (id === 'west') return go({ mode: 'west' });
+    if (SCHOOL_INFO[id]) return go({ mode: 'school', id });
+    go({ mode: 'reading', id });
+  };
   const openMatrix = () => go({ mode: 'matrix' });
   const openCube = () => go({ mode: 'cube' });
+  const openCast = () => go({ mode: 'cast' });
+  const openSquare = () => go({ mode: 'square' });
   const openHex = (upper: TrigramKey, lower: TrigramKey, from = 'matrix') => {
-    if (upper === 'qian' && lower === 'qian') go({ mode: 'reading', id: 'yi', from });
-    else go({ mode: 'hex', upper, lower, from });
+    if (upper === 'qian' && lower === 'qian') return go({ mode: 'reading', id: 'yi', from });
+    if (upper === 'kun' && lower === 'kun') return go({ mode: 'reading', id: 'kun', from });
+    const full = HEX_FULL_BY_PAIR[upper + '_' + lower];
+    if (full) return go({ mode: 'reading', id: String(full.num), from });
+    go({ mode: 'hex', upper, lower, from });
   };
+  const setScreenWithRet = (next: Screen) => go({ ...next, ret: screen });
+  const openTrigram = (tkey: TrigramKey) => setScreenWithRet({ mode: 'trigram', tkey });
+  const openSchool = (id: string) => setScreenWithRet({ mode: 'school', id });
   const back = () => {
-    const from = (screen as { from?: string }).from;
-    go(from === 'cube' ? { mode: 'cube' } : from === 'matrix' ? { mode: 'matrix' } : { mode: 'map' });
+    if (screen.ret) return go(screen.ret);
+    if (screen.from === 'cube') return go({ mode: 'cube' });
+    if (screen.from === 'matrix') return go({ mode: 'matrix' });
+    return go({ mode: 'map' });
+  };
+
+  useEffect(() => {
+    if (screen.mode === 'reading' && screen.id) markRead(screen.id);
+    else if (screen.mode === 'hex') markRead('gua:' + hexInfo(screen.upper, screen.lower).num);
+  }, [screen]);
+
+  const closeOnboard = (dontShow: boolean) => {
+    setOnboard(false);
+    if (dontShow && hasLS()) { try { localStorage.setItem(ONBOARD_KEY, '1'); } catch { /* ignore */ } }
   };
 
   useEffect(() => {
@@ -107,21 +176,37 @@ export default function App() {
 
   const key = screen.mode === 'reading' ? 'r-' + screen.id
     : screen.mode === 'hex' ? 'h-' + screen.upper + screen.lower
+    : screen.mode === 'trigram' ? 't-' + screen.tkey
+    : screen.mode === 'school' ? 's-' + screen.id
     : screen.mode;
 
-  const hexFrom = (u: TrigramKey, l: TrigramKey) => openHex(u, l, (screen as { from?: string }).from || 'matrix');
+  const hexFrom = (u: TrigramKey, l: TrigramKey) => openHex(u, l, screen.from || 'matrix');
+
+  const onWestJump = (j: LinkSpec) => {
+    if (j.kind === 'hex' && j.upper && j.lower) openHex(j.upper, j.lower, 'west');
+    else if (j.kind === 'cube') go({ mode: 'cube' });
+    else if (j.kind === 'square') go({ mode: 'square' });
+    else if (j.kind === 'matrix') go({ mode: 'matrix' });
+    else if (j.id) openNode(j.id);
+  };
 
   return (
     <>
-      <Stage>
+      <Stage motif={tw.motif} glyph={motifGlyphFor(screen)}>
         <div key={key} className="view-enter" style={{ position: 'absolute', inset: 0 }}>
-          {screen.mode === 'map' && <StarMap onOpen={openNode} onMatrix={openMatrix} onCube={openCube} />}
-          {screen.mode === 'matrix' && <MatrixBrowse onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'matrix')} onCube={openCube} />}
+          {screen.mode === 'map' && <StarMap onOpen={openNode} onMatrix={openMatrix} onCube={openCube} onCast={openCast} onXici={() => openNode('xici')} />}
+          {screen.mode === 'matrix' && <MatrixBrowse onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'matrix')} onCube={openCube} onSquare={openSquare} />}
           {screen.mode === 'cube' && <CubeView onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'cube')} />}
-          {screen.mode === 'reading' && <Reading id={screen.id} onBack={back} onOpen={openNode} onOpenHex={hexFrom} />}
-          {screen.mode === 'hex' && <ReadingHex upper={screen.upper} lower={screen.lower} onBack={back} onOpen={openNode} onOpenHex={hexFrom} />}
+          {screen.mode === 'square' && <CircleSquare onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'square')} />}
+          {screen.mode === 'cast' && <CastView onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'cast')} />}
+          {screen.mode === 'west' && <WestView onBack={() => go({ mode: 'map' })} onJump={onWestJump} />}
+          {screen.mode === 'reading' && <Reading id={screen.id} onBack={back} onOpen={openNode} onOpenHex={hexFrom} onOpenTrigram={openTrigram} onOpenSchool={openSchool} onOpenCube={openCube} />}
+          {screen.mode === 'hex' && <ReadingHex upper={screen.upper} lower={screen.lower} onBack={back} onOpen={openNode} onOpenHex={hexFrom} onOpenTrigram={openTrigram} />}
+          {screen.mode === 'trigram' && <TrigramView tkey={screen.tkey} onBack={back} onOpenHex={(u, l) => openHex(u, l, 'matrix')} />}
+          {screen.mode === 'school' && <SchoolView id={screen.id} onBack={back} onOpen={openNode} />}
         </div>
       </Stage>
+      {onboard && <Onboard onClose={closeOnboard} />}
       <Tweaks value={tw} onChange={setTweak} />
     </>
   );

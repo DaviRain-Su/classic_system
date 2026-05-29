@@ -1,4 +1,4 @@
-// 卦象立体图 — 64卦 = 六维超立方体；动一爻 = 一条棱。
+// 卦象立体图 — 64卦 = 六维超立方体；动一爻 = 一条棱。四投影。
 import { useState, useMemo } from 'react';
 import { TRIGRAMS } from './data';
 import { HexFigure } from './primitives';
@@ -9,26 +9,41 @@ import { TopBar, type OpenHex } from './shared';
 const linesOf = (v: number) => [0, 1, 2, 3, 4, 5].map((i) => (v >> (5 - i)) & 1);
 const valOf = (lines: number[]) => lines.reduce((a, l) => a * 2 + l, 0);
 const popc = (v: number) => linesOf(v).reduce((a, b) => a + b, 0);
-const nbByLine = (v: number, i: number) => v ^ (1 << (5 - i)); // 翻转 idx i (自上而下)
+const nbByLine = (v: number, i: number) => v ^ (1 << (5 - i));
+const revBits6 = (v: number) => { let r = 0; for (let i = 0; i < 6; i++) r = (r << 1) | ((v >> i) & 1); return r; };
+const kwNum = (v: number) => hexFromLines(linesOf(v)).num;
 
+type Layout = 'cube' | 'ring' | 'fuxi' | 'kingwen';
 interface Pt { x: number; y: number; }
 
 export function CubeView({ onBack, onOpenHex }: { onBack: () => void; onOpenHex: OpenHex }) {
-  const [layout, setLayout] = useState<'cube' | 'ring'>('cube');
-  const [sel, setSel] = useState(63); // 乾
+  const [layout, setLayout] = useState<Layout>('cube');
+  const [sel, setSel] = useState(63);
   const [hover, setHover] = useState<number | null>(null);
   const CW = 1000, CH = 824, cx = 500, cy = 412;
 
   const positions = useMemo<Pt[]>(() => {
     const pos = new Array<Pt>(64);
     if (layout === 'cube') {
-      const BIG = 168, SMALL = 52;
-      const iso = (x: number, y: number, z: number, s: number): [number, number] => [(x - y) * 0.866 * s, (x + y) * 0.5 * s - z * s];
+      const BIG = 210, SMALL = 48;
+      // cabinet oblique: 三轴互不(近)反平行，无顶点塌叠。
+      const iso = (x: number, y: number, z: number, s: number): [number, number] => [(x + 0.5 * y) * s, (-0.6 * y - z) * s];
+      const ox = iso(0.5, 0.5, 0.5, BIG)[0] + iso(0.5, 0.5, 0.5, SMALL)[0];
+      const oy = iso(0.5, 0.5, 0.5, BIG)[1] + iso(0.5, 0.5, 0.5, SMALL)[1];
       for (let v = 0; v < 64; v++) {
         const u = v >> 3, l = v & 7;
         const [bx, by] = iso((u >> 2) & 1, (u >> 1) & 1, u & 1, BIG);
         const [sx, sy] = iso((l >> 2) & 1, (l >> 1) & 1, l & 1, SMALL);
-        pos[v] = { x: cx + bx + sx, y: cy + by + sy - 6 };
+        pos[v] = { x: cx + bx + sx - ox, y: cy + by + sy - oy };
+      }
+    } else if (layout === 'fuxi' || layout === 'kingwen') {
+      const Rc = 332;
+      for (let v = 0; v < 64; v++) {
+        let ord: number;
+        if (layout === 'fuxi') { const bv = revBits6(v); ord = bv >= 32 ? 63 - bv : bv + 32; }
+        else ord = kwNum(v) - 1;
+        const ang = (-90 + ord * (360 / 64)) * Math.PI / 180;
+        pos[v] = { x: cx + Math.cos(ang) * Rc, y: cy + Math.sin(ang) * Rc };
       }
     } else {
       const maxR = 352;
@@ -86,28 +101,46 @@ export function CubeView({ onBack, onOpenHex }: { onBack: () => void; onOpenHex:
     );
   };
 
+  const caption = layout === 'ring' ? '同心环 · 按阳爻数分层：圆心 坤(0) → 最外 乾(6) · 错卦居对角'
+    : layout === 'fuxi' ? '先天圆图 · 伏羲次序＝二进制 0→63（莱布尼茨）· 乾顶'
+    : layout === 'kingwen' ? '后天序 · 文王六十四卦序 1→64 · 通行本卦序'
+    : '动一爻 = 一条棱 · 共 192 棱 · 点节点切换';
+
   return (
     <div style={{ position: 'absolute', inset: 0, fontFamily: 'var(--font-body)', color: 'var(--ink)' }}>
       <TopBar title="卦象立体图" sub="六维超立方体" onBack={onBack} />
 
-      {/* diagram */}
       <div style={{ position: 'absolute', top: 74, left: 0, width: 1000, bottom: 0 }}>
         <div style={{ position: 'absolute', top: 22, left: 40, zIndex: 3, display: 'flex', gap: 6, padding: 3, borderRadius: 999, border: '1px solid var(--hair-2)', background: 'var(--paper-2)' }}>
-          {([['cube', '立方套立方'], ['ring', '同心环']] as ['cube' | 'ring', string][]).map(([k, lab]) => (
-            <button key={k} onClick={() => setLayout(k)} style={{ border: 'none', borderRadius: 999, padding: '6px 16px', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: 12.5, background: layout === k ? 'var(--accent)' : 'transparent', color: layout === k ? '#fff' : 'var(--ink-2)' }}>{lab}</button>
+          {([['cube', '立方套立方'], ['ring', '同心环'], ['fuxi', '先天圆图'], ['kingwen', '后天序']] as [Layout, string][]).map(([k, lab]) => (
+            <button key={k} onClick={() => setLayout(k)} style={{ border: 'none', borderRadius: 999, padding: '6px 14px', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: 12.5, background: layout === k ? 'var(--accent)' : 'transparent', color: layout === k ? '#fff' : 'var(--ink-2)', whiteSpace: 'nowrap' }}>{lab}</button>
           ))}
         </div>
         <div style={{ position: 'absolute', bottom: 22, left: 40, zIndex: 3 }}>
-          <Mono dim>动一爻 = 一条棱 · 共 192 棱 · 点节点切换</Mono>
+          <Mono dim>{caption}</Mono>
         </div>
 
         <svg width="100%" height="100%" viewBox={`0 0 ${CW} ${CH}`} style={{ position: 'absolute', inset: 0 }}>
+          {layout === 'ring' && [1, 2, 3, 4, 5, 6].map((c) => (
+            <circle key={'g' + c} cx={cx} cy={cy} r={(c / 6) * 352} fill="none" stroke="var(--hair-2)" strokeWidth="1" strokeDasharray="2 7" opacity="0.55" />
+          ))}
+          {layout === 'ring' && [1, 2, 3, 4, 5, 6].map((c) => {
+            const ry = cy - (c / 6) * 352;
+            return (
+              <g key={'rl' + c}>
+                <rect x={cx - 13} y={ry - 8} width={26} height={15} rx={3} fill="var(--paper)" />
+                <text x={cx} y={ry + 3.5} textAnchor="middle" style={{ fontFamily: 'var(--font-mono)', fontSize: 9, fill: 'var(--ink-3)' }}>{c}阳</text>
+              </g>
+            );
+          })}
+          {(layout === 'fuxi' || layout === 'kingwen') && (
+            <circle cx={cx} cy={cy} r={332} fill="none" stroke="var(--hair-2)" strokeWidth="1" strokeDasharray="2 7" opacity="0.55" />
+          )}
           {edges.map(([v, w], i) => {
             const hot = (v === sel && nbSet.has(w)) || (w === sel && nbSet.has(v));
             const a = positions[v], b = positions[w];
-            return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={hot ? 'var(--accent)' : 'var(--hair-2)'} strokeWidth={hot ? 1.8 : 0.8} opacity={hot ? 0.95 : sel != null ? 0.12 : 0.22} style={{ transition: 'opacity .25s, stroke-width .2s' }} />;
+            return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={hot ? 'var(--accent)' : 'var(--hair-2)'} strokeWidth={hot ? 1.8 : 0.8} opacity={hot ? 0.95 : layout === 'ring' ? 0.06 : 0.12} style={{ transition: 'opacity .25s, stroke-width .2s' }} />;
           })}
-          {/* 错卦 link across */}
           <line x1={positions[sel].x} y1={positions[sel].y} x2={positions[cuoV].x} y2={positions[cuoV].y} stroke="var(--seal)" strokeWidth="1" strokeDasharray="3 6" opacity="0.6" />
           {Array.from({ length: 64 }).map((_, v) => {
             const st = nodeStyle(v);
@@ -127,7 +160,6 @@ export function CubeView({ onBack, onOpenHex }: { onBack: () => void; onOpenHex:
         </svg>
       </div>
 
-      {/* side panel */}
       <div style={{ position: 'absolute', top: 74, right: 0, width: 440, bottom: 0, borderLeft: '1px solid var(--hair)', padding: '36px 40px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         <Mono>64 卦 = 2⁶ · 六维超立方体</Mono>
         <p style={{ fontSize: 13, lineHeight: 1.8, color: 'var(--ink-2)', margin: '10px 0 0' }}>每卦六爻即六个二进制位，恰是超立方体的一个顶点；动一爻就是走过一条棱。每卦有且仅有 <b style={{ color: 'var(--ink)' }}>6 个</b> 单爻邻居。</p>
