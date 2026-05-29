@@ -19,6 +19,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # 让 astro.config 走 GitHub Pages 子路径 base
+    env:
+      GITHUB_PAGES: 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
