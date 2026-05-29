@@ -6,11 +6,13 @@ export interface TweakState {
   dark: boolean;
   accent: string;
   motif: 'bagua' | 'ink' | 'none';
+  sound: 'off' | 'guqin';
 }
 
 const FONTS: [TweakState['font'], string][] = [['song', '宋'], ['hei', '黑'], ['kai', '楷']];
 const ACCENTS: [string, string][] = [['#3a5f5a', '青瓷'], ['#4a5a72', '黛蓝'], ['#6e4f48', '陶'], ['#5a5640', '橄榄']];
 const MOTIFS: [TweakState['motif'], string][] = [['bagua', '八卦'], ['ink', '水墨字'], ['none', '素净']];
+const SOUNDS: [TweakState['sound'], string][] = [['off', '无'], ['guqin', '古琴']];
 
 export function Tweaks({ value, onChange }: { value: TweakState; onChange: <K extends keyof TweakState>(k: K, v: TweakState[K]) => void }) {
   const [open, setOpen] = useState(false);
@@ -65,6 +67,15 @@ export function Tweaks({ value, onChange }: { value: TweakState; onChange: <K ex
             <div style={{ display: 'flex', gap: 4, marginTop: 8, padding: 3, borderRadius: 9, background: 'var(--accent-soft)' }}>
               {MOTIFS.map(([k, lab]) => (
                 <button key={k} onClick={() => onChange('motif', k)} style={btn(value.motif === k)}>{lab}</button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <span style={label}>背景音 · 古琴留白</span>
+            <div style={{ display: 'flex', gap: 4, marginTop: 8, padding: 3, borderRadius: 9, background: 'var(--accent-soft)' }}>
+              {SOUNDS.map(([k, lab]) => (
+                <button key={k} onClick={() => onChange('sound', k)} style={btn(value.sound === k)}>{lab}</button>
               ))}
             </div>
           </div>

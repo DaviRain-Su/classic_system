@@ -14,6 +14,7 @@ import { SearchView } from './Search';
 import { RelationsView } from './Relations';
 import { SchoolView, TrigramView, Onboard } from './detail';
 import { Tweaks, type TweakState } from './Tweaks';
+import { useAmbient } from './ambient';
 
 const FONT_MAP: Record<TweakState['font'], string> = {
   song: '"Noto Serif SC", serif',
@@ -43,7 +44,7 @@ function loadScreen(): Screen {
   return { mode: 'map' };
 }
 function loadTweaks(): TweakState {
-  const d: TweakState = { font: 'song', dark: false, accent: '#3a5f5a', motif: 'bagua' };
+  const d: TweakState = { font: 'song', dark: false, accent: '#3a5f5a', motif: 'bagua', sound: 'off' };
   if (hasLS()) {
     try { const s = JSON.parse(localStorage.getItem(TWEAK_KEY) || 'null'); if (s) return { ...d, ...s }; } catch { /* ignore */ }
   }
@@ -128,6 +129,8 @@ export default function App() {
     root.style.setProperty('--font-body', FONT_MAP[tw.font] || FONT_MAP.song);
     root.style.setProperty('--accent', tw.accent);
   }, [tw.font, tw.dark, tw.accent]);
+
+  useAmbient(tw.sound === 'guqin');
 
   const go = useCallback((next: Screen) => {
     setScreen(next);
