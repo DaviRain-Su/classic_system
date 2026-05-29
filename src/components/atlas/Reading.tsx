@@ -2,10 +2,11 @@
 import { useState } from 'react';
 import {
   QIAN, KUN, HEX_FULL, DAODE, ZHUANGZI, TANJING, YINFU, CANTONGQI, XINJING, QINGJING, YANGMING, XICI,
-  JINGANG, BUER, BASHI, RUPUSA, ZHENGJIAN, ZHONGYONG, TAIJITU, XIMING, HUANGJI,
+  JINGANG, BUER, BASHI, RUPUSA, ZHENGJIAN, ZHONGYONG, TAIJITU, XIMING,
   TRIGRAMS, SCHOOL_INFO, WORK_BY_ID, NODE_BY_ID,
   type FullHex, type ClauseWork, type ChapterWork, type TrigramKey,
 } from './data';
+import { HuangjiPan } from './HuangjiPan';
 import { Mono } from './chrome';
 import { MorphYao } from './primitives';
 import { TermText, ModeToggle, ParallelView } from './reading-modes';
@@ -328,7 +329,7 @@ export function Reading({ id, onBack, onOpen, onOpenHex, onOpenTrigram, onOpenSc
   if (id === 'zhongyong') return <ClauseReader data={ZHONGYONG} glyph="儒" sideTitle={ZHONGYONG.full!} sideSub={ZHONGYONG.author} school="ru" bmKey="zhongyong" zhuNames={['郑玄', '朱熹']} footLabel="儒家 · 中庸" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'taijitu') return <ClauseReader data={TAIJITU} glyph="儒" sideTitle={TAIJITU.full!} sideSub={TAIJITU.author} school="ru" bmKey="taijitu" zhuNames={['朱熹']} footLabel="理学 · 太极图说" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'ximing') return <ClauseReader data={XIMING} glyph="儒" sideTitle={XIMING.full!} sideSub={XIMING.author} school="ru" bmKey="ximing" zhuNames={['朱熹', '王夫之']} footLabel="理学 · 西铭" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
-  if (id === 'huangji') return <ClauseReader data={HUANGJI} glyph="儒" sideTitle={HUANGJI.full!} sideSub={HUANGJI.author} school="ru" bmKey="huangji" zhuNames={['邵伯温', '王植']} footLabel="象数 · 皇极经世" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
+  if (id === 'huangji') return <HuangjiPan onBack={onBack} onOpenHex={onOpenHex} onOpenCube={onOpenCube} />;
   if (id === 'xici') return <ClauseReader data={XICI} glyph="系" sideTitle={XICI.title} sideSub={XICI.full} bmKey="xici" zhuNames={['韩康伯', '孔颖达', '朱熹']} footLabel="十翼 · 系辞传" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   return <ReadingSoon id={id} onBack={onBack} onOpenSchool={onOpenSchool} />;
 }

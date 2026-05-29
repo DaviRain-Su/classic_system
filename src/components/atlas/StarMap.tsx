@@ -6,7 +6,7 @@ import { Wordmark, Mono } from './chrome';
 import { useProgress } from './progress';
 import type { OpenNode } from './shared';
 
-export function StarMap({ onOpen, onMatrix, onCube, onCast, onXici }: { onOpen: OpenNode; onMatrix: () => void; onCube: () => void; onCast: () => void; onXici: () => void }) {
+export function StarMap({ onOpen, onMatrix, onCube, onCast, onXici, onSearch, onRelations }: { onOpen: OpenNode; onMatrix: () => void; onCube: () => void; onCast: () => void; onXici: () => void; onSearch: () => void; onRelations: () => void }) {
   const [hover, setHover] = useState<string | null>(null);
   const prog = useProgress();
   const core = NODE_BY_ID.yi;
@@ -17,31 +17,39 @@ export function StarMap({ onOpen, onMatrix, onCube, onCast, onXici }: { onOpen: 
     { x: 770, y: 540, on: 0 }, { x: 1048, y: 470, on: 1 }, { x: 470, y: 360, on: 1 },
   ];
   const dim = (id: string) => hover !== null && hover !== id;
-  const pill = { display: 'flex', alignItems: 'center', gap: 9, border: '1px solid var(--hair-2)', background: 'transparent', borderRadius: 999, padding: '7px 15px', cursor: 'pointer', fontFamily: 'var(--font-body)' } as const;
-  const pillLabel = { fontFamily: 'var(--font-serif)', fontSize: 13.5, color: 'var(--ink)' } as const;
+  const pill = { display: 'flex', alignItems: 'center', gap: 8, border: '1px solid var(--hair-2)', background: 'transparent', borderRadius: 999, padding: '7px 14px', cursor: 'pointer', fontFamily: 'var(--font-body)' } as const;
+  const pillLabel = { fontFamily: 'var(--font-serif)', fontSize: 13, color: 'var(--ink)' } as const;
 
   return (
     <div style={{ position: 'absolute', inset: 0, fontFamily: 'var(--font-body)', color: 'var(--ink)' }}>
       <div style={{ position: 'absolute', top: 34, left: 56, right: 56, display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 5 }}>
         <Wordmark />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <button onClick={onSearch} title="全文检索" style={pill}>
+            <span style={{ color: 'var(--accent)', fontSize: 14 }}>⌕</span>
+            <span style={pillLabel}>检索</span>
+          </button>
+          <button onClick={onRelations} title="关系图谱" style={pill}>
+            <span style={{ color: 'var(--accent)', fontSize: 13 }}>❉</span>
+            <span style={pillLabel}>关系</span>
+          </button>
           <button onClick={onXici} style={pill}>
-            <span style={{ fontFamily: 'var(--font-display)', fontSize: 15, color: 'var(--accent)', lineHeight: 1 }}>系</span>
-            <span style={pillLabel}>系辞传</span>
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: 14, color: 'var(--accent)', lineHeight: 1 }}>系</span>
+            <span style={pillLabel}>系辞</span>
           </button>
           <button onClick={onCast} style={pill}>
-            <span style={{ width: 12, height: 12, borderRadius: '50%', border: '1.4px solid var(--seal)', display: 'inline-block' }} />
+            <span style={{ width: 11, height: 11, borderRadius: '50%', border: '1.4px solid var(--seal)', display: 'inline-block' }} />
             <span style={pillLabel}>起卦</span>
           </button>
           <button onClick={onMatrix} style={pill}>
             <span style={{ display: 'grid', gridTemplateColumns: 'repeat(3,3px)', gap: 1.5 }}>
               {Array.from({ length: 9 }).map((_, i) => <span key={i} style={{ width: 3, height: 3, background: 'var(--accent)' }} />)}
             </span>
-            <span style={pillLabel}>六十四卦</span>
+            <span style={pillLabel}>卦阵</span>
           </button>
           <button onClick={onCube} style={pill}>
-            <span style={{ width: 13, height: 13, border: '1.4px solid var(--accent)', transform: 'rotate(45deg)', display: 'inline-block' }} />
-            <span style={pillLabel}>立体图</span>
+            <span style={{ width: 12, height: 12, border: '1.4px solid var(--accent)', transform: 'rotate(45deg)', display: 'inline-block' }} />
+            <span style={pillLabel}>立体</span>
           </button>
         </div>
       </div>

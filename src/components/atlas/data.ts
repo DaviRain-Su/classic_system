@@ -29,7 +29,7 @@ export const TRIGRAM_ORDER: TrigramKey[] = ['qian', 'dui', 'li', 'zhen', 'xun', 
 
 // —— 链接规格（行内关联 / 跳转）——
 export interface LinkSpec {
-  kind: 'node' | 'hex' | 'cube' | 'square' | 'matrix' | 'school';
+  kind: 'node' | 'hex' | 'cube' | 'square' | 'matrix' | 'school' | 'west';
   id?: string;
   upper?: TrigramKey;
   lower?: TrigramKey;
