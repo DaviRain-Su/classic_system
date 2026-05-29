@@ -23,23 +23,48 @@ export function SchoolView({ id, onBack, onOpen }: { id: string; onBack: () => v
         </div>
         <div style={{ marginTop: 30, width: '100%', maxWidth: 760 }}>
           <Mono dim>旗下经典</Mono>
-          <div style={{ display: 'flex', gap: 16, marginTop: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
-            {s.workIds.map((wid) => {
+          {(() => {
+            const card = (wid: string) => {
               const n = WORK_BY_ID[wid];
               if (!n) return null;
+              const badge = n.status === 'ready' ? <Mono dim>可读</Mono>
+                : n.status === 'partial' ? <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--accent)', border: '1px solid var(--accent)', borderRadius: 999, padding: '2px 7px' }}>部分上线</span>
+                : n.status === 'guide' ? <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--seal)', border: '1px solid var(--seal)', borderRadius: 999, padding: '2px 7px' }}>导读</span>
+                : <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--ink-3)', border: '1px solid var(--hair-2)', borderRadius: 999, padding: '2px 7px' }}>即将上线</span>;
               return (
-                <button key={wid} onClick={() => onOpen(wid)} style={{ width: 230, textAlign: 'left', border: '1px solid var(--hair-2)', borderRadius: 10, padding: '18px 20px', background: 'var(--paper-2)', cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+                <button key={wid} onClick={() => onOpen(wid)} style={{ width: 222, textAlign: 'left', border: '1px solid var(--hair-2)', borderRadius: 10, padding: '16px 18px', background: 'var(--paper-2)', cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontFamily: 'var(--font-display)', fontSize: 24, color: 'var(--accent)' }}>{s.glyph}</span>
-                    {n.status === 'ready' ? <Mono dim>可读</Mono> : n.status === 'partial' ? <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--accent)', border: '1px solid var(--accent)', borderRadius: 999, padding: '2px 7px' }}>部分上线</span> : <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--ink-3)', border: '1px solid var(--hair-2)', borderRadius: 999, padding: '2px 7px' }}>即将上线</span>}
+                    <span style={{ fontFamily: 'var(--font-display)', fontSize: 22, color: 'var(--accent)' }}>{s.glyph}</span>
+                    {badge}
                   </div>
-                  <div style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: 18, marginTop: 12 }}>{n.title}</div>
+                  <div style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: 17, marginTop: 10 }}>{n.title}</div>
                   <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 3 }}>{n.author}</div>
-                  <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, color: 'var(--ink-2)', marginTop: 9 }}>{n.frag}</div>
+                  <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13, color: 'var(--ink-2)', marginTop: 8 }}>{n.frag}</div>
                 </button>
               );
-            })}
-          </div>
+            };
+            const grouped = s.workIds.some((w) => WORK_BY_ID[w] && WORK_BY_ID[w].group);
+            if (!grouped) {
+              return <div style={{ display: 'flex', gap: 16, marginTop: 14, justifyContent: 'center', flexWrap: 'wrap' }}>{s.workIds.map(card)}</div>;
+            }
+            const order = ['汉传', '藏传', '导读'];
+            const groups: Record<string, string[]> = {};
+            s.workIds.forEach((w) => { const g = (WORK_BY_ID[w] || {}).group || '其他'; (groups[g] = groups[g] || []).push(w); });
+            const keys = order.filter((k) => groups[k]).concat(Object.keys(groups).filter((k) => !order.includes(k)));
+            return (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 18, marginTop: 14, width: '100%', maxWidth: 760 }}>
+                {keys.map((g) => (
+                  <div key={g}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                      <Mono>{g}</Mono>
+                      <div style={{ flex: 1, height: 1, background: 'var(--hair)' }} />
+                    </div>
+                    <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', justifyContent: 'center' }}>{groups[g].map(card)}</div>
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
         </div>
       </div>
     </div>

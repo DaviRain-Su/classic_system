@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import {
   QIAN, KUN, HEX_FULL, DAODE, ZHUANGZI, TANJING, YINFU, CANTONGQI, XINJING, QINGJING, YANGMING, XICI,
+  JINGANG, BUER, BASHI, RUPUSA, ZHENGJIAN, ZHONGYONG, TAIJITU, XIMING, HUANGJI,
   TRIGRAMS, SCHOOL_INFO, WORK_BY_ID, NODE_BY_ID,
   type FullHex, type ClauseWork, type ChapterWork, type TrigramKey,
 } from './data';
@@ -313,8 +314,17 @@ export function Reading({ id, onBack, onOpen, onOpenHex, onOpenTrigram, onOpenSc
   if (id === 'yinfu') return <ClauseReader data={YINFU} glyph="符" sideTitle={YINFU.full!} sideSub={YINFU.author} school="dao" bmKey="yinfu" zhuNames={['李筌', '张果', '朱熹']} footLabel="道家 · 阴符经" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'cantongqi') return <ClauseReader data={CANTONGQI} glyph="丹" sideTitle={CANTONGQI.full!} sideSub={CANTONGQI.author} school="dao" bmKey="cantongqi" zhuNames={['彭晓', '朱熹', '陈致虚']} footLabel="道家 · 参同契" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'xinjing') return <ClauseReader data={XINJING} glyph="佛" sideTitle={XINJING.full!} sideSub={XINJING.author} school="fo" bmKey="xinjing" zhuNames={['玄奘', '智旭', '憨山']} footLabel="般若部 · 心经" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
+  if (id === 'jingang') return <ClauseReader data={JINGANG} glyph="金" sideTitle={JINGANG.full!} sideSub={JINGANG.author} school="fo" bmKey="jingang" zhuNames={['僧肇', '智顗', '宗密']} footLabel="般若部 · 金刚经" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
+  if (id === 'buer') return <ClauseReader data={BUER} glyph="维" sideTitle={BUER.full!} sideSub={BUER.author} school="fo" bmKey="buer" zhuNames={['僧肇', '智顗', '湛然']} footLabel="佛家 · 不二法门" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
+  if (id === 'bashi') return <ClauseReader data={BASHI} glyph="识" sideTitle={BASHI.full!} sideSub={BASHI.author} school="fo" bmKey="bashi" zhuNames={['窥基', '太虚']} footLabel="唯识 · 八识规矩颂" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
+  if (id === 'rupusa') return <ClauseReader data={RUPUSA} glyph="入" sideTitle={RUPUSA.full!} sideSub={RUPUSA.author} school="fo" bmKey="rupusa" zhuNames={['寂天', '宗喀巴', '如石']} footLabel="藏传 · 入菩萨行论" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
+  if (id === 'zhengjian') return <ClauseReader data={ZHENGJIAN} glyph="见" sideTitle={ZHENGJIAN.full!} sideSub={ZHENGJIAN.author} school="fo" bmKey="zhengjian" zhuNames={['导读']} footLabel="藏传导读 · 四法印" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'qjing') return <ClauseReader data={QINGJING} glyph="清" sideTitle={QINGJING.full!} sideSub={QINGJING.author} school="dao" bmKey="qjing" zhuNames={['杜光庭', '王重阳', '李道纯']} footLabel="道家 · 常清静经" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'yangming') return <ClauseReader data={YANGMING} glyph="儒" sideTitle={YANGMING.full!} sideSub={YANGMING.author} school="ru" bmKey="yangming" zhuNames={['钱德洪', '黄宗羲']} footLabel="儒家 · 阳明心学" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
+  if (id === 'zhongyong') return <ClauseReader data={ZHONGYONG} glyph="儒" sideTitle={ZHONGYONG.full!} sideSub={ZHONGYONG.author} school="ru" bmKey="zhongyong" zhuNames={['郑玄', '朱熹']} footLabel="儒家 · 中庸" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
+  if (id === 'taijitu') return <ClauseReader data={TAIJITU} glyph="儒" sideTitle={TAIJITU.full!} sideSub={TAIJITU.author} school="ru" bmKey="taijitu" zhuNames={['朱熹']} footLabel="理学 · 太极图说" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
+  if (id === 'ximing') return <ClauseReader data={XIMING} glyph="儒" sideTitle={XIMING.full!} sideSub={XIMING.author} school="ru" bmKey="ximing" zhuNames={['朱熹', '王夫之']} footLabel="理学 · 西铭" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
+  if (id === 'huangji') return <ClauseReader data={HUANGJI} glyph="儒" sideTitle={HUANGJI.full!} sideSub={HUANGJI.author} school="ru" bmKey="huangji" zhuNames={['邵伯温', '王植']} footLabel="象数 · 皇极经世" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'xici') return <ClauseReader data={XICI} glyph="系" sideTitle={XICI.title} sideSub={XICI.full} bmKey="xici" zhuNames={['韩康伯', '孔颖达', '朱熹']} footLabel="十翼 · 系辞传" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   return <ReadingSoon id={id} onBack={onBack} onOpenSchool={onOpenSchool} />;
 }

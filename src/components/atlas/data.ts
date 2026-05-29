@@ -137,7 +137,7 @@ export const HEX_FULL_BY_PAIR: Record<string, FullHex> = Object.fromEntries(HEX_
 
 // ── 逐句类经文（心经 / 常清静 / 系辞 / 阳明 / 阴符 / 参同契）──
 export interface ClauseWork {
-  id: string; title: string; full?: string; author?: string; glyph?: string; school?: string;
+  id: string; title: string; full?: string; author?: string; glyph?: string; school?: string; kind?: string;
   relation: string; intro?: string; sijiao?: string[]; mantra?: string; clauses: Clause[];
 }
 // ── 多章类经文（道德经 / 庄子 / 坛经）──
@@ -156,6 +156,66 @@ export const XINJING: ClauseWork = {
     { text: '无挂碍故，无有恐怖，远离颠倒梦想，究竟涅槃。', gloss: '心无障碍故无所恐惧，远离虚妄，终至寂静涅槃。' },
   ],
   mantra: '揭谛揭谛，波罗揭谛，波罗僧揭谛，菩提萨婆诃。',
+};
+
+export const JINGANG: ClauseWork = {
+  id: 'jingang', title: '金刚经', full: '金刚般若波罗蜜经', author: '鸠摩罗什 译', glyph: '金', school: 'fo',
+  relation: '无住生心 · 与《易》之“变动不居”相参',
+  clauses: [
+    { text: '凡所有相，皆是虚妄。若见诸相非相，即见如来。', gloss: '一切外相皆是虚妄；能于相上见其非相、不执著，便见如来本性。' },
+    { text: '应无所住而生其心。', gloss: '不滞著于任何境相，而生起清净之心——金刚经之眼目。', link: { kind: 'node', id: 'qjing', label: '与《常清静经》“遣欲澄心”相参' } },
+    { text: '不应住色生心，不应住声香味触法生心，应无所住，而生其心。', gloss: '不依色声香味触法而起执心，无所住著，方生真心。' },
+    { text: '过去心不可得，现在心不可得，未来心不可得。', gloss: '三世之心皆念念迁流、了不可得——心本无住。' },
+    { text: '一切有为法，如梦幻泡影，如露亦如电，应作如是观。', gloss: '一切因缘造作之法，如梦幻泡影、如朝露闪电，当如此观照其无常。', link: { kind: 'node', id: 'yi', label: '与《易》“变动不居”相参' } },
+  ],
+};
+
+export const BUER: ClauseWork = {
+  id: 'buer', title: '维摩诘经·不二法门', full: '维摩诘所说经 · 入不二法门品', author: '鸠摩罗什 译', glyph: '维', school: 'fo',
+  relation: '不二 · 与阴阳一体、有无相生相参',
+  intro: '维摩居士问“云何入不二法门”，众菩萨各陈所见，文殊以“无言无说”作答，维摩则默然不语——“不二”与《易》阴阳一体、老子有无相生遥相呼应。',
+  clauses: [
+    { text: '生灭为二。法本不生，今则无灭，得此无生法忍，是为入不二法门。', gloss: '把生与灭看作二；而法本无生、亦无所灭，证此无生法忍，即入不二。' },
+    { text: '我、我所为二。因有我故，便有我所；若内无我，则无我所，是为入不二法门。', gloss: '我与我所是二；因执有“我”才生“我所”，若无我执则无我所，即入不二。' },
+    { text: '文殊师利曰：于一切法无言无说、无示无识，离诸问答，是为入不二法门。', gloss: '文殊答：于一切法不立言说、不起分别、离于问答，便是入不二。' },
+    { text: '于是文殊师利问维摩诘：何等是菩萨入不二法门？时维摩诘默然无言。', gloss: '轮到维摩，他默然不答——“一默如雷”，无言正是不二的极致。', link: { kind: 'node', id: 'yi', label: '“不二”与阴阳一体相参' } },
+  ],
+};
+
+export const BASHI: ClauseWork = {
+  id: 'bashi', title: '八识规矩颂', full: '八识规矩颂', author: '玄奘', glyph: '识', school: 'fo',
+  relation: '心识分层 · 与系统层级结构相参',
+  intro: '玄奘以四章颂括唯识“八识”：前五识（眼耳鼻舌身）、第六意识、第七末那识（我执之根）、第八阿赖耶识（藏识）——一套层层依持的心识系统模型。',
+  clauses: [
+    { text: '〔前五识〕性境现量通三性。', gloss: '前五识（眼耳鼻舌身）缘现量实境，通善、恶、无记三性——是感官直觉之识。' },
+    { text: '〔第六识〕三性三量通三境，三界轮时易可知。', gloss: '第六意识遍通三性、三量、三境，分别最强；众生轮转三界，由它最为显著。' },
+    { text: '〔第七识·末那〕带质有覆通情本，随缘执我量为非。', gloss: '末那识恒执第八识为“我”，是我执之根，其认知为非量（错认）。' },
+    { text: '〔第八识·阿赖耶〕浩浩三藏不可穷，渊深七浪境为风。', gloss: '阿赖耶藏识浩瀚含藏一切种子；前七识如波浪、外境如风——藏识为根本所依。', link: { kind: 'cube', label: '于立体图看层级结构' } },
+  ],
+};
+
+export const RUPUSA: ClauseWork = {
+  id: 'rupusa', title: '入菩萨行论', full: '入菩萨行论 · 菩提心要（节选）', author: '寂天', glyph: '入', school: 'fo',
+  relation: '菩提心 · 自他相换',
+  intro: '寂天（约 8 世纪）所造，藏传显教修心根本论。下为广传偈颂之白话节选，旨在示其菩提心要。',
+  clauses: [
+    { text: '若有暇满身，而不修善法，自欺莫胜此，亦无过此愚。', gloss: '得此难得的暇满人身却不修善，是最大的自欺与愚痴。' },
+    { text: '众生欲除苦，反行痛苦因；愚人虽求乐，毁乐如灭仇。', gloss: '众生想离苦，却偏造苦因；想求乐，又毁坏安乐如灭仇敌——颠倒可悯。' },
+    { text: '自与他双方，恶苦既相同，自他何差别？何故唯自护？', gloss: '我与他人同样厌苦求乐，本无差别，何必只顾护己？——自他相换之理。', link: { kind: 'node', id: 'yi', label: '与“天地与我并生”相参' } },
+    { text: '乃至有虚空，以及众生住，愿吾住世间，尽除众生苦。', gloss: '只要虚空尚存、众生尚在，愿我长留世间，除尽一切众生之苦——菩萨大愿。' },
+  ],
+};
+
+export const ZHENGJIAN: ClauseWork = {
+  id: 'zhengjian', title: '正见 · 四法印', full: '四法印 · 见地导读', author: '宗萨钦哲仁波切', glyph: '见', school: 'fo', kind: 'guide',
+  relation: '见地 · 与《易》之“变 / 无常”相参',
+  intro: '“四法印”是判别佛法的四条印记。本页为据宗萨钦哲仁波切《正见》一书的导读式提要（书目参考，非原文转录）。',
+  clauses: [
+    { text: '一、诸行无常', gloss: '凡因缘和合者皆迁流不住、刹那生灭——没有恒常之物。', link: { kind: 'node', id: 'yi', label: '与《易》“变动不居”相参' } },
+    { text: '二、诸漏皆苦', gloss: '凡有执取（漏）者，终究是苦——苦源于对无常的抓取。' },
+    { text: '三、诸法无我', gloss: '一切法皆无独立、常住、自主之“我”——我执本是错认。' },
+    { text: '四、涅槃寂静', gloss: '灭尽烦恼执著，即得寂静解脱——超越苦乐对待。' },
+  ],
 };
 
 export const DAODE: ChapterWork = {
@@ -303,6 +363,52 @@ export const YANGMING: ClauseWork = {
   ],
 };
 
+export const ZHONGYONG: ClauseWork = {
+  id: 'zhongyong', title: '中庸', full: '礼记 · 中庸', author: '子思', glyph: '儒', school: 'ru',
+  relation: '时中 · 与《易》之中正、时位相参',
+  clauses: [
+    { text: '天命之谓性，率性之谓道，修道之谓教。', gloss: '天所赋予的是性，循性而行是道，修明此道是教。' },
+    { text: '喜怒哀乐之未发，谓之中；发而皆中节，谓之和。', gloss: '情未发为“中”，发而中节为“和”——中和是天下之本与达道。' },
+    { text: '君子之中庸也，君子而时中。', gloss: '君子能行中庸，在于随时处中、不偏不倚。', link: { kind: 'node', id: 'yi', label: '与《易》“中正·时位”相参' } },
+    { text: '诚者，天之道也；诚之者，人之道也。', gloss: '诚是天之道，求诚是人之道——以诚通天人。' },
+  ],
+};
+
+export const TAIJITU: ClauseWork = {
+  id: 'taijitu', title: '太极图说', full: '太极图说', author: '周敦颐', glyph: '儒', school: 'ru',
+  relation: '太极生阴阳 · 理学开山，与《易》同源',
+  intro: '宋明理学开山之作。一篇之内，由太极而阴阳、而五行、而万物——正是《易》“太极生两仪”的理学展开。',
+  clauses: [
+    { text: '无极而太极。太极动而生阳，动极而静，静而生阴；静极复动。一动一静，互为其根。', gloss: '由无极而显太极；太极一动生阳、动极转静而生阴，动静互为其根——阴阳之本。', link: { kind: 'node', id: 'yi', label: '与《系辞》“易有太极”相参' } },
+    { text: '分阴分阳，两仪立焉。', gloss: '阴阳既分，两仪（天地）于是确立。' },
+    { text: '阳变阴合，而生水火木金土。五气顺布，四时行焉。', gloss: '阳变阴合，化生五行；五气顺序布列，四时由之运行。' },
+    { text: '二气交感，化生万物。万物生生，而变化无穷焉。', gloss: '阴阳二气交感，化生万物；生生不息，变化无穷。', link: { kind: 'cube', label: '于立体图看阴阳层层倍生' } },
+  ],
+};
+
+export const XIMING: ClauseWork = {
+  id: 'ximing', title: '西铭', full: '正蒙 · 西铭', author: '张载', glyph: '儒', school: 'ru',
+  relation: '一物两体 · 民胞物与，本于乾坤',
+  clauses: [
+    { text: '乾称父，坤称母；予兹藐焉，乃混然中处。', gloss: '以乾为父、坤为母；我虽渺小，却混然处于天地之中。', link: { kind: 'node', id: 'yi', label: '本于《易》之乾坤' } },
+    { text: '天地之塞，吾其体；天地之帅，吾其性。', gloss: '充塞天地的气是我的身体，统帅天地的理是我的本性。' },
+    { text: '民，吾同胞；物，吾与也。', gloss: '百姓是我的同胞，万物是我的同伴——“民胞物与”之怀。' },
+    { text: '一物两体，气也；一故神，两故化。', gloss: '一气而含阴阳两体：唯其一，故能神妙不测；唯其两，故能变化生成——阴阳辩证之纲。' },
+  ],
+};
+
+export const HUANGJI: ClauseWork = {
+  id: 'huangji', title: '皇极经世书', full: '皇极经世书', author: '邵雍', glyph: '儒', school: 'ru',
+  relation: '加一倍法 · 元会运世，先天易学之大成',
+  intro: '邵雍以“先天之学”推演天地始终。其“加一倍法”层层倍增而成卦，正是本平台立体图、先天方圆图的生成机理；“元会运世”则以《易》之数建模宇宙治乱之周期。',
+  clauses: [
+    { text: '太极既分，两仪立矣。一分为二，二分为四，四分为八，八分为十六，十六分为三十二，三十二分为六十四。', gloss: '由太极层层一分为二（加一倍法），递生两仪、四象、八卦以至六十四卦——一套纯粹的二分倍生系统。', link: { kind: 'cube', label: '于立体图看加一倍法' } },
+    { text: '一元统十二会，一会统三十运，一运统十二世，一世统三十年。', gloss: '元→会→运→世→年 层层统摄（1元＝12会＝360运＝4320世＝129600年），以数建模宇宙时序。' },
+    { text: '先天之学，心法也。图皆从中起，万化万事生乎心。', gloss: '先天之学是心法：图象皆自中心生发，万化万事根于一心。', link: { kind: 'square', label: '于先天方圆图看“从中起”' } },
+    { text: '天向一中分造化，人于心上起经纶。', gloss: '天地于太极一中分出造化，人则在一心之上经营天下——数与心相贯。' },
+  ],
+};
+
 // ── 星图节点 = 家 ──
 export type NodeStatus = 'ready' | 'soon' | 'ghost' | 'west';
 export interface StarNode {
@@ -319,8 +425,8 @@ export const NODES: StarNode[] = [
 export const NODE_BY_ID: Record<string, StarNode> = Object.fromEntries(NODES.map((n) => [n.id, n]));
 
 // ── 作品注册 (家 → 经) ──
-export type WorkStatus = 'ready' | 'partial' | 'soon';
-export interface WorkMeta { id: string; school: string; title: string; author: string; frag: string; status: WorkStatus; }
+export type WorkStatus = 'ready' | 'partial' | 'soon' | 'guide';
+export interface WorkMeta { id: string; school: string; group?: string; title: string; author: string; frag: string; status: WorkStatus; }
 export const WORKS: WorkMeta[] = [
   { id: 'daode', school: 'dao', title: '道德经', author: '老子', frag: '道可道，非常道', status: 'ready' },
   { id: 'zhuangzi', school: 'dao', title: '庄子', author: '庄周', frag: '北冥有鱼，其名为鲲', status: 'partial' },
@@ -329,9 +435,18 @@ export const WORKS: WorkMeta[] = [
   { id: 'cantongqi', school: 'dao', title: '周易参同契', author: '魏伯阳', frag: '乾坤者，易之门户', status: 'ready' },
   { id: 'liezi', school: 'dao', title: '列子', author: '列御寇', frag: '冲虚 · 贵虚', status: 'soon' },
   { id: 'taiyi', school: 'dao', title: '太乙金华宗旨', author: '旧题吕洞宾', frag: '性命双修 · 内丹', status: 'soon' },
-  { id: 'yangming', school: 'ru', title: '阳明心学', author: '王阳明', frag: '知行合一 · 致良知', status: 'ready' },
-  { id: 'xinjing', school: 'fo', title: '心经', author: '玄奘 译', frag: '色即是空，空即是色', status: 'ready' },
-  { id: 'tanjing', school: 'fo', title: '六祖坛经', author: '惠能', frag: '菩提本无树，明镜亦非台', status: 'partial' },
+  { id: 'zhongyong', school: 'ru', group: '经传', title: '中庸', author: '子思', frag: '君子而时中', status: 'ready' },
+  { id: 'taijitu', school: 'ru', group: '理学', title: '太极图说', author: '周敦颐', frag: '无极而太极', status: 'ready' },
+  { id: 'ximing', school: 'ru', group: '理学', title: '西铭', author: '张载', frag: '民吾同胞，物吾与也', status: 'ready' },
+  { id: 'huangji', school: 'ru', group: '理学', title: '皇极经世书', author: '邵雍', frag: '加一倍法 · 元会运世', status: 'partial' },
+  { id: 'yangming', school: 'ru', group: '心学', title: '阳明心学', author: '王阳明', frag: '知行合一 · 致良知', status: 'ready' },
+  { id: 'xinjing', school: 'fo', group: '汉传', title: '心经', author: '玄奘 译', frag: '色即是空，空即是色', status: 'ready' },
+  { id: 'jingang', school: 'fo', group: '汉传', title: '金刚经', author: '鸠摩罗什 译', frag: '应无所住而生其心', status: 'ready' },
+  { id: 'buer', school: 'fo', group: '汉传', title: '维摩诘·不二法门', author: '鸠摩罗什 译', frag: '一默如雷 · 入不二门', status: 'ready' },
+  { id: 'bashi', school: 'fo', group: '汉传', title: '八识规矩颂', author: '玄奘', frag: '八识 · 心识分层之系统', status: 'ready' },
+  { id: 'tanjing', school: 'fo', group: '汉传', title: '六祖坛经', author: '惠能', frag: '菩提本无树，明镜亦非台', status: 'partial' },
+  { id: 'rupusa', school: 'fo', group: '藏传', title: '入菩萨行论', author: '寂天', frag: '菩提心 · 自他相换', status: 'partial' },
+  { id: 'zhengjian', school: 'fo', group: '导读', title: '正见·四法印', author: '宗萨钦哲仁波切', frag: '见地 · 四法印', status: 'guide' },
 ];
 export const WORK_BY_ID: Record<string, WorkMeta> = Object.fromEntries(WORKS.map((w) => [w.id, w]));
 
@@ -339,8 +454,8 @@ export const WORK_BY_ID: Record<string, WorkMeta> = Object.fromEntries(WORKS.map
 export interface SchoolInfo { id: string; name: string; glyph: string; tagline: string; intro: string; relation: string; workIds: string[]; }
 export const SCHOOL_INFO: Record<string, SchoolInfo> = {
   dao: { id: 'dao', name: '道家', glyph: '道', tagline: '道法自然 · 阴阳为枢', intro: '道家以“道”为万物本原，主张顺应自然、清静无为，于流变中见恒常。', relation: '《易》以阴阳为骨，道家以“有无相生”为脉——本是同一套“变”的智慧。', workIds: ['daode', 'zhuangzi', 'qjing', 'yinfu', 'cantongqi', 'liezi', 'taiyi'] },
-  ru: { id: 'ru', name: '儒家', glyph: '儒', tagline: '心性 · 知行合一', intro: '儒家重人伦与修身；至王阳明心学，倡“心即理”“致良知”“知行合一”。', relation: '《易·象》言“天行健，君子以自强不息”——儒家修身之本即由此出。', workIds: ['yangming'] },
-  fo: { id: 'fo', name: '佛家', glyph: '佛', tagline: '缘起 · 性空', intro: '佛家观“缘起性空”，照见五蕴皆空，于无常中超越执着。', relation: '《易》言“穷则变，变则通”，与佛家“诸行无常”同观流转之理。', workIds: ['xinjing', 'tanjing'] },
+  ru: { id: 'ru', name: '儒家', glyph: '儒', tagline: '心性 · 知行合一', intro: '儒家重人伦与修身；自易学传承至宋明理学，一脉直承《易》之太极阴阳与中正时位。', relation: '《易·象》言“天行健，君子以自强不息”——儒家修身之本即由此出。', workIds: ['zhongyong', 'taijitu', 'ximing', 'huangji', 'yangming'] },
+  fo: { id: 'fo', name: '佛家', glyph: '佛', tagline: '缘起 · 性空', intro: '佛家观“缘起性空”，照见五蕴皆空，于无常中超越执着。', relation: '《易》言“穷则变，变则通”，与佛家“诸行无常”同观流转之理。', workIds: ['xinjing', 'jingang', 'buer', 'bashi', 'tanjing', 'rupusa', 'zhengjian'] },
 };
 
 // ── 词条释名 ──
@@ -365,6 +480,12 @@ export const TERMS: Record<string, string> = {
   '自性': '本心本具的清净体性。',
   '大道': '宇宙的本原与根本规律。',
   '真常': '真实而恒常的本性。',
+  '如来': '梵语 tathāgata，佛之德号，意为“如实而来”、契合真如。',
+  '有为法': '因缘造作、有生灭的一切现象（与“无为”相对）。',
+  '不二': '泯除对立的两边，归于一体——如生灭、我与我所本无二。',
+  '阿赖耶识': '第八识、藏识，含藏一切种子，为身心世界之根本依。',
+  '末那识': '第七识，恒执第八识为“我”，是我执的根源。',
+  '无生法忍': '证悟诸法本不生灭、安住其上而不动的智慧。',
 };
 
 // ── 东西对照地图 ──
@@ -381,6 +502,7 @@ export const WEST_MAP: WestRow[] = [
   { facet: '递归 · 自我嵌套生成', hexLabel: '每一层再做一次二分', jump: { kind: 'cube', label: '跳·立体图' }, work: 'Gödel, Escher, Bach', cn: 'GEB · 集异璧之大成', author: 'Douglas Hofstadter', year: '1979', rhyme: '简单规则递归施加、涌现无穷复杂——即八卦“在每一层再二分”的生成机制。', diverge: 'GEB 谈形式系统与自指涉；易谈象数与人事。' },
   { facet: '64 原型·情境分类', hexLabel: '每卦为一种处境原型', jump: { kind: 'matrix', label: '跳·卦阵' }, work: 'Jung · 《易经》英译本前言', cn: '荣格·原型与共时性', author: 'C. G. Jung', year: '1949', rhyme: '荣格的“原型”与 64 卦同构——都是人类处境的有限组典型模式。', diverge: '荣格由心理原型切入；易由阴阳组合切入。' },
   { facet: '卦象＝情境模式', hexLabel: '情境 + 问题 + 应对之势', jump: { kind: 'matrix', label: '跳·卦阵' }, work: 'A Pattern Language', cn: '模式语言', author: 'Christopher Alexander', year: '1977', rhyme: '253 个“模式”每个＝情境+问题+解法，与 64 卦“一卦一势”几乎同构；还直接启发了软件设计模式。', diverge: 'Alexander 着眼可复用的工程解法；易着眼随时而变的占断。' },
+  { facet: '群结构 · 二元域 GF(2)', hexLabel: '64卦 ≅ (ℤ/2)⁶ · 错卦＝异或 111111', jump: { kind: 'cube', label: '跳·立体图(Cayley图)' }, work: 'Group Theory / Abelian Group', cn: '群论 · 初等阿贝尔2-群', author: 'Galois · Cayley', year: '19C', rhyme: '六爻＝六个 GF(2) 位，64卦构成初等阿贝尔2-群 (ℤ/2)⁶；错卦＝与111111异或，动一爻＝沿一个生成元移动——立体图正是该群的 Cayley 图。', diverge: '群论给出可证明的封闭/结合/逆元结构；易以此为象数骨架而归于义理。' },
 ];
 
 // ── 八卦属性 (依《说卦传》) ──

@@ -197,6 +197,11 @@ export function CubeView({ onBack, onOpenHex }: { onBack: () => void; onOpenHex:
             <FamilyItem label="互卦" hint="中四爻" v={huV} />
           </div>
         </div>
+
+        <div style={{ marginTop: 12, padding: '12px 14px', border: '1px solid var(--hair-2)', borderRadius: 8, background: 'var(--paper-2)' }}>
+          <Mono dim>数理结构 · 群论</Mono>
+          <p style={{ fontSize: 12.5, lineHeight: 1.75, color: 'var(--ink-2)', margin: '7px 0 0' }}>六爻＝六个 GF(2) 位，64卦构成初等阿贝尔2-群 <b style={{ color: 'var(--ink)' }}>(ℤ/2)⁶</b>。错卦＝与 <b style={{ color: 'var(--ink)' }}>111111</b> 异或，动一爻＝沿一个生成元移动——<b style={{ color: 'var(--ink)' }}>此图正是该群的 Cayley 图</b>。</p>
+        </div>
       </div>
     </div>
   );

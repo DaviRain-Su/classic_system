@@ -9,7 +9,7 @@ import { MatrixBrowse, ReadingHex } from './Matrix';
 import { CubeView } from './Cube';
 import { CircleSquare } from './CircleSquare';
 import { CastView } from './cast';
-import { WestView } from './West';
+import { WestHome, WestDetail } from './West';
 import { SchoolView, TrigramView, Onboard } from './detail';
 import { Tweaks, type TweakState } from './Tweaks';
 
@@ -22,6 +22,7 @@ const FONT_MAP: Record<TweakState['font'], string> = {
 type ScreenBase = { from?: string; ret?: Screen };
 type Screen = ScreenBase & (
   | { mode: 'map' | 'matrix' | 'cube' | 'square' | 'cast' | 'west' }
+  | { mode: 'westItem'; idx: number }
   | { mode: 'reading'; id: string }
   | { mode: 'hex'; upper: TrigramKey; lower: TrigramKey }
   | { mode: 'trigram'; tkey: TrigramKey }
@@ -178,6 +179,7 @@ export default function App() {
     : screen.mode === 'hex' ? 'h-' + screen.upper + screen.lower
     : screen.mode === 'trigram' ? 't-' + screen.tkey
     : screen.mode === 'school' ? 's-' + screen.id
+    : screen.mode === 'westItem' ? 'wi-' + screen.idx
     : screen.mode;
 
   const hexFrom = (u: TrigramKey, l: TrigramKey) => openHex(u, l, screen.from || 'matrix');
@@ -199,7 +201,8 @@ export default function App() {
           {screen.mode === 'cube' && <CubeView onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'cube')} />}
           {screen.mode === 'square' && <CircleSquare onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'square')} />}
           {screen.mode === 'cast' && <CastView onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'cast')} />}
-          {screen.mode === 'west' && <WestView onBack={() => go({ mode: 'map' })} onJump={onWestJump} />}
+          {screen.mode === 'west' && <WestHome onBack={() => go({ mode: 'map' })} onOpenItem={(idx) => go({ mode: 'westItem', idx })} />}
+          {screen.mode === 'westItem' && <WestDetail index={screen.idx} onBack={() => go({ mode: 'west' })} onOpenItem={(idx) => go({ mode: 'westItem', idx })} onJump={onWestJump} />}
           {screen.mode === 'reading' && <Reading id={screen.id} onBack={back} onOpen={openNode} onOpenHex={hexFrom} onOpenTrigram={openTrigram} onOpenSchool={openSchool} onOpenCube={openCube} />}
           {screen.mode === 'hex' && <ReadingHex upper={screen.upper} lower={screen.lower} onBack={back} onOpen={openNode} onOpenHex={hexFrom} onOpenTrigram={openTrigram} />}
           {screen.mode === 'trigram' && <TrigramView tkey={screen.tkey} onBack={back} onOpenHex={(u, l) => openHex(u, l, 'matrix')} />}
