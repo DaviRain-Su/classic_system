@@ -32,6 +32,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "build:cloudflare": "PUBLIC_SITE_URL=https://classic-system.pages.dev/ astro build",
+    "deploy:cloudflare": "pnpm build:cloudflare && npx wrangler pages deploy dist --project-name classic-system --branch main",
     "preview": "astro preview",
     "check": "astro check",
     "verify": "node --experimental-strip-types scripts/verify.ts"

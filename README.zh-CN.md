@@ -12,6 +12,10 @@
 
 本仓库实现经 [Claude Design](https://claude.ai/design) 多轮迭代定稿的**交互原型「经典图谱」**：星图首页（关联网络）+ 经卷长轴阅读（沉浸阅读）的混搭，外加卦阵、立体图、先天方圆图、起卦、卦变与卦族、东西对照地图，并贯穿点读、收藏/进度、首次引导与背景纹样。
 
+在线版本：<https://classic-system.pages.dev/>
+
+GitHub Pages 镜像：<https://davirain-su.github.io/classic_system/>
+
 ## 设计系统（极简留白 · 当代东方）
 
 - **配色**：暖白 `#f7f6f4` + 浓墨 `#1b1b19` + 青瓷绿 `#3a5f5a`（唯一主强调）+ 朱砂 `#9c3a2f`（仅用于印章/动爻/错卦）。深色主题成套切换。
@@ -58,6 +62,7 @@
 pnpm install
 pnpm dev        # http://localhost:4321
 pnpm build      # 构建到 dist/（GITHUB_PAGES=true 时走 /classic_system 子路径）
+pnpm deploy:cloudflare # 构建并上传 dist/ 到 Cloudflare Pages
 pnpm check      # Astro + TypeScript 类型检查
 pnpm verify     # 结构自检 + 64卦生成内容完整性检查
 ```

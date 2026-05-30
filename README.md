@@ -15,7 +15,9 @@ Classical Atlas is a digital humanities and learning platform for Chinese classi
 
 The project combines close reading, hexagram visualization, cross-text references, and mathematical structure. It is built as a static Astro + React application, with typed source data and no backend requirement.
 
-Live demo: <https://davirain-su.github.io/classic_system/>
+Live demo: <https://classic-system.pages.dev/>
+
+GitHub Pages mirror: <https://davirain-su.github.io/classic_system/>
 
 ![Classical Atlas preview](public/og.png)
 
@@ -78,7 +80,7 @@ Still expanding:
 - TypeScript
 - Static site output, no backend, no database
 - Typed local data modules for classics, hexagrams, graph nodes, glossary terms, and comparison notes
-- GitHub Pages deployment support under `/classic_system`
+- Cloudflare Pages deployment support at the root path, plus GitHub Pages support under `/classic_system`
 
 ## Getting Started
 
@@ -99,6 +101,7 @@ Useful commands:
 pnpm check      # Astro + TypeScript checks
 pnpm verify     # content and hexagram structure verification
 pnpm build      # production build into dist/
+pnpm deploy:cloudflare # build and upload dist/ to Cloudflare Pages
 pnpm preview    # preview the production build
 ```
 
