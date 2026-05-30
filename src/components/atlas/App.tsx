@@ -1,21 +1,24 @@
 // 交互原型外壳：星图 ⇆ 阅读 ⇆ 卦阵 ⇆ 立体图 ⇆ 方圆图 ⇆ 起卦 ⇆ 西方对照，含转场、背景、引导、进度。
-import { Component, useState, useEffect, useCallback, type ErrorInfo, type ReactNode } from 'react';
+import { Component, Suspense, lazy, useState, useEffect, useCallback, type ErrorInfo, type ReactNode } from 'react';
 import { SCHOOL_INFO, WORK_BY_ID, HEX_FULL, HEX_FULL_BY_PAIR, TRIGRAMS, WEST_MAP, type TrigramKey, type LinkSpec } from './data';
 import { hexInfo } from './hex';
 import { markRead } from './progress';
 import { StarMap } from './StarMap';
-import { Reading } from './Reading';
-import { MatrixBrowse, ReadingHex } from './Matrix';
-import { CubeView } from './Cube';
-import { CircleSquare } from './CircleSquare';
-import { CastView } from './cast';
-import { WestHome, WestDetail } from './West';
-import { SearchView } from './Search';
-import { RelationsView } from './Relations';
 import { SchoolView, TrigramView, Onboard } from './detail';
 import { Tweaks, type TweakState } from './Tweaks';
 import { useAmbient } from './ambient';
-import { MobileApp } from './Mobile';
+
+const Reading = lazy(() => import('./Reading').then((m) => ({ default: m.Reading })));
+const MatrixBrowse = lazy(() => import('./Matrix').then((m) => ({ default: m.MatrixBrowse })));
+const ReadingHex = lazy(() => import('./Matrix').then((m) => ({ default: m.ReadingHex })));
+const CubeView = lazy(() => import('./Cube').then((m) => ({ default: m.CubeView })));
+const CircleSquare = lazy(() => import('./CircleSquare').then((m) => ({ default: m.CircleSquare })));
+const CastView = lazy(() => import('./cast').then((m) => ({ default: m.CastView })));
+const WestHome = lazy(() => import('./West').then((m) => ({ default: m.WestHome })));
+const WestDetail = lazy(() => import('./West').then((m) => ({ default: m.WestDetail })));
+const SearchView = lazy(() => import('./Search').then((m) => ({ default: m.SearchView })));
+const RelationsView = lazy(() => import('./Relations').then((m) => ({ default: m.RelationsView })));
+const MobileApp = lazy(() => import('./Mobile').then((m) => ({ default: m.MobileApp })));
 
 const FONT_MAP: Record<TweakState['font'], string> = {
   song: '"Noto Serif SC", serif',
@@ -270,6 +273,14 @@ function Stage({ children, motif, glyph }: { children: ReactNode; motif: string;
   );
 }
 
+function RouteFallback() {
+  return (
+    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-serif)', fontSize: 14, color: 'var(--ink-3)' }}>
+      载入中...
+    </div>
+  );
+}
+
 // 窄视口（手机）检测：SSR 默认 false，hydrate 后由 resize 监听决定
 function useIsMobile() {
   const [m, setM] = useState(false);
@@ -406,7 +417,9 @@ export default function App() {
   if (isMobile) {
     return (
       <>
-        <MobileApp />
+        <Suspense fallback={<RouteFallback />}>
+          <MobileApp />
+        </Suspense>
         <Tweaks value={tw} onChange={setTweak} />
       </>
     );
@@ -416,19 +429,21 @@ export default function App() {
     <AtlasErrorBoundary>
       <Stage motif={tw.motif} glyph={motifGlyphFor(screen)}>
         <div key={key} className="view-enter" style={{ position: 'absolute', inset: 0 }}>
-          {screen.mode === 'map' && <StarMap onOpen={openNode} onMatrix={openMatrix} onCube={openCube} onCast={openCast} onXici={() => openNode('xici')} onSearch={openSearch} onRelations={openRelations} />}
-          {screen.mode === 'search' && <SearchView onBack={() => go({ mode: 'map' })} onOpen={openNode} />}
-          {screen.mode === 'relations' && <RelationsView onBack={() => go({ mode: 'map' })} onJump={routeJump} />}
-          {screen.mode === 'matrix' && <MatrixBrowse onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'matrix')} onCube={openCube} onSquare={openSquare} />}
-          {screen.mode === 'cube' && <CubeView onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'cube')} />}
-          {screen.mode === 'square' && <CircleSquare onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'square')} />}
-          {screen.mode === 'cast' && <CastView onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'cast')} />}
-          {screen.mode === 'west' && <WestHome onBack={() => go({ mode: 'map' })} onOpenItem={(idx) => go({ mode: 'westItem', idx })} />}
-          {screen.mode === 'westItem' && <WestDetail index={screen.idx} onBack={() => go({ mode: 'west' })} onOpenItem={(idx) => go({ mode: 'westItem', idx })} onJump={routeJump} />}
-          {screen.mode === 'reading' && <Reading id={screen.id} onBack={back} onOpen={openNode} onOpenHex={hexFrom} onOpenTrigram={openTrigram} onOpenSchool={openSchool} onOpenCube={openCube} />}
-          {screen.mode === 'hex' && <ReadingHex upper={screen.upper} lower={screen.lower} onBack={back} onOpen={openNode} onOpenHex={hexFrom} onOpenTrigram={openTrigram} />}
-          {screen.mode === 'trigram' && <TrigramView tkey={screen.tkey} onBack={back} onOpenHex={(u, l) => openHex(u, l, 'matrix')} />}
-          {screen.mode === 'school' && <SchoolView id={screen.id} onBack={back} onOpen={openNode} />}
+          <Suspense fallback={<RouteFallback />}>
+            {screen.mode === 'map' && <StarMap onOpen={openNode} onMatrix={openMatrix} onCube={openCube} onCast={openCast} onXici={() => openNode('xici')} onSearch={openSearch} onRelations={openRelations} />}
+            {screen.mode === 'search' && <SearchView onBack={() => go({ mode: 'map' })} onOpen={openNode} />}
+            {screen.mode === 'relations' && <RelationsView onBack={() => go({ mode: 'map' })} onJump={routeJump} />}
+            {screen.mode === 'matrix' && <MatrixBrowse onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'matrix')} onCube={openCube} onSquare={openSquare} />}
+            {screen.mode === 'cube' && <CubeView onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'cube')} />}
+            {screen.mode === 'square' && <CircleSquare onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'square')} />}
+            {screen.mode === 'cast' && <CastView onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'cast')} />}
+            {screen.mode === 'west' && <WestHome onBack={() => go({ mode: 'map' })} onOpenItem={(idx) => go({ mode: 'westItem', idx })} />}
+            {screen.mode === 'westItem' && <WestDetail index={screen.idx} onBack={() => go({ mode: 'west' })} onOpenItem={(idx) => go({ mode: 'westItem', idx })} onJump={routeJump} />}
+            {screen.mode === 'reading' && <Reading id={screen.id} onBack={back} onOpen={openNode} onOpenHex={hexFrom} onOpenTrigram={openTrigram} onOpenSchool={openSchool} onOpenCube={openCube} />}
+            {screen.mode === 'hex' && <ReadingHex upper={screen.upper} lower={screen.lower} onBack={back} onOpen={openNode} onOpenHex={hexFrom} onOpenTrigram={openTrigram} />}
+            {screen.mode === 'trigram' && <TrigramView tkey={screen.tkey} onBack={back} onOpenHex={(u, l) => openHex(u, l, 'matrix')} />}
+            {screen.mode === 'school' && <SchoolView id={screen.id} onBack={back} onOpen={openNode} />}
+          </Suspense>
         </div>
       </Stage>
       {onboard && <Onboard onClose={closeOnboard} />}

@@ -13,7 +13,8 @@ import { yaoName } from './hex';
 import { Mono } from './chrome';
 import { MorphYao } from './primitives';
 import { TermText, ModeToggle, ParallelView } from './reading-modes';
-import { TopBar, JiZhu, YiZhu, LinkChip, RelChips, BianPanel, GuaFamily, type OpenNode, type OpenHex } from './shared';
+import { TopBar, JiZhu, LinkChip, RelChips, BianPanel, GuaFamily, type OpenNode, type OpenHex } from './shared';
+import { YiZhu } from './YiZhu';
 
 type OpenTrigram = (t: TrigramKey) => void;
 type OpenSchool = (id: string) => void;
