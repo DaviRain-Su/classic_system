@@ -12,3 +12,4 @@ pnpm-debug.log*
 .env.production
 # macOS
 .DS_Store
+.gstack/

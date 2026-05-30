@@ -1,10 +1,10 @@
 // 经典图谱 · 手机版（竖屏阅读优先，真机全屏；复用数据层）。
 // 大画幅可视化（卦阵/立体图/方圆图/元会运世/起卦）在手机给「横屏/桌面」优雅占位。
-import { useState, useRef, type CSSProperties, type ReactNode } from 'react';
+import { useState, useRef, useEffect, type CSSProperties, type ReactNode } from 'react';
 import {
   QIAN, KUN, XICI, DAODE, ZHUANGZI, QINGJING, YINFU, CANTONGQI, ZHONGYONG, TAIJITU, XIMING, HUANGJI, YANGMING,
   XINJING, JINGANG, BUER, BASHI, RUPUSA, ZHENGJIAN, TANJING,
-  SCHOOL_INFO, WORK_BY_ID, WEST_MAP, WEST_INTRO, TRIGRAMS,
+  SCHOOL_INFO, WORK_BY_ID, WEST_MAP, WEST_INTRO, TRIGRAMS, HEX_FULL, HEX_FULL_BY_PAIR,
   type FullHex, type ClauseWork, type ChapterWork,
 } from './data';
 import { TEN_WINGS } from './ten-wings';
@@ -13,6 +13,7 @@ import { Lines } from './primitives';
 
 type AnyWork = Partial<FullHex & ClauseWork & ChapterWork>;
 const READ: Record<string, AnyWork> = {
+  ...Object.fromEntries(Object.entries(HEX_FULL).map(([num, hex]) => [num, hex])),
   yi: QIAN, kun: KUN, xici: XICI, shiyi: TEN_WINGS,
   daode: DAODE, zhuangzi: ZHUANGZI, qjing: QINGJING, yinfu: YINFU, cantongqi: CANTONGQI,
   zhongyong: ZHONGYONG, taijitu: TAIJITU, ximing: XIMING, huangji: HUANGJI, yangming: YANGMING,
@@ -190,12 +191,13 @@ function MReader({ id, back }: { id: string; back: () => void }) {
   if (!d) return <div><MHeader title="编撰中" onBack={back} /><div style={{ padding: 40, textAlign: 'center', color: 'var(--ink-3)' }}>内容编撰中</div></div>;
 
   if (d.yaos && d.gua) {
+    const lines = d.upper && d.lower ? [...TRIGRAMS[d.upper].lines, ...TRIGRAMS[d.lower].lines] : id === 'kun' ? [0, 0, 0, 0, 0, 0] : [1, 1, 1, 1, 1, 1];
     return (
       <div>
         <MHeader title={'易经 · ' + d.full} sub={'第 ' + (d.num || '') + ' 卦'} onBack={back} />
         <div style={{ padding: '20px 18px 40px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
-            <Lines lines={id === 'kun' ? [0, 0, 0, 0, 0, 0] : [1, 1, 1, 1, 1, 1]} w={56} h={7} vgap={7} color="var(--accent)" />
+            <Lines lines={lines} w={56} h={7} vgap={7} color="var(--accent)" />
             <div><div style={{ fontFamily: 'var(--font-display)', fontSize: 44, color: 'var(--ink)', lineHeight: 1 }}>{d.name}</div><MMono style={{ marginTop: 4, display: 'block' }}>{d.full}</MMono></div>
           </div>
           <div style={{ marginTop: 18, fontFamily: 'var(--font-serif)', fontSize: 20, lineHeight: 1.7, letterSpacing: '0.02em' }}>{d.gua}</div>
@@ -350,16 +352,102 @@ function MLanding({ back }: { back: () => void }) {
 }
 
 const M_KEY = 'jdt-m-screen';
+const enc = (value: string) => encodeURIComponent(value);
+const dec = (value: string) => {
+  try { return decodeURIComponent(value); } catch { return value; }
+};
 const hasLS = () => typeof window !== 'undefined' && !!window.localStorage;
+const hasWindow = () => typeof window !== 'undefined';
+
+function readIdForHexNum(num: number) {
+  if (!HEX_FULL[num]) return null;
+  if (num === 1) return 'yi';
+  if (num === 2) return 'kun';
+  return String(num);
+}
+
+function mScreenFromHash(): MScreen | null {
+  if (!hasWindow()) return null;
+  const raw = window.location.hash.replace(/^#\/?/, '');
+  if (!raw) return window.location.hash ? { mode: 'home' } : null;
+  const [kind, a, b] = raw.split('/').filter(Boolean).map(dec);
+  if (kind === 'trunk') return { mode: 'trunk' };
+  if (kind === 'west') return { mode: 'west' };
+  if (kind === 'school' && a) return { mode: 'school', id: a };
+  if (kind === 'reading' && a) return { mode: 'read', id: a };
+  if (kind === 'hex' && a) {
+    const id = readIdForHexNum(Number(a));
+    if (id) return { mode: 'read', id };
+  }
+  if (kind === 'hex-pair' && a && b) {
+    const hex = HEX_FULL_BY_PAIR[a + '_' + b];
+    const id = hex ? readIdForHexNum(hex.num) : null;
+    if (id) return { mode: 'read', id };
+  }
+  if (kind === 'matrix' || kind === 'cube' || kind === 'square' || kind === 'cast') return { mode: 'land' };
+  return { mode: 'home' };
+}
+
+function mScreenToHash(screen: MScreen) {
+  if (screen.mode === 'west') return '#/west';
+  if (screen.mode === 'land') return '#/cube';
+  if (screen.mode === 'trunk') return '#/trunk';
+  if (screen.mode === 'school') return '#/school/' + enc(screen.id);
+  if (screen.mode === 'read') {
+    const num = screen.id === 'yi' ? 1 : screen.id === 'kun' ? 2 : Number(screen.id);
+    if (Number.isInteger(num) && HEX_FULL[num]) return '#/hex/' + num;
+    return '#/reading/' + enc(screen.id);
+  }
+  return '#/';
+}
+
+function writeMobileHash(screen: MScreen) {
+  if (!hasWindow()) return;
+  const hash = mScreenToHash(screen);
+  if (window.location.hash === hash) return;
+  const url = new URL(window.location.href);
+  url.hash = hash;
+  window.history.pushState(null, '', url);
+}
 
 export function MobileApp() {
   const [screen, setScreen] = useState<MScreen>(() => {
+    const routed = mScreenFromHash();
+    if (routed) return routed;
     if (hasLS()) { try { const s = JSON.parse(localStorage.getItem(M_KEY) || 'null'); if (s && s.mode) return s as MScreen; } catch { /* ignore */ } }
     return { mode: 'home' };
   });
   const stackRef = useRef<MScreen[]>([]);
-  const go: Go = (s) => { stackRef.current.push(screen); setScreen(s); if (hasLS()) { try { localStorage.setItem(M_KEY, JSON.stringify(s)); } catch { /* ignore */ } } };
-  const back = () => { const prev = stackRef.current.pop() || { mode: 'home' as const }; setScreen(prev); if (hasLS()) { try { localStorage.setItem(M_KEY, JSON.stringify(prev)); } catch { /* ignore */ } } };
+  const save = (s: MScreen) => {
+    if (hasLS()) { try { localStorage.setItem(M_KEY, JSON.stringify(s)); } catch { /* ignore */ } }
+  };
+  const go: Go = (s) => {
+    stackRef.current.push(screen);
+    setScreen(s);
+    save(s);
+    writeMobileHash(s);
+  };
+  const back = () => {
+    const prev = stackRef.current.pop() || { mode: 'home' as const };
+    setScreen(prev);
+    save(prev);
+    writeMobileHash(prev);
+  };
+
+  useEffect(() => {
+    const syncFromHash = () => {
+      const routed = mScreenFromHash();
+      if (!routed) return;
+      setScreen(routed);
+      save(routed);
+    };
+    window.addEventListener('popstate', syncFromHash);
+    window.addEventListener('hashchange', syncFromHash);
+    return () => {
+      window.removeEventListener('popstate', syncFromHash);
+      window.removeEventListener('hashchange', syncFromHash);
+    };
+  }, []);
 
   let view: ReactNode;
   if (screen.mode === 'trunk') view = <MTrunk go={go} back={back} />;
