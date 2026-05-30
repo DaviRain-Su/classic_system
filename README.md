@@ -15,7 +15,9 @@ Classical Atlas is a digital humanities and learning platform for Chinese classi
 
 The project combines close reading, hexagram visualization, cross-text references, and mathematical structure. It is built as a static Astro + React application, with typed source data and no backend requirement.
 
-Live demo: <https://classic-system.pages.dev/>
+Live demo: <https://yijing.davirain.xyz/>
+
+Cloudflare Pages fallback: <https://classic-system.pages.dev/>
 
 GitHub Pages mirror: <https://davirain-su.github.io/classic_system/>
 

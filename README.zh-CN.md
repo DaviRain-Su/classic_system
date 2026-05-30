@@ -12,7 +12,9 @@
 
 本仓库实现经 [Claude Design](https://claude.ai/design) 多轮迭代定稿的**交互原型「经典图谱」**：星图首页（关联网络）+ 经卷长轴阅读（沉浸阅读）的混搭，外加卦阵、立体图、先天方圆图、起卦、卦变与卦族、东西对照地图，并贯穿点读、收藏/进度、首次引导与背景纹样。
 
-在线版本：<https://classic-system.pages.dev/>
+在线版本：<https://yijing.davirain.xyz/>
+
+Cloudflare Pages 备用地址：<https://classic-system.pages.dev/>
 
 GitHub Pages 镜像：<https://davirain-su.github.io/classic_system/>
 
