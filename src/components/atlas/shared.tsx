@@ -2,7 +2,7 @@
 import { type CSSProperties } from 'react';
 import { Mono, NavRail } from './chrome';
 import { HexFigure } from './primitives';
-import { bian, relatives, yaoName, type HexInfo } from './hex';
+import { bian, hexFromLines, relatives, yaoName, type HexInfo } from './hex';
 import { SCHOOL_INFO, type TrigramKey, type LinkSpec } from './data';
 import { useProgress } from './progress';
 
@@ -125,27 +125,57 @@ export function BianPanel({ originName, lines, sel, changed, onToggle, onOpenHex
 
 // 卦族面板（错 / 综 / 互 / 交）
 export function GuaFamily({ lines, onOpenHex }: { lines: number[]; onOpenHex: OpenHex }) {
+  const origin = hexFromLines(lines);
   const r = relatives(lines);
-  const items: [string, HexInfo, string][] = [
-    ['错卦', r.cuo, '六爻全反'],
-    ['综卦', r.zong, '上下颠倒'],
-    ['互卦', r.hu, '中四爻'],
-    ['交卦', r.jiao, '上下卦换'],
+  const items: [string, HexInfo, string, string, number, number][] = [
+    ['错卦', r.cuo, '六爻全反', '反相', 50, 15],
+    ['综卦', r.zong, '上下倒置', '倒观', 18, 52],
+    ['互卦', r.hu, '中四爻成卦', '内核', 82, 52],
+    ['交卦', r.jiao, '上下卦互换', '换位', 50, 85],
   ];
-  return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
-      {items.map(([lab, info, hint]) => (
-        <button key={lab} onClick={() => onOpenHex(info.upper, info.lower)} style={{ display: 'flex', alignItems: 'center', gap: 12, border: '1px solid var(--hair-2)', borderRadius: 8, padding: '10px 12px', background: 'transparent', cursor: 'pointer', fontFamily: 'var(--font-body)', textAlign: 'left' }}>
-          <HexFigure lines={info.lines} w={30} h={3} vgap={2.5} />
-          <div style={{ minWidth: 0 }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-              <span style={{ fontFamily: 'var(--font-serif)', fontSize: 12, fontWeight: 700, color: 'var(--accent)' }}>{lab}</span>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 8.5, color: 'var(--ink-3)' }}>{hint}</span>
-            </div>
-            <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, fontWeight: 600, color: 'var(--ink)', whiteSpace: 'nowrap', marginTop: 2 }}>{info.name}</div>
+  const node = (lab: string, info: HexInfo, hint: string, tag: string, x: number, y: number) => (
+    <button key={lab} onClick={() => onOpenHex(info.upper, info.lower)} title={`${lab}：${hint}`}
+      style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%,-50%)', width: 118, minHeight: 64, border: '1px solid var(--hair-2)', borderRadius: 8, background: 'color-mix(in srgb, var(--paper) 93%, transparent)', cursor: 'pointer', fontFamily: 'var(--font-body)', textAlign: 'left', padding: '8px 10px', boxShadow: '0 2px 10px rgba(0,0,0,.04)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <HexFigure lines={info.lines} w={28} h={3} vgap={2.5} />
+        <div style={{ minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 5 }}>
+            <span style={{ fontFamily: 'var(--font-serif)', fontSize: 12, fontWeight: 700, color: 'var(--accent)' }}>{lab}</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 8.5, color: 'var(--ink-3)' }}>{tag}</span>
           </div>
-        </button>
-      ))}
+          <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13, fontWeight: 600, color: 'var(--ink)', whiteSpace: 'nowrap', marginTop: 2 }}>{info.name}</div>
+        </div>
+      </div>
+      <div style={{ marginTop: 5, fontFamily: 'var(--font-mono)', fontSize: 8.5, color: 'var(--ink-3)', letterSpacing: '0.06em' }}>{hint}</div>
+    </button>
+  );
+  return (
+    <div style={{ border: '1px solid var(--hair)', borderRadius: 10, background: 'var(--paper-2)', padding: '12px 12px 10px' }}>
+      <div style={{ position: 'relative', height: 252, overflow: 'hidden' }}>
+        <svg width="100%" height="100%" viewBox="0 0 320 240" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+          <line x1="160" y1="120" x2="160" y2="36" stroke="var(--accent)" strokeWidth="1.1" opacity="0.42" />
+          <line x1="160" y1="120" x2="58" y2="120" stroke="var(--accent)" strokeWidth="1.1" opacity="0.42" />
+          <line x1="160" y1="120" x2="262" y2="120" stroke="var(--accent)" strokeWidth="1.1" opacity="0.42" />
+          <line x1="160" y1="120" x2="160" y2="204" stroke="var(--accent)" strokeWidth="1.1" opacity="0.42" />
+          <circle cx="160" cy="120" r="46" fill="none" stroke="var(--hair-2)" strokeWidth="1" strokeDasharray="3 6" opacity="0.9" />
+        </svg>
+
+        <div style={{ position: 'absolute', left: '50%', top: '52%', transform: 'translate(-50%,-50%)', width: 112, minHeight: 74, border: '1.5px solid var(--accent)', borderRadius: 10, background: 'var(--paper)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 0 5px var(--accent-soft)' }}>
+          <HexFigure lines={origin.lines} w={36} h={3.5} vgap={3} color="var(--accent)" />
+          <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, fontWeight: 700, color: 'var(--ink)', marginTop: 6 }}>{origin.name}</div>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8.5, color: 'var(--ink-3)', marginTop: 1 }}>本卦 · {String(origin.num).padStart(2, '0')}</div>
+        </div>
+
+        {items.map(([lab, info, hint, tag, x, y]) => node(lab, info, hint, tag, x, y))}
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6, borderTop: '1px solid var(--hair)', paddingTop: 9 }}>
+        {items.map(([lab, , hint, tag]) => (
+          <div key={lab} style={{ minWidth: 0 }}>
+            <div style={{ fontFamily: 'var(--font-serif)', fontSize: 11.5, fontWeight: 700, color: 'var(--accent)' }}>{lab}</div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8.5, color: 'var(--ink-3)', marginTop: 2 }}>{tag} · {hint}</div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
