@@ -7,6 +7,7 @@ import {
   TRIGRAMS, SCHOOL_INFO, WORK_BY_ID, NODE_BY_ID,
   type FullHex, type ClauseWork, type ChapterWork, type TrigramKey,
 } from './data';
+import { TEN_WINGS } from './ten-wings';
 import { HuangjiPan } from './HuangjiPan';
 import { yaoName } from './hex';
 import { Mono } from './chrome';
@@ -57,8 +58,28 @@ export function ReadingGua({ data, bmKey, onBack, onOpen, onOpenHex, onOpenTrigr
               </div>
             </div>
           </div>
-          <div style={{ fontFamily: 'var(--font-serif)', fontSize: 19, marginTop: 18, letterSpacing: '0.03em', lineHeight: 1.6 }}>{q.gua}</div>
-          <div style={{ fontSize: 13, color: 'var(--ink-3)', marginTop: 6, lineHeight: 1.7 }}>{q.guaGloss}</div>
+          <div style={{ marginTop: 18 }}><TermText text={q.gua} size={19} lh={1.6} /></div>
+          <div style={{ marginTop: 16, padding: '14px 16px', border: '1px solid var(--hair-2)', borderRadius: 8, background: 'var(--paper-2)' }}>
+            <Mono>导读</Mono>
+            <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'baseline' }}>
+                <span style={{ flex: '0 0 44px', fontFamily: 'var(--font-mono)', fontSize: 9.5, color: 'var(--ink-3)' }}>卦象</span>
+                <span style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, lineHeight: 1.55, color: 'var(--ink-2)' }}>{TRIGRAMS[q.upper].nature}上 · {TRIGRAMS[q.lower].nature}下，{TRIGRAMS[q.upper].name}外 {TRIGRAMS[q.lower].name}内。</span>
+              </div>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'baseline' }}>
+                <span style={{ flex: '0 0 44px', fontFamily: 'var(--font-mono)', fontSize: 9.5, color: 'var(--ink-3)' }}>象数</span>
+                <span style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, lineHeight: 1.55, color: 'var(--ink-2)' }}>六爻码 {baseLines.join('')}，可由错卦、综卦、互卦、交卦观察其变。</span>
+              </div>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'baseline' }}>
+                <span style={{ flex: '0 0 44px', fontFamily: 'var(--font-mono)', fontSize: 9.5, color: 'var(--ink-3)' }}>时位</span>
+                <span style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, lineHeight: 1.55, color: 'var(--ink-2)' }}>{q.guaGloss}</span>
+              </div>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'baseline' }}>
+                <span style={{ flex: '0 0 44px', fontFamily: 'var(--font-mono)', fontSize: 9.5, color: 'var(--ink-3)' }}>观象</span>
+                <span style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, lineHeight: 1.55, color: 'var(--ink-2)' }}>{q.xiang}</span>
+              </div>
+            </div>
+          </div>
 
           <div style={{ marginTop: 18 }}><Mono dim>点击爻位 · 读爻辞</Mono></div>
           <div style={{ marginTop: 6 }}>{q.yaos.map((_, i) => <YaoRow key={i} i={i} />)}</div>
@@ -78,20 +99,20 @@ export function ReadingGua({ data, bmKey, onBack, onOpen, onOpenHex, onOpenTrigr
           <div style={{ display: 'flex', gap: 40 }}>
             <div style={{ flex: 1 }}>
               <Mono>象传 · 大象</Mono>
-              <div style={{ fontFamily: 'var(--font-serif)', fontSize: 16, lineHeight: 1.8, marginTop: 6, color: 'var(--ink-2)' }}>{q.xiang}</div>
+              <div style={{ marginTop: 6 }}><TermText text={q.xiang} size={16} lh={1.8} color="var(--ink-2)" /></div>
               {q.xiangGloss && <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, lineHeight: 1.8, marginTop: 6, color: 'var(--ink-3)' }}>{q.xiangGloss}</div>}
               {q.id === 'yi' && <div style={{ marginTop: 10 }}><LinkChip link={{ kind: 'school', label: '儒家修身之本由此出', onClick: () => onOpenSchool('ru') }} onOpen={onOpen} onOpenHex={onOpenHex} /></div>}
             </div>
             <div style={{ flex: 1 }}>
               <Mono>彖传</Mono>
-              <div style={{ fontFamily: 'var(--font-serif)', fontSize: 16, lineHeight: 1.8, marginTop: 6, color: 'var(--ink-2)' }}>{q.tuan}</div>
+              <div style={{ marginTop: 6 }}><TermText text={q.tuan} size={16} lh={1.8} color="var(--ink-2)" /></div>
               {q.tuanGloss && <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, lineHeight: 1.8, marginTop: 6, color: 'var(--ink-3)' }}>{q.tuanGloss}</div>}
             </div>
           </div>
 
           <div style={{ marginTop: 24, paddingTop: 22, borderTop: '1px solid var(--hair)' }}>
             <Mono>爻辞 · {cur.pos}</Mono>
-            <div style={{ fontFamily: 'var(--font-serif)', fontSize: 30, fontWeight: 600, lineHeight: 1.5, marginTop: 12, letterSpacing: '0.02em' }}>{cur.text}</div>
+            <div style={{ fontWeight: 600, marginTop: 12 }}><TermText text={cur.text} size={30} lh={1.5} /></div>
             <div style={{ marginTop: 16, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
               <Mono dim>爻位</Mono>
               {(() => {
@@ -126,7 +147,7 @@ export function ReadingGua({ data, bmKey, onBack, onOpen, onOpenHex, onOpenTrigr
               {cur.gloss && (
                 <div style={{ flex: 1 }}>
                   <Mono dim>白话</Mono>
-                  <div style={{ fontFamily: 'var(--font-serif)', fontSize: 15, lineHeight: 1.85, marginTop: 7, color: 'var(--ink-2)' }}>{cur.gloss}</div>
+                  <div style={{ marginTop: 7 }}><TermText text={cur.gloss} size={15} lh={1.85} color="var(--ink-2)" /></div>
                 </div>
               )}
               {cur.xiang && (
@@ -376,11 +397,12 @@ export function Reading({ id, onBack, onOpen, onOpenHex, onOpenTrigram, onOpenSc
   if (id === 'taijitu') return <ClauseReader data={TAIJITU} glyph="儒" sideTitle={TAIJITU.full!} sideSub={TAIJITU.author} school="ru" bmKey="taijitu" zhuNames={['朱熹']} footLabel="理学 · 太极图说" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'ximing') return <ClauseReader data={XIMING} glyph="儒" sideTitle={XIMING.full!} sideSub={XIMING.author} school="ru" bmKey="ximing" zhuNames={['朱熹', '王夫之']} footLabel="理学 · 西铭" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'huangji') return <HuangjiPan onBack={onBack} onOpenHex={onOpenHex} onOpenCube={onOpenCube} />;
-  const shiyi = [{ id: 'xici', label: '系辞' }, { id: 'wenyan', label: '文言' }, { id: 'shuogua', label: '说卦' }, { id: 'xugua', label: '序卦' }, { id: 'zagua', label: '杂卦' }];
+  const shiyi = [{ id: 'xici', label: '系辞' }, { id: 'wenyan', label: '文言' }, { id: 'shuogua', label: '说卦' }, { id: 'xugua', label: '序卦' }, { id: 'zagua', label: '杂卦' }, { id: 'shiyi', label: '全文' }];
   if (id === 'xici') return <ClauseReader data={XICI} glyph="系" sideTitle={XICI.title} sideSub={XICI.full} bmKey="xici" zhuNames={['韩康伯', '孔颖达', '朱熹']} footLabel="十翼 · 系辞传" siblings={shiyi} onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'shuogua') return <ClauseReader data={SHUOGUA} glyph="说" sideTitle={SHUOGUA.title} sideSub={SHUOGUA.full} bmKey="shuogua" zhuNames={['韩康伯', '孔颖达', '朱熹']} footLabel="十翼 · 说卦传" siblings={shiyi} onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'xugua') return <ClauseReader data={XUGUA} glyph="序" sideTitle={XUGUA.title} sideSub={XUGUA.full} bmKey="xugua" zhuNames={['韩康伯', '孔颖达', '朱熹']} footLabel="十翼 · 序卦传" siblings={shiyi} onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'zagua') return <ClauseReader data={ZAGUA} glyph="杂" sideTitle={ZAGUA.title} sideSub={ZAGUA.full} bmKey="zagua" zhuNames={['韩康伯', '孔颖达', '朱熹']} footLabel="十翼 · 杂卦传" siblings={shiyi} onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'wenyan') return <ClauseReader data={WENYAN} glyph="文" sideTitle={WENYAN.title} sideSub={WENYAN.full} bmKey="wenyan" zhuNames={['韩康伯', '孔颖达', '朱熹']} footLabel="十翼 · 文言传" siblings={shiyi} onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
+  if (id === 'shiyi') return <ChapterReader data={TEN_WINGS} glyph="翼" sideSub="易 · 十翼全文" school="ru" bmKey="shiyi" zhuNames={[]} footLabel="周易 · 十翼全文" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} />;
   return <ReadingSoon id={id} onBack={onBack} onOpenSchool={onOpenSchool} />;
 }

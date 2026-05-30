@@ -13,7 +13,8 @@ Chinese classical source texts used by this project are treated as public-domain
 Current source pipelines include:
 
 - `scripts/build_hex.mjs`, which composes the 64-hexagram corpus from public-domain/open source editions.
-- `scripts/build_jizhu.mjs`, which imports historical I Ching commentary material from public-domain ancient-book collections where available.
+- `scripts/build_ten_wings.mjs`, which imports the Ten Wings reading corpus from a public-domain/open source edition.
+- `scripts/build_jizhu.mjs`, which imports hexagram-level and line-level historical I Ching commentary material from public-domain ancient-book collections where available.
 
 See the README source section and the scripts themselves for current source repositories.
 

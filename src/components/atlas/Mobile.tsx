@@ -4,14 +4,16 @@ import { useState, useRef, type CSSProperties, type ReactNode } from 'react';
 import {
   QIAN, KUN, XICI, DAODE, ZHUANGZI, QINGJING, YINFU, CANTONGQI, ZHONGYONG, TAIJITU, XIMING, HUANGJI, YANGMING,
   XINJING, JINGANG, BUER, BASHI, RUPUSA, ZHENGJIAN, TANJING,
-  SCHOOL_INFO, WORK_BY_ID, WEST_MAP, WEST_INTRO,
+  SCHOOL_INFO, WORK_BY_ID, WEST_MAP, WEST_INTRO, TRIGRAMS,
   type FullHex, type ClauseWork, type ChapterWork,
 } from './data';
+import { TEN_WINGS } from './ten-wings';
+import { JIZHU } from './jizhu';
 import { Lines } from './primitives';
 
 type AnyWork = Partial<FullHex & ClauseWork & ChapterWork>;
 const READ: Record<string, AnyWork> = {
-  yi: QIAN, kun: KUN, xici: XICI,
+  yi: QIAN, kun: KUN, xici: XICI, shiyi: TEN_WINGS,
   daode: DAODE, zhuangzi: ZHUANGZI, qjing: QINGJING, yinfu: YINFU, cantongqi: CANTONGQI,
   zhongyong: ZHONGYONG, taijitu: TAIJITU, ximing: XIMING, huangji: HUANGJI, yangming: YANGMING,
   xinjing: XINJING, jingang: JINGANG, buer: BUER, bashi: BASHI, rupusa: RUPUSA, zhengjian: ZHENGJIAN, tanjing: TANJING,
@@ -197,12 +199,28 @@ function MReader({ id, back }: { id: string; back: () => void }) {
             <div><div style={{ fontFamily: 'var(--font-display)', fontSize: 44, color: 'var(--ink)', lineHeight: 1 }}>{d.name}</div><MMono style={{ marginTop: 4, display: 'block' }}>{d.full}</MMono></div>
           </div>
           <div style={{ marginTop: 18, fontFamily: 'var(--font-serif)', fontSize: 20, lineHeight: 1.7, letterSpacing: '0.02em' }}>{d.gua}</div>
-          {d.guaGloss && <div style={{ fontFamily: 'var(--font-serif)', fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.8, marginTop: 8 }}>{d.guaGloss}</div>}
+          {d.guaGloss && (
+            <div style={{ marginTop: 12, padding: '12px 14px', border: '1px solid var(--hair-2)', borderRadius: 10, background: 'var(--paper-2)' }}>
+              <MMono>导读</MMono>
+              {d.upper && d.lower && (
+                <>
+                  <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, lineHeight: 1.75, color: 'var(--ink-2)', marginTop: 6 }}>
+                    {TRIGRAMS[d.upper].nature}上 · {TRIGRAMS[d.lower].nature}下，{TRIGRAMS[d.upper].name}外 {TRIGRAMS[d.lower].name}内。
+                  </div>
+                  <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, lineHeight: 1.75, color: 'var(--ink-2)', marginTop: 4 }}>
+                    六爻码 {[...TRIGRAMS[d.upper].lines, ...TRIGRAMS[d.lower].lines].join('')}。
+                  </div>
+                </>
+              )}
+              <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, lineHeight: 1.75, color: 'var(--ink-2)', marginTop: 4 }}>{d.guaGloss}</div>
+            </div>
+          )}
           {d.xiang && <div style={{ marginTop: 14, padding: '12px 14px', background: 'var(--accent-soft)', borderRadius: 10 }}><MMono>象</MMono><div style={{ fontFamily: 'var(--font-serif)', fontSize: 15, lineHeight: 1.7, marginTop: 5 }}>{d.xiang}</div></div>}
           <div style={{ marginTop: 22 }}><MMono>爻辞 · 点开看白话</MMono></div>
           <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column' }}>
             {d.yaos.map((y, i) => {
               const o = open === i;
+              const zhu = JIZHU[d.num || 0]?.yao?.[y.pos];
               return (
                 <div key={i} style={{ borderTop: i ? '1px solid var(--hair)' : 'none' }}>
                   <div onClick={() => setOpen(o ? -1 : i)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 0', cursor: 'pointer' }}>
@@ -210,7 +228,18 @@ function MReader({ id, back }: { id: string; back: () => void }) {
                     <span style={{ flex: 1, fontFamily: 'var(--font-serif)', fontSize: 16, lineHeight: 1.6 }}>{y.text}</span>
                     <span style={{ color: 'var(--ink-3)', fontSize: 11, transform: o ? 'rotate(180deg)' : 'none' }}>▾</span>
                   </div>
-                  {o && <div style={{ padding: '2px 0 14px 40px', fontFamily: 'var(--font-serif)', fontSize: 13.5, color: 'var(--ink-2)', lineHeight: 1.8 }}>{y.gloss}{y.xiang && <div style={{ color: 'var(--ink-3)', marginTop: 4 }}>{y.xiang}</div>}</div>}
+                  {o && (
+                    <div style={{ padding: '2px 0 14px 40px', fontFamily: 'var(--font-serif)', fontSize: 13.5, color: 'var(--ink-2)', lineHeight: 1.8 }}>
+                      {y.gloss}
+                      {y.xiang && <div style={{ color: 'var(--ink-3)', marginTop: 4 }}>{y.xiang}</div>}
+                      {zhu && (
+                        <div style={{ marginTop: 10, padding: '10px 12px', border: '1px solid var(--hair-2)', borderRadius: 8, background: 'var(--paper-2)' }}>
+                          {zhu.zhu && <div><MMono>朱熹</MMono><div style={{ marginTop: 4 }}>{zhu.zhu}</div></div>}
+                          {zhu.cheng && <div style={{ marginTop: zhu.zhu ? 10 : 0 }}><MMono>程颐</MMono><div style={{ marginTop: 4 }}>{zhu.cheng}</div></div>}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -246,7 +275,7 @@ function MReader({ id, back }: { id: string; back: () => void }) {
                 </div>
                 {o && (
                   <div style={{ padding: '0 0 16px' }}>
-                    <div style={{ fontFamily: 'var(--font-serif)', fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.85 }}>{c.gloss}</div>
+                    {c.gloss && <div style={{ fontFamily: 'var(--font-serif)', fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.85 }}>{c.gloss}</div>}
                     {c.link && <div style={{ marginTop: 8, display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: 'var(--font-serif)', fontSize: 12.5, color: 'var(--accent)' }}>⟿ {c.link.label}</div>}
                   </div>
                 )}

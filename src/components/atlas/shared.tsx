@@ -1,5 +1,5 @@
 // 共享视图组件：TopBar / Slot / JiZhu / LinkChip / RelChips / BianPanel / GuaFamily。
-import { useState, type CSSProperties } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { Mono, NavRail } from './chrome';
 import { HexFigure } from './primitives';
 import { bian, relatives, yaoName, type HexInfo } from './hex';
@@ -60,6 +60,7 @@ export function YiZhu({ num, yao }: { num: number; yao?: string }) {
     { label: '朱熹《周易本义》', gua: z.zhu, yaoTxt: yz.zhu },
   ].filter((s) => s.gua || s.yaoTxt);
   const [t, setT] = useState(0);
+  useEffect(() => setT(0), [num, yao]);
   if (sources.length === 0) {
     return <div style={{ marginTop: 10, padding: '12px 14px', border: '1px dashed var(--hair-2)', borderRadius: 6 }}><Mono dim>历代易注 · 此卦待补</Mono></div>;
   }

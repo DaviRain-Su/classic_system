@@ -1,4 +1,4 @@
-// 全文检索 — 索引全平台真经文（六十四卦 + 道儒佛 + 系辞），搜词跳句。
+// 全文检索 — 索引全平台真经文（六十四卦 + 十翼 + 道儒佛），搜词跳句。
 import { useMemo, useState, type ReactNode } from 'react';
 import {
   XINJING, JINGANG, BUER, BASHI, RUPUSA, ZHENGJIAN, QINGJING, YINFU, CANTONGQI, XICI,
@@ -6,6 +6,7 @@ import {
   ZHONGYONG, TAIJITU, XIMING, HUANGJI, YANGMING, DAODE, TANJING, ZHUANGZI,
   HEX_FULL_LIST, type ClauseWork, type ChapterWork, type FullHex,
 } from './data';
+import { TEN_WINGS } from './ten-wings';
 import { Mono } from './chrome';
 import { TopBar, type OpenNode } from './shared';
 
@@ -28,7 +29,7 @@ function buildCorpus(): Item[] {
     if (d.mantra) push(route, d.title + '·咒', d.mantra);
   });
 
-  const chapterWorks: [string, ChapterWork][] = [['daode', DAODE], ['tanjing', TANJING], ['zhuangzi', ZHUANGZI]];
+  const chapterWorks: [string, ChapterWork][] = [['shiyi', TEN_WINGS], ['daode', DAODE], ['tanjing', TANJING], ['zhuangzi', ZHUANGZI]];
   chapterWorks.forEach(([route, d]) => {
     d.chapters.forEach((ch) => (ch.clauses || []).forEach((c) => push(route, d.title + '·' + ch.name, c.text, c.gloss)));
   });

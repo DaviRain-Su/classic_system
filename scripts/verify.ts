@@ -85,5 +85,14 @@ assert(tuanN === 64, `hex-yili.ts 彖白话应=64 卦，实得 ${tuanN}`);
 assert(daxiangN === 64, `hex-yili.ts 大象白话应=64 卦，实得 ${daxiangN}`);
 assert(xiaoN === 64, `hex-yili.ts 小象白话应=64 卦，实得 ${xiaoN}`);
 
-if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性与历代易注（卦辞级+爻级 386 条）覆盖正确。');
+// 7. 十翼全文：独立全文底本必须保留，精读页可继续使用带白话的选段数据。
+const tenWings = file('../src/components/atlas/ten-wings.ts');
+for (const name of ['文言传 · 乾', '文言传 · 坤', '系辞上传', '系辞下传', '说卦传', '序卦传', '杂卦传']) {
+  assert(tenWings.includes(`"name": "${name}"`), `ten-wings.ts 缺 ${name}`);
+}
+for (const text of ['一阴一阳之谓道', '有太极，是生两仪', '天地定位，山泽通气', '有天地，然后万物生焉', '《乾》刚《坤》柔']) {
+  assert(tenWings.includes(text), `ten-wings.ts 缺关键经文：${text}`);
+}
+
+if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性、十翼全文与历代易注（卦辞级+爻级 386 条）覆盖正确。');
 else throw new Error(`结构自检失败：共 ${failures} 项`);
