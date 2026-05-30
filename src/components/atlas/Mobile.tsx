@@ -458,7 +458,7 @@ export function MobileApp() {
   else view = <MHome go={go} />;
 
   return (
-    <div style={{ position: 'fixed', inset: 0, overflowY: 'auto', WebkitOverflowScrolling: 'touch', background: 'var(--paper)', color: 'var(--ink)', fontFamily: 'var(--font-body)' }}>
+    <div style={{ minHeight: '100dvh', width: '100%', overflowX: 'hidden', touchAction: 'pan-y', background: 'var(--paper)', color: 'var(--ink)', fontFamily: 'var(--font-body)' }}>
       {view}
     </div>
   );

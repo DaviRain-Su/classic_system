@@ -34,7 +34,7 @@ export function MatrixBrowse({ onBack, onOpenHex, onCube, onSquare }: { onBack: 
   return (
     <div style={{ position: 'absolute', inset: 0, fontFamily: 'var(--font-body)', color: 'var(--ink)' }}>
       <TopBar title="六十四卦" sub="8 × 8 · 上卦 × 下卦" onBack={onBack} />
-      <div style={{ position: 'absolute', top: 74, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 18 }}>
+      <div style={{ position: 'absolute', top: 74, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 18, overflow: 'auto' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, border: '1px solid var(--hair-2)', borderRadius: 999, padding: '8px 16px', background: 'var(--paper-2)', width: 320 }}>
             <span style={{ color: 'var(--ink-3)', fontSize: 14 }}>⌕</span>
@@ -114,7 +114,7 @@ export function ReadingHex({ upper, lower, onBack, onOpen, onOpenHex, onOpenTrig
   return (
     <div style={{ position: 'absolute', inset: 0, fontFamily: 'var(--font-body)', color: 'var(--ink)' }}>
       <TopBar title={'易经 · ' + info.name} sub={'第 ' + info.num + ' 卦'} onBack={onBack} bookmarkKey={'gua:' + info.num} />
-      <div style={{ position: 'absolute', top: 74, left: 0, right: 0, bottom: 0, display: 'flex' }}>
+      <div style={{ position: 'absolute', top: 74, left: 0, right: 0, bottom: 0, display: 'flex', overflowY: 'auto', overflowX: 'hidden' }}>
         <div style={{ width: 470, flex: '0 0 auto', borderRight: '1px solid var(--hair)', padding: '40px 48px' }}>
           <Mono>卦象 · {info.name}</Mono>
           <div style={{ marginTop: 16 }}>

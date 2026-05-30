@@ -45,7 +45,7 @@ export function ReadingGua({ data, bmKey, onBack, onOpen, onOpenHex, onOpenTrigr
   return (
     <div style={{ position: 'absolute', inset: 0, fontFamily: 'var(--font-body)', color: 'var(--ink)' }}>
       <TopBar title={'易经 · ' + q.full} sub={'第 ' + (q.num || 1) + ' 卦'} onBack={onBack} bookmarkKey={bmKey} />
-      <div style={{ position: 'absolute', top: 74, left: 0, right: 0, bottom: 0, display: 'flex' }}>
+      <div style={{ position: 'absolute', top: 74, left: 0, right: 0, bottom: 0, display: 'flex', overflowY: 'auto', overflowX: 'hidden' }}>
         <div style={{ width: 470, flex: '0 0 auto', borderRight: '1px solid var(--hair)', padding: '40px 48px', display: 'flex', flexDirection: 'column' }}>
           <Mono>骨干 · {q.name}</Mono>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 18, marginTop: 12 }}>
@@ -197,7 +197,7 @@ function ChapterReader({ data, glyph, sideSub, school, bmKey, zhuNames, footLabe
   return (
     <div style={{ position: 'absolute', inset: 0, fontFamily: 'var(--font-body)', color: 'var(--ink)' }}>
       <TopBar title={d.title} sub={sideSub} onBack={onBack} bookmarkKey={bmKey} school={school} onOpenSchool={onOpenSchool} />
-      <div style={{ position: 'absolute', top: 74, left: 0, right: 0, bottom: 0, display: 'flex' }}>
+      <div style={{ position: 'absolute', top: 74, left: 0, right: 0, bottom: 0, display: 'flex', overflowY: 'auto', overflowX: 'hidden' }}>
         <div style={{ width: 360, flex: '0 0 auto', borderRight: '1px solid var(--hair)', padding: '40px 44px', overflowY: 'auto' }}>
           <span style={{ fontFamily: 'var(--font-display)', fontSize: 80, color: 'var(--accent)', lineHeight: 1 }}>{glyph}</span>
           <div style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: 22, marginTop: 10 }}>{d.title}</div>
@@ -266,7 +266,7 @@ function ClauseReader({ data, glyph, sideTitle, sideSub, school, bmKey, zhuNames
   return (
     <div style={{ position: 'absolute', inset: 0, fontFamily: 'var(--font-body)', color: 'var(--ink)' }}>
       <TopBar title={x.title} sub={sideSub} onBack={onBack} bookmarkKey={bmKey} school={school} onOpenSchool={onOpenSchool} />
-      <div style={{ position: 'absolute', top: 74, left: 0, right: 0, bottom: 0, display: 'flex' }}>
+      <div style={{ position: 'absolute', top: 74, left: 0, right: 0, bottom: 0, display: 'flex', overflowY: 'auto', overflowX: 'hidden' }}>
         <div style={{ width: 360, flex: '0 0 auto', borderRight: '1px solid var(--hair)', padding: '40px 44px', display: 'flex', flexDirection: 'column' }}>
           <span style={{ fontFamily: 'var(--font-display)', fontSize: 80, color: 'var(--accent)', lineHeight: 1 }}>{glyph}</span>
           <div style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: 22, marginTop: 10 }}>{sideTitle}</div>
@@ -353,7 +353,7 @@ function ReadingSoon({ id, onBack, onOpenSchool }: { id: string; onBack: () => v
   return (
     <div style={{ position: 'absolute', inset: 0, fontFamily: 'var(--font-body)', color: 'var(--ink)' }}>
       <TopBar title={n.name} sub={n.author} onBack={onBack} bookmarkKey={id} school={n.school} onOpenSchool={onOpenSchool} />
-      <div style={{ position: 'absolute', top: 74, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: 56 }}>
+      <div style={{ position: 'absolute', top: 74, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: 56, overflowY: 'auto', overflowX: 'hidden' }}>
         <div style={{ width: 92, height: 92, borderRadius: '50%', background: 'var(--accent-soft)', border: '1px solid var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <span style={{ fontFamily: 'var(--font-display)', fontSize: 46, color: 'var(--accent)', lineHeight: 1, marginTop: 4 }}>{n.glyph}</span>
         </div>
