@@ -253,6 +253,7 @@ export const CURRICULUM: Module[] = [
           ] },
           { t: 'p', x: '王弼「得意忘象」是义理派的宣言；但若尽弃其象，又恐流于空谈——故善读者两轮并行。' },
         ],
+        widget: 'XiangshuYili',
         quizzes: [
           {
             q: '「得意而忘象，得象而忘言」是哪一派的主张？',
@@ -285,6 +286,7 @@ export const CURRICULUM: Module[] = [
           ] },
           { t: 'note', x: '「两派六宗」是四库馆臣的归纳，便于把握源流，未必能尽收所有易家。' },
         ],
+        widget: 'SixSchools',
         quizzes: [
           {
             q: '「两派六宗」之说出自？',
@@ -322,6 +324,7 @@ export const CURRICULUM: Module[] = [
           { t: 'q', x: '参伍以变，错综其数。', src: '系辞上' },
           { t: 'p', x: '在「卦阵 / 立体图」里，这些关系被画成可点的网络——错综不是文学修辞，而是结构。' },
         ],
+        widget: 'TransformLab',
         quizzes: [
           {
             q: '「综卦」是如何得到的？',
@@ -352,6 +355,7 @@ export const CURRICULUM: Module[] = [
           ] },
           { t: 'p', x: '同一组卦，可以有不同的「序」——次第本身就是一种解读。' },
         ],
+        widget: 'SequencePairs',
         quizzes: [
           {
             q: '「二二相耦，非覆即变」描述的是？',

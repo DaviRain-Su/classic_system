@@ -23,6 +23,10 @@ src/components/atlas/learn/
    ├─ ChongGua.tsx      # 1.4 重卦 / 内外二体
    ├─ Grammar.tsx       # 2.x 解卦语法
    ├─ TextLayers.tsx    # 3.1 文本结构
+   ├─ XiangshuYili.tsx  # 4.1 象数 / 义理双轨对照
+   ├─ SixSchools.tsx    # 4.2 两派六宗矩阵
+   ├─ TransformLab.tsx  # 5.1 错 / 综 / 互 / 交变换实验台
+   ├─ SequencePairs.tsx # 5.2 今本卦序「非覆即变」
    └─ GroupView.tsx     # 5.3 群论 / 邻卦错卦
 ```
 
