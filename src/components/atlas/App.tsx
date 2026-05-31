@@ -19,6 +19,7 @@ const WestDetail = lazy(() => import('./West').then((m) => ({ default: m.WestDet
 const SearchView = lazy(() => import('./Search').then((m) => ({ default: m.SearchView })));
 const RelationsView = lazy(() => import('./Relations').then((m) => ({ default: m.RelationsView })));
 const MobileApp = lazy(() => import('./Mobile').then((m) => ({ default: m.MobileApp })));
+const LearnApp = lazy(() => import('./learn').then((m) => ({ default: m.LearnApp })));
 
 const FONT_MAP: Record<TweakState['font'], string> = {
   song: '"Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun", serif',
@@ -28,7 +29,7 @@ const FONT_MAP: Record<TweakState['font'], string> = {
 
 type ScreenBase = { from?: string; ret?: Screen };
 type Screen = ScreenBase & (
-  | { mode: 'map' | 'matrix' | 'cube' | 'square' | 'cast' | 'west' | 'search' | 'relations' }
+  | { mode: 'map' | 'matrix' | 'cube' | 'square' | 'cast' | 'west' | 'search' | 'relations' | 'learn' }
   | { mode: 'westItem'; idx: number }
   | { mode: 'reading'; id: string }
   | { mode: 'hex'; upper: TrigramKey; lower: TrigramKey }
@@ -146,6 +147,7 @@ function screenToHash(screen: Screen): string {
   if (s.mode === 'west') return '#/west';
   if (s.mode === 'search') return '#/search';
   if (s.mode === 'relations') return '#/relations';
+  if (s.mode === 'learn') return '#/learn';
   if (s.mode === 'westItem') return '#/west/' + s.idx;
   if (s.mode === 'school') return '#/school/' + enc(s.id);
   if (s.mode === 'trigram') return '#/trigram/' + s.tkey;
@@ -171,6 +173,7 @@ function screenFromHash(): Screen | null {
   if (kind === 'west') return a == null ? { mode: 'west' } : normalizeScreen({ mode: 'westItem', idx: Number(a) });
   if (kind === 'search') return { mode: 'search' };
   if (kind === 'relations') return { mode: 'relations' };
+  if (kind === 'learn') return { mode: 'learn' };
   if (kind === 'reading' && a) return { mode: 'reading', id: a };
   if (kind === 'school' && a) return { mode: 'school', id: a };
   if (kind === 'trigram' && a && isTrigramKey(a)) return { mode: 'trigram', tkey: a };
@@ -342,6 +345,7 @@ export default function App() {
   const openSquare = useCallback(() => go({ mode: 'square' }), [go]);
   const openSearch = useCallback(() => go({ mode: 'search' }), [go]);
   const openRelations = useCallback(() => go({ mode: 'relations' }), [go]);
+  const openLearn = useCallback(() => go({ mode: 'learn' }), [go]);
   const openHex = useCallback((upper: TrigramKey, lower: TrigramKey, from = 'matrix') => {
     if (upper === 'qian' && lower === 'qian') return go({ mode: 'reading', id: 'yi', from });
     if (upper === 'kun' && lower === 'kun') return go({ mode: 'reading', id: 'kun', from });
@@ -391,7 +395,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && (screen.mode === 'reading' || screen.mode === 'hex')) back(); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && (screen.mode === 'reading' || screen.mode === 'hex' || screen.mode === 'learn')) back(); };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [back, screen.mode]);
@@ -414,6 +418,17 @@ export default function App() {
     else if (j.id) openNode(j.id);
   }, [go, openHex, openNode]);
 
+  // 讲堂 links.to → 画面跳转（如 'Cube'→立体图、'huangji'→皇极经世）。
+  const learnJump = useCallback((to: string) => {
+    const k = to.toLowerCase();
+    if (k === 'cube' || k === '立体' || k === '立体图') return go({ mode: 'cube' });
+    if (k === 'square' || k === '方圆' || k === '方圆图') return go({ mode: 'square' });
+    if (k === 'matrix' || k === '卦阵') return go({ mode: 'matrix' });
+    if (k === 'cast' || k === '起卦') return go({ mode: 'cast' });
+    if (k === 'west' || k === '西方') return go({ mode: 'west' });
+    return openNode(to);
+  }, [go, openNode]);
+
   if (isMobile) {
     return (
       <>
@@ -430,9 +445,10 @@ export default function App() {
       <Stage motif={tw.motif} glyph={motifGlyphFor(screen)}>
         <div key={key} className="view-enter" style={{ position: 'absolute', inset: 0 }}>
           <Suspense fallback={<RouteFallback />}>
-            {screen.mode === 'map' && <StarMap onOpen={openNode} onMatrix={openMatrix} onCube={openCube} onCast={openCast} onXici={() => openNode('xici')} onSearch={openSearch} onRelations={openRelations} />}
+            {screen.mode === 'map' && <StarMap onOpen={openNode} onMatrix={openMatrix} onCube={openCube} onCast={openCast} onXici={() => openNode('xici')} onSearch={openSearch} onRelations={openRelations} onLearn={openLearn} />}
             {screen.mode === 'search' && <SearchView onBack={() => go({ mode: 'map' })} onOpen={openNode} />}
             {screen.mode === 'relations' && <RelationsView onBack={() => go({ mode: 'map' })} onJump={routeJump} />}
+            {screen.mode === 'learn' && <LearnApp onBack={() => go({ mode: 'map' })} onJump={learnJump} />}
             {screen.mode === 'matrix' && <MatrixBrowse onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'matrix')} onCube={openCube} onSquare={openSquare} />}
             {screen.mode === 'cube' && <CubeView onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'cube')} />}
             {screen.mode === 'square' && <CircleSquare onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'square')} />}
