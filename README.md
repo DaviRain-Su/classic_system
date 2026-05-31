@@ -151,6 +151,7 @@ The app uses hash routes so individual views can be shared even when deployed as
 #/west
 #/search
 #/relations
+#/learn/5.1
 ```
 
 ## Search And Discovery Terms

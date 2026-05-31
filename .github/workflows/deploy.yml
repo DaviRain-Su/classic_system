@@ -2,7 +2,7 @@ name: 部署到 GitHub Pages
 
 on:
   push:
-    branches: [main, claude/lucid-fermat-f0kES]
+    branches: [main]
   workflow_dispatch:
 
 # 允许部署 Pages

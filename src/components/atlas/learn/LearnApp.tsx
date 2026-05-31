@@ -15,12 +15,28 @@ const WIDGETS = widgets as Record<string, ComponentType>;
 
 const indexById = new Map(ALL_LESSONS.map((entry, i) => [entry.lesson.id, i]));
 
-export function LearnApp({ onBack, onJump }: { onBack: () => void; onJump?: (to: string) => void }) {
+export function LearnApp({
+  initialLessonId,
+  onLessonChange,
+  onBack,
+  onJump,
+}: {
+  initialLessonId?: string;
+  onLessonChange?: (lessonId: string) => void;
+  onBack: () => void;
+  onJump?: (to: string) => void;
+}) {
   const prog = useProgress();
   const total = ALL_LESSONS.length;
-  const [pos, setPos] = useState(0);
+  const [pos, setPos] = useState(() => initialLessonId ? indexById.get(initialLessonId) ?? 0 : 0);
   const [narrow, setNarrow] = useState(false);
   const cur = total > 0 ? ALL_LESSONS[Math.min(pos, total - 1)] : null;
+
+  useEffect(() => {
+    if (!initialLessonId) return;
+    const next = indexById.get(initialLessonId);
+    if (next != null) setPos(next);
+  }, [initialLessonId]);
 
   useEffect(() => {
     const check = () => setNarrow(window.innerWidth < 760);
@@ -37,6 +53,12 @@ export function LearnApp({ onBack, onJump }: { onBack: () => void; onJump?: (to:
   const done = ALL_LESSONS.filter((e) => prog.isRead(lessonKey(e.lesson.id))).length;
   const sub = cur ? cur.module.title : '讲堂';
   const Widget = cur?.lesson.widget ? WIDGETS[cur.lesson.widget] : undefined;
+  const goLesson = (i: number) => {
+    const next = Math.max(0, Math.min(total - 1, i));
+    setPos(next);
+    const lesson = ALL_LESSONS[next]?.lesson;
+    if (lesson) onLessonChange?.(lesson.id);
+  };
 
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
@@ -72,7 +94,7 @@ export function LearnApp({ onBack, onJump }: { onBack: () => void; onJump?: (to:
                       const active = cur?.lesson.id === lesson.id;
                       const read = prog.isRead(lessonKey(lesson.id));
                       return (
-                        <button key={lesson.id} onClick={() => setPos(i)}
+                        <button key={lesson.id} onClick={() => goLesson(i)}
                           style={{ display: 'flex', alignItems: 'center', gap: 9, textAlign: 'left', border: 'none', background: active ? 'var(--accent-soft)' : 'transparent', borderRadius: 7, padding: '7px 10px', cursor: 'pointer', fontFamily: 'var(--font-serif)', fontSize: 13.5, color: active ? 'var(--ink)' : 'var(--ink-2)' }}>
                           <span style={{ width: 6, height: 6, borderRadius: '50%', flex: '0 0 auto', background: read ? 'var(--accent)' : 'transparent', border: read ? 'none' : '1px solid var(--hair-2)' }} />
                           <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-3)' }}>{lesson.id}</span>
@@ -134,12 +156,12 @@ export function LearnApp({ onBack, onJump }: { onBack: () => void; onJump?: (to:
 
               {/* 翻页 */}
               <div style={{ marginTop: 40, paddingTop: 18, borderTop: '1px solid var(--hair)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <button onClick={() => setPos((i) => Math.max(0, i - 1))} disabled={pos <= 0}
+                <button onClick={() => goLesson(pos - 1)} disabled={pos <= 0}
                   style={{ border: '1px solid var(--hair-2)', background: 'transparent', color: pos <= 0 ? 'var(--ink-3)' : 'var(--ink-2)', borderRadius: 999, padding: '8px 16px', cursor: pos <= 0 ? 'default' : 'pointer', fontFamily: 'var(--font-body)', fontSize: 13.5 }}>
                   ‹ 上一课
                 </button>
                 <Mono dim>{pos + 1} / {total}</Mono>
-                <button onClick={() => setPos((i) => Math.min(total - 1, i + 1))} disabled={pos >= total - 1}
+                <button onClick={() => goLesson(pos + 1)} disabled={pos >= total - 1}
                   style={{ border: '1px solid var(--accent)', background: pos >= total - 1 ? 'transparent' : 'var(--accent-soft)', color: pos >= total - 1 ? 'var(--ink-3)' : 'var(--ink)', borderRadius: 999, padding: '8px 16px', cursor: pos >= total - 1 ? 'default' : 'pointer', fontFamily: 'var(--font-body)', fontSize: 13.5 }}>
                   下一课 ›
                 </button>

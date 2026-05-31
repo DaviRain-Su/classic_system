@@ -11,7 +11,7 @@ Interactive I Ching / Yijing systems-thinking atlas for Chinese classics, hexagr
 ## Website
 
 ```text
-https://davirain-su.github.io/classic_system/
+https://yijing.davirain.xyz/
 ```
 
 ## Topics

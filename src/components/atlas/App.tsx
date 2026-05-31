@@ -29,7 +29,8 @@ const FONT_MAP: Record<TweakState['font'], string> = {
 
 type ScreenBase = { from?: string; ret?: Screen };
 type Screen = ScreenBase & (
-  | { mode: 'map' | 'matrix' | 'cube' | 'square' | 'cast' | 'west' | 'search' | 'relations' | 'learn' }
+  | { mode: 'map' | 'matrix' | 'cube' | 'square' | 'cast' | 'west' | 'search' | 'relations' }
+  | { mode: 'learn'; lessonId?: string }
   | { mode: 'westItem'; idx: number }
   | { mode: 'reading'; id: string }
   | { mode: 'hex'; upper: TrigramKey; lower: TrigramKey }
@@ -76,6 +77,9 @@ function normalizeScreen(screen: Screen | null): Screen {
   }
   if (screen.mode === 'westItem') {
     return WEST_MAP[screen.idx] ? screen : { mode: 'west' };
+  }
+  if (screen.mode === 'learn') {
+    return screen.lessonId ? screen : { mode: 'learn' };
   }
   if (screen.mode === 'trigram') {
     return isTrigramKey(screen.tkey) ? screen : DEFAULT_SCREEN;
@@ -147,7 +151,7 @@ function screenToHash(screen: Screen): string {
   if (s.mode === 'west') return '#/west';
   if (s.mode === 'search') return '#/search';
   if (s.mode === 'relations') return '#/relations';
-  if (s.mode === 'learn') return '#/learn';
+  if (s.mode === 'learn') return s.lessonId ? '#/learn/' + enc(s.lessonId) : '#/learn';
   if (s.mode === 'westItem') return '#/west/' + s.idx;
   if (s.mode === 'school') return '#/school/' + enc(s.id);
   if (s.mode === 'trigram') return '#/trigram/' + s.tkey;
@@ -173,7 +177,7 @@ function screenFromHash(): Screen | null {
   if (kind === 'west') return a == null ? { mode: 'west' } : normalizeScreen({ mode: 'westItem', idx: Number(a) });
   if (kind === 'search') return { mode: 'search' };
   if (kind === 'relations') return { mode: 'relations' };
-  if (kind === 'learn') return { mode: 'learn' };
+  if (kind === 'learn') return normalizeScreen({ mode: 'learn', lessonId: a });
   if (kind === 'reading' && a) return { mode: 'reading', id: a };
   if (kind === 'school' && a) return { mode: 'school', id: a };
   if (kind === 'trigram' && a && isTrigramKey(a)) return { mode: 'trigram', tkey: a };
@@ -405,6 +409,7 @@ export default function App() {
     : screen.mode === 'trigram' ? 't-' + screen.tkey
     : screen.mode === 'school' ? 's-' + screen.id
     : screen.mode === 'westItem' ? 'wi-' + screen.idx
+    : screen.mode === 'learn' ? 'learn-' + (screen.lessonId || 'home')
     : screen.mode;
 
   const hexFrom = useCallback((u: TrigramKey, l: TrigramKey) => openHex(u, l, screen.from || 'matrix'), [openHex, screen.from]);
@@ -429,6 +434,8 @@ export default function App() {
     return openNode(to);
   }, [go, openNode]);
 
+  const openLearnLesson = useCallback((lessonId: string) => go({ mode: 'learn', lessonId }), [go]);
+
   if (isMobile && screen.mode !== 'learn') {
     return (
       <>
@@ -444,7 +451,7 @@ export default function App() {
     return (
       <>
         <Suspense fallback={<RouteFallback />}>
-          <LearnApp onBack={() => go({ mode: 'map' })} onJump={learnJump} />
+          <LearnApp initialLessonId={screen.lessonId} onLessonChange={openLearnLesson} onBack={() => go({ mode: 'map' })} onJump={learnJump} />
         </Suspense>
         <Tweaks value={tw} onChange={setTweak} />
       </>
@@ -459,7 +466,7 @@ export default function App() {
             {screen.mode === 'map' && <StarMap onOpen={openNode} onMatrix={openMatrix} onCube={openCube} onCast={openCast} onXici={() => openNode('xici')} onSearch={openSearch} onRelations={openRelations} onLearn={openLearn} />}
             {screen.mode === 'search' && <SearchView onBack={() => go({ mode: 'map' })} onOpen={openNode} />}
             {screen.mode === 'relations' && <RelationsView onBack={() => go({ mode: 'map' })} onJump={routeJump} />}
-            {screen.mode === 'learn' && <LearnApp onBack={() => go({ mode: 'map' })} onJump={learnJump} />}
+            {screen.mode === 'learn' && <LearnApp initialLessonId={screen.lessonId} onLessonChange={openLearnLesson} onBack={() => go({ mode: 'map' })} onJump={learnJump} />}
             {screen.mode === 'matrix' && <MatrixBrowse onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'matrix')} onCube={openCube} onSquare={openSquare} />}
             {screen.mode === 'cube' && <CubeView onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'cube')} />}
             {screen.mode === 'square' && <CircleSquare onBack={() => go({ mode: 'map' })} onOpenHex={(u, l) => openHex(u, l, 'square')} />}
