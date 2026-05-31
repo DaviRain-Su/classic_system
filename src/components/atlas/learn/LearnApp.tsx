@@ -100,7 +100,7 @@ export function LearnApp({ onBack, onJump }: { onBack: () => void; onJump?: (to:
               </div>
 
               {Widget && (
-                <div style={{ margin: '24px 0', border: '1px solid var(--hair-2)', borderRadius: 12, background: 'var(--paper-2)', padding: 18 }}>
+                <div style={{ margin: '24px 0' }}>
                   <Widget />
                 </div>
               )}
