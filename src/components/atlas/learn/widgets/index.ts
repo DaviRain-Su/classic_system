@@ -7,3 +7,4 @@ export { YinYangFlux } from './YinYangFlux';
 export { GenTree } from './GenTree';
 export { BaguaRef } from './BaguaRef';
 export { ChongGua } from './ChongGua';
+export { Grammar } from './Grammar';
