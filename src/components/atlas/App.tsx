@@ -21,9 +21,9 @@ const RelationsView = lazy(() => import('./Relations').then((m) => ({ default: m
 const MobileApp = lazy(() => import('./Mobile').then((m) => ({ default: m.MobileApp })));
 
 const FONT_MAP: Record<TweakState['font'], string> = {
-  song: '"Noto Serif SC", serif',
-  hei: '"Noto Sans SC", sans-serif',
-  kai: '"Kaiti SC", "STKaiti", "KaiTi", "楷体", "Noto Serif SC", serif',
+  song: '"Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun", serif',
+  hei: '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif',
+  kai: '"Kaiti SC", "STKaiti", "KaiTi", "楷体", "FangSong", "Songti SC", serif',
 };
 
 type ScreenBase = { from?: string; ret?: Screen };

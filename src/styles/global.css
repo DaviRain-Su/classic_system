@@ -10,10 +10,11 @@
   --hair-2: #d3cec2;
   --accent: #3a5f5a; /* 青瓷绿 */
   --seal: #9c3a2f; /* 朱砂印 */
-  --font-display: "Ma Shan Zheng", cursive;
-  --font-serif: "Noto Serif SC", serif;
-  --font-sans: "Noto Sans SC", sans-serif;
-  --font-mono: "Space Mono", ui-monospace, monospace;
+  /* Prefer platform CJK fonts to avoid remote Chinese font shards on first load. */
+  --font-display: "Kaiti SC", "STKaiti", "KaiTi", "FangSong", "Songti SC", serif;
+  --font-serif: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun", serif;
+  --font-sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --font-mono: "SFMono-Regular", "Menlo", "Consolas", "Liberation Mono", ui-monospace, monospace;
   --font-body: var(--font-serif);
   --accent-soft: color-mix(in srgb, var(--accent) 13%, var(--paper));
 }
