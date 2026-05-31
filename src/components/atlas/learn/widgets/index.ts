@@ -9,3 +9,4 @@ export { BaguaRef } from './BaguaRef';
 export { ChongGua } from './ChongGua';
 export { Grammar } from './Grammar';
 export { TextLayers } from './TextLayers';
+export { GroupView } from './GroupView';
