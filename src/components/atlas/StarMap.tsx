@@ -6,7 +6,7 @@ import { Wordmark, Mono } from './chrome';
 import { useProgress } from './progress';
 import type { OpenNode } from './shared';
 
-export function StarMap({ onOpen, onMatrix, onCube, onCast, onXici, onSearch, onRelations }: { onOpen: OpenNode; onMatrix: () => void; onCube: () => void; onCast: () => void; onXici: () => void; onSearch: () => void; onRelations: () => void }) {
+export function StarMap({ onOpen, onMatrix, onCube, onCast, onXici, onSearch, onRelations, onLearn }: { onOpen: OpenNode; onMatrix: () => void; onCube: () => void; onCast: () => void; onXici: () => void; onSearch: () => void; onRelations: () => void; onLearn: () => void }) {
   const [hover, setHover] = useState<string | null>(null);
   const prog = useProgress();
   const core = NODE_BY_ID.yi;
@@ -28,6 +28,10 @@ export function StarMap({ onOpen, onMatrix, onCube, onCast, onXici, onSearch, on
       <div style={{ position: 'absolute', top: 34, left: 56, right: 56, display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 5 }}>
         <Wordmark />
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <button onClick={onLearn} title="易学讲堂" style={pill}>
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: 14, color: 'var(--accent)', lineHeight: 1 }}>讲</span>
+            <span style={pillLabel}>讲堂</span>
+          </button>
           <button onClick={onSearch} title="全文检索" style={pill}>
             <span style={{ color: 'var(--accent)', fontSize: 14 }}>⌕</span>
             <span style={pillLabel}>检索</span>
@@ -101,6 +105,11 @@ export function StarMap({ onOpen, onMatrix, onCube, onCast, onXici, onSearch, on
           {prog.isRead('yi') && !prog.isMarked('yi') && <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block' }} />}
         </div>
         <Mono dim style={{ marginTop: 5 }}>系统思维 · 骨干</Mono>
+        <button onClick={(e) => { e.stopPropagation(); onLearn(); }} title="易学讲堂"
+          style={{ marginTop: 14, display: 'inline-flex', alignItems: 'center', gap: 7, border: '1px solid var(--accent)', background: 'var(--accent-soft)', color: 'var(--ink)', borderRadius: 999, padding: '7px 16px', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: 13 }}>
+          <span style={{ fontFamily: 'var(--font-display)', color: 'var(--accent)', fontSize: 14, lineHeight: 1 }}>讲</span>
+          进入讲堂
+        </button>
       </div>
 
       {sats.map((n) => {
