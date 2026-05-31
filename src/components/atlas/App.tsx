@@ -429,11 +429,22 @@ export default function App() {
     return openNode(to);
   }, [go, openNode]);
 
-  if (isMobile) {
+  if (isMobile && screen.mode !== 'learn') {
     return (
       <>
         <Suspense fallback={<RouteFallback />}>
           <MobileApp />
+        </Suspense>
+        <Tweaks value={tw} onChange={setTweak} />
+      </>
+    );
+  }
+
+  if (isMobile && screen.mode === 'learn') {
+    return (
+      <>
+        <Suspense fallback={<RouteFallback />}>
+          <LearnApp onBack={() => go({ mode: 'map' })} onJump={learnJump} />
         </Suspense>
         <Tweaks value={tw} onChange={setTweak} />
       </>

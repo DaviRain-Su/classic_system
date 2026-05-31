@@ -19,7 +19,15 @@ export function LearnApp({ onBack, onJump }: { onBack: () => void; onJump?: (to:
   const prog = useProgress();
   const total = ALL_LESSONS.length;
   const [pos, setPos] = useState(0);
+  const [narrow, setNarrow] = useState(false);
   const cur = total > 0 ? ALL_LESSONS[Math.min(pos, total - 1)] : null;
+
+  useEffect(() => {
+    const check = () => setNarrow(window.innerWidth < 760);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   // 进入某课即记为已读（与既有阅读视图一致，progress.ts 打通星图「已读 N」）。
   useEffect(() => {
@@ -34,9 +42,9 @@ export function LearnApp({ onBack, onJump }: { onBack: () => void; onJump?: (to:
     <div style={{ position: 'absolute', inset: 0 }}>
       <TopBar title="易学讲堂" sub={sub} onBack={onBack} />
 
-      <div style={{ position: 'absolute', top: 74, left: 0, right: 0, bottom: 0, display: 'flex' }}>
+      <div style={{ position: 'absolute', top: 74, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: narrow ? 'column' : 'row', overflow: 'hidden' }}>
         {/* 目录 + 进度 */}
-        <aside style={{ width: 286, flex: '0 0 auto', borderRight: '1px solid var(--hair)', background: 'var(--paper-2)', overflowY: 'auto', padding: '22px 20px 30px' }}>
+        <aside style={{ width: narrow ? 'auto' : 286, flex: '0 0 auto', maxHeight: narrow ? 214 : 'none', borderRight: narrow ? 'none' : '1px solid var(--hair)', borderBottom: narrow ? '1px solid var(--hair)' : 'none', background: 'var(--paper-2)', overflowY: 'auto', padding: narrow ? '14px 16px 16px' : '22px 20px 30px' }}>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
             <Mono>目录</Mono>
             <Mono dim>{total > 0 ? `已完成 ${done} / ${total}` : '课程筹备中'}</Mono>
@@ -80,13 +88,13 @@ export function LearnApp({ onBack, onJump }: { onBack: () => void; onJump?: (to:
         </aside>
 
         {/* 主区：当前课 */}
-        <main style={{ flex: 1, minWidth: 0, position: 'relative', overflowY: 'auto' }}>
+        <main style={{ flex: 1, minWidth: 0, minHeight: 0, position: 'relative', overflowY: 'auto', overflowX: 'hidden' }}>
           {!cur ? (
             <EmptyHall />
           ) : (
-            <article style={{ maxWidth: 760, margin: '0 auto', padding: '34px 48px 80px' }}>
+            <article style={{ maxWidth: 760, margin: '0 auto', padding: narrow ? '22px 18px 72px' : '34px 48px 80px' }}>
               <Mono dim>单元 {cur.module.id} · {cur.lesson.id}</Mono>
-              <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 30, fontWeight: 700, color: 'var(--ink)', margin: '8px 0 0', lineHeight: 1.3 }}>{cur.lesson.title}</h1>
+              <h1 style={{ fontFamily: 'var(--font-display)', fontSize: narrow ? 26 : 30, fontWeight: 700, color: 'var(--ink)', margin: '8px 0 0', lineHeight: 1.3 }}>{cur.lesson.title}</h1>
 
               {cur.lesson.objective && (
                 <div style={{ marginTop: 16, padding: '12px 16px', borderLeft: '3px solid var(--seal)', background: 'var(--paper-2)', borderRadius: '0 8px 8px 0' }}>
