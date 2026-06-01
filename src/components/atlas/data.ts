@@ -1083,6 +1083,47 @@ export const CANTONGQI: ClauseWork = {
   ],
 };
 
+export const TAIYI: ChapterWork = {
+  id: 'taiyi', title: '太乙金华宗旨', author: '旧题吕洞宾', relation: '回光守中 · 与《易》坎离、清静功夫相参',
+  chapters: [
+    { name: '天心', clauses: [
+      { text: '自然曰道，道无名相。一性而已，一元神而已。', gloss: '开篇先把“道”收束到一性、一元神：不是外求神怪，而是返回本心本性的主宰。', link: { kind: 'node', id: 'daode', label: '道无名相 · 与老子相参' } },
+      { text: '性命不可见，寄之天光。天光不可见，寄之两目。', gloss: '性命本不可直接把握，借“天光”呈现；天光又借两目为门户。所以此书以“回光”作为入手功夫。' },
+      { text: '金华即光也，光是何色？取象于金华，亦秘一光字在内。', gloss: '“金华”不是物质花朵，而是借金色之华比喻先天真光；宗旨在“光”字。', link: { kind: 'node', id: 'qjing', label: '清静见光 · 与清静经互读' } },
+    ] },
+    { name: '元神识神', clauses: [
+      { text: '元神者，无极也；识神者，太极也。', gloss: '元神指未落分别的本源，识神指已经发动分别、应物造作的一面。修法不是灭识神，而是使识神返归元神。', link: { kind: 'node', id: 'taijitu', label: '无极太极 · 理学互读' } },
+      { text: '凡人终日动用，皆识神用事。', gloss: '日常追逐境界、分别利害，多是识神作主；若只随识神流转，心光便向外耗散。' },
+      { text: '回光者，消阴制魄之诀也。', gloss: '“回光”就是把外驰之神收回，使阴浊之习不再主宰身心；这是内丹语汇中的返本工夫。' },
+    ] },
+    { name: '回光守中', clauses: [
+      { text: '回光之功，全用逆法。', gloss: '所谓“逆”，不是违逆自然，而是不再顺着欲望和感官外流，反向收摄神光。', link: { kind: 'node', id: 'yi', label: '反复其道 · 与复卦相参' } },
+      { text: '光不在身中，亦不在身外。', gloss: '真光不能按空间对象去抓取；若执为身中身外之物，已经落入识神分别。' },
+      { text: '守中者，守其未发之中也。', gloss: '“中”不是身体某处的死点，而是喜怒欲念未发以前的中和主宰。', link: { kind: 'node', id: 'zhongyong', label: '未发之中 · 中庸互读' } },
+    ] },
+    { name: '回光调息', clauses: [
+      { text: '息者自心也，自心为息。', gloss: '调息不是机械数呼吸；息与心相应，心静则息细，息和则心安。' },
+      { text: '心细则息细，心一则动气也；气细则心细，气一则动心也。', gloss: '心与气互相牵动：心散则气粗，气粗又扰心；功夫在使心息互相归一。' },
+      { text: '调息须调真息，真息者，心息相依也。', gloss: '真正的调息，是心与息相依相守，而不是追求特殊呼吸感受。', link: { kind: 'node', id: 'yinfu', label: '观天执天 · 气机互读' } },
+    ] },
+    { name: '回光差谬', clauses: [
+      { text: '不可著意，不可无意。', gloss: '太用力便成执著，完全放任又成昏散；回光须在有意无意之间保持清明。' },
+      { text: '昏沉散乱，皆是病。', gloss: '昏沉是光被浊气盖住，散乱是光随境外驰；二者都是初学最常见的偏差。' },
+      { text: '若一味守空，便落顽空。', gloss: '若把修行理解成空空洞洞、什么都不照见，就落入死寂；金华之旨重在虚明，不是麻木。', link: { kind: 'node', id: 'xinjing', label: '空不异色 · 避免顽空' } },
+    ] },
+    { name: '回光证验', clauses: [
+      { text: '静中绵绵不绝，乃真息现前。', gloss: '功夫有验，不在奇异景象，而在静中绵密不断、心息相依的稳定。' },
+      { text: '一灵真性，常应常静。', gloss: '真性不是离事枯坐；它能应物而不乱，动中仍有静定。', link: { kind: 'node', id: 'qjing', label: '常应常静 · 清静经互读' } },
+      { text: '光华发现，非可执著。', gloss: '即便有身心轻安、光明感等体验，也不可执著为成就；执著证验反而变成差谬。' },
+    ] },
+    { name: '回光活法', clauses: [
+      { text: '回光不止在静坐。', gloss: '此书的关键是“活法”：静坐只是入手，待人接物、应事处境时也要能回光返照。' },
+      { text: '凡应事接物，常令此光不离本宫。', gloss: '做事时不让心光被境界牵走，便是在动态中守中。', link: { kind: 'node', id: 'yangming', label: '事上磨炼 · 阳明互读' } },
+      { text: '丹田有宝休寻道，对境无心莫问禅。', gloss: '这句劝人不要外求玄妙：身心本有宝藏，若对境不被牵动，禅与道的要点已在其中。', link: { kind: 'node', id: 'zhuangzi', label: '无心应物 · 庄子互读' } },
+    ] },
+  ],
+};
+
 export const XICI: ClauseWork = {
   id: 'xici', title: '系辞传', full: '易 · 十翼', glyph: '系',
   relation: '由卦爻上升为天地法则 · 系统思维的源头',
@@ -1268,7 +1309,7 @@ export const WORKS: WorkMeta[] = [
   { id: 'yinfu', school: 'dao', title: '阴符经', author: '旧题黄帝', frag: '观天之道，执天之行', status: 'ready' },
   { id: 'cantongqi', school: 'dao', title: '周易参同契', author: '魏伯阳', frag: '乾坤者，易之门户', status: 'ready' },
   { id: 'liezi', school: 'dao', title: '列子', author: '列御寇', frag: '冲虚御风 · 寓言辨命', status: 'partial' },
-  { id: 'taiyi', school: 'dao', title: '太乙金华宗旨', author: '旧题吕洞宾', frag: '性命双修 · 内丹', status: 'soon' },
+  { id: 'taiyi', school: 'dao', title: '太乙金华宗旨', author: '旧题吕洞宾', frag: '回光守中 · 性命双修', status: 'partial' },
   { id: 'zhongyong', school: 'ru', group: '经传', title: '中庸', author: '子思', frag: '君子而时中', status: 'ready' },
   { id: 'taijitu', school: 'ru', group: '理学', title: '太极图说', author: '周敦颐', frag: '无极而太极', status: 'ready' },
   { id: 'ximing', school: 'ru', group: '理学', title: '西铭', author: '张载', frag: '民吾同胞，物吾与也', status: 'ready' },

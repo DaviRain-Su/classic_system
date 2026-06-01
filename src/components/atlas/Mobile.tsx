@@ -2,7 +2,7 @@
 // 大画幅可视化（卦阵/立体图/方圆图/元会运世/起卦）在手机给「横屏/桌面」优雅占位。
 import { useState, useRef, useEffect, type CSSProperties, type ReactNode } from 'react';
 import {
-  QIAN, KUN, XICI, DAODE, ZHUANGZI, LIEZI, QINGJING, YINFU, CANTONGQI, ZHONGYONG, TAIJITU, XIMING, HUANGJI, YANGMING,
+  QIAN, KUN, XICI, DAODE, ZHUANGZI, LIEZI, TAIYI, QINGJING, YINFU, CANTONGQI, ZHONGYONG, TAIJITU, XIMING, HUANGJI, YANGMING,
   XINJING, JINGANG, BUER, BASHI, RUPUSA, ZHENGJIAN, TANJING,
   SCHOOL_INFO, WORK_BY_ID, WEST_MAP, WEST_INTRO, TRIGRAMS, HEX_FULL, HEX_FULL_BY_PAIR,
   type FullHex, type ClauseWork, type ChapterWork,
@@ -15,7 +15,7 @@ type AnyWork = Partial<FullHex & ClauseWork & ChapterWork>;
 const READ: Record<string, AnyWork> = {
   ...Object.fromEntries(Object.entries(HEX_FULL).map(([num, hex]) => [num, hex])),
   yi: QIAN, kun: KUN, xici: XICI, shiyi: TEN_WINGS,
-  daode: DAODE, zhuangzi: ZHUANGZI, liezi: LIEZI, qjing: QINGJING, yinfu: YINFU, cantongqi: CANTONGQI,
+  daode: DAODE, zhuangzi: ZHUANGZI, liezi: LIEZI, taiyi: TAIYI, qjing: QINGJING, yinfu: YINFU, cantongqi: CANTONGQI,
   zhongyong: ZHONGYONG, taijitu: TAIJITU, ximing: XIMING, huangji: HUANGJI, yangming: YANGMING,
   xinjing: XINJING, jingang: JINGANG, buer: BUER, bashi: BASHI, rupusa: RUPUSA, zhengjian: ZHENGJIAN, tanjing: TANJING,
 };

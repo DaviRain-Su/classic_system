@@ -2,7 +2,7 @@
 import { useMemo } from 'react';
 import {
   XINJING, JINGANG, BUER, BASHI, RUPUSA, ZHENGJIAN, QINGJING, YINFU, CANTONGQI, XICI,
-  ZHONGYONG, TAIJITU, XIMING, HUANGJI, YANGMING, DAODE, TANJING, ZHUANGZI, LIEZI,
+  ZHONGYONG, TAIJITU, XIMING, HUANGJI, YANGMING, DAODE, TANJING, ZHUANGZI, LIEZI, TAIYI,
   SCHOOL_INFO, type ClauseWork, type ChapterWork, type LinkSpec,
 } from './data';
 import { Mono } from './chrome';
@@ -20,7 +20,7 @@ function harvestLinks(): Harvested[] {
     ['西铭', XIMING], ['皇极经世书', HUANGJI], ['阳明心学', YANGMING],
   ];
   clauseWorks.forEach(([title, d]) => d.clauses.forEach((c) => add(title, c.text, c.link)));
-  const chapterWorks: [string, ChapterWork][] = [['道德经', DAODE], ['六祖坛经', TANJING], ['庄子', ZHUANGZI], ['列子', LIEZI]];
+  const chapterWorks: [string, ChapterWork][] = [['道德经', DAODE], ['六祖坛经', TANJING], ['庄子', ZHUANGZI], ['列子', LIEZI], ['太乙金华宗旨', TAIYI]];
   chapterWorks.forEach(([title, d]) => d.chapters.forEach((ch) => (ch.clauses || []).forEach((c) => add(title + '·' + ch.name, c.text, c.link))));
   return out;
 }

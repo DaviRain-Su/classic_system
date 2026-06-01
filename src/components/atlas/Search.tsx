@@ -3,7 +3,7 @@ import { useMemo, useState, type ReactNode } from 'react';
 import {
   XINJING, JINGANG, BUER, BASHI, RUPUSA, ZHENGJIAN, QINGJING, YINFU, CANTONGQI, XICI,
   SHUOGUA, XUGUA, ZAGUA, WENYAN,
-  ZHONGYONG, TAIJITU, XIMING, HUANGJI, YANGMING, DAODE, TANJING, ZHUANGZI, LIEZI,
+  ZHONGYONG, TAIJITU, XIMING, HUANGJI, YANGMING, DAODE, TANJING, ZHUANGZI, LIEZI, TAIYI,
   HEX_FULL_LIST, type ClauseWork, type ChapterWork, type FullHex,
 } from './data';
 import { TEN_WINGS } from './ten-wings';
@@ -29,7 +29,7 @@ function buildCorpus(): Item[] {
     if (d.mantra) push(route, d.title + '·咒', d.mantra);
   });
 
-  const chapterWorks: [string, ChapterWork][] = [['shiyi', TEN_WINGS], ['daode', DAODE], ['tanjing', TANJING], ['zhuangzi', ZHUANGZI], ['liezi', LIEZI]];
+  const chapterWorks: [string, ChapterWork][] = [['shiyi', TEN_WINGS], ['daode', DAODE], ['tanjing', TANJING], ['zhuangzi', ZHUANGZI], ['liezi', LIEZI], ['taiyi', TAIYI]];
   chapterWorks.forEach(([route, d]) => {
     d.chapters.forEach((ch) => (ch.clauses || []).forEach((c) => push(route, d.title + '·' + ch.name, c.text, c.gloss)));
   });

@@ -152,5 +152,20 @@ assert(/liezi: LIEZI/.test(mobile), 'Mobile.tsx 应接入列子阅读页');
 assert(/\['liezi', LIEZI\]/.test(search), 'Search.tsx 应索引列子');
 assert(/\['列子', LIEZI\]/.test(relations), 'Relations.tsx 应采集列子关联');
 
-if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性、十翼全文、历代易注（卦辞级+爻级 386 条）与列子精选覆盖正确。');
+// 9. 道家扩展内容：太乙金华宗旨不能退回 soon 占位，且需接入阅读、移动端、搜索与关系图谱。
+const taiyi = data.match(/export const TAIYI: ChapterWork = \{([\s\S]*?)\n\};\n\nexport const XICI/)?.[1] ?? '';
+const taiyiChapters = (taiyi.match(/name: '/g) || []).length;
+const taiyiClauses = (taiyi.match(/\{ text:/g) || []).length;
+assert(taiyiChapters === 7, `data.ts 太乙金华宗旨应含 7 篇精选，实得 ${taiyiChapters}`);
+assert(taiyiClauses === 21, `data.ts 太乙金华宗旨精选应含 21 条，实得 ${taiyiClauses}`);
+for (const text of ['自然曰道，道无名相', '回光之功，全用逆法', '不可著意，不可无意', '丹田有宝休寻道']) {
+  assert(taiyi.includes(text), `data.ts 缺太乙金华宗旨精选关键词：${text}`);
+}
+assert(/id: 'taiyi'[\s\S]*status: 'partial'/.test(data), 'WORKS 中太乙金华宗旨状态应为 partial');
+assert(/id === 'taiyi'/.test(reading), 'Reading.tsx 应接入太乙金华宗旨阅读页');
+assert(/taiyi: TAIYI/.test(mobile), 'Mobile.tsx 应接入太乙金华宗旨阅读页');
+assert(/\['taiyi', TAIYI\]/.test(search), 'Search.tsx 应索引太乙金华宗旨');
+assert(/\['太乙金华宗旨', TAIYI\]/.test(relations), 'Relations.tsx 应采集太乙金华宗旨关联');
+
+if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性、十翼全文、历代易注（卦辞级+爻级 386 条）与道家列子/太乙精选覆盖正确。');
 else throw new Error(`结构自检失败：共 ${failures} 项`);
