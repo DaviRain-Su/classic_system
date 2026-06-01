@@ -99,6 +99,12 @@ assert(tenWingGlossN >= 29, `ten-wing-gloss.ts 至少应覆盖文言传乾坤 29
 for (const text of ['元者，善之长也', '潜龙勿用', '坤至柔而动也刚', '积善之家']) {
   assert(tenWingGloss.includes(text), `ten-wing-gloss.ts 缺文言传白话键：${text}`);
 }
+const xiciShangGloss = tenWingGloss.match(/'系辞上传': \[([\s\S]*?)\n  \]/)?.[1] ?? '';
+const xiciShangGlossN = (xiciShangGloss.match(/^\s{4}'/gm) || []).length;
+assert(xiciShangGlossN === 42, `ten-wing-gloss.ts 系辞上传白话应=42 条，实得 ${xiciShangGlossN}`);
+for (const text of ['一阴一阳', '大衍之数', '太极', '超越具体形器']) {
+  assert(xiciShangGloss.includes(text), `ten-wing-gloss.ts 缺系辞上传白话关键词：${text}`);
+}
 
 if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性、十翼全文与历代易注（卦辞级+爻级 386 条）覆盖正确。');
 else throw new Error(`结构自检失败：共 ${failures} 项`);

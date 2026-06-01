@@ -80,13 +80,14 @@ const ts = `// 自动生成：十翼全文阅读数据。详见 scripts/build_te
 // 底本：bollwarm/ZHOUYI 的 ZHOUYI.pm（繁体经 opencc-js 转简）。
 // 原文由脚本生成；白话覆盖层维护在 ten-wing-gloss.ts。
 import type { ChapterWork } from './data';
-import { TEN_WING_GLOSS_BY_TEXT } from './ten-wing-gloss';
+import { TEN_WING_GLOSS_BY_CHAPTER, TEN_WING_GLOSS_BY_TEXT } from './ten-wing-gloss';
 
 export const TEN_WINGS: ChapterWork = ${JSON.stringify(data, null, 2)};
 
 for (const chapter of TEN_WINGS.chapters) {
-  for (const clause of chapter.clauses || []) {
-    clause.gloss ||= TEN_WING_GLOSS_BY_TEXT[clause.text] || '';
+  const chapterGlosses = TEN_WING_GLOSS_BY_CHAPTER[chapter.name] || [];
+  for (const [i, clause] of (chapter.clauses || []).entries()) {
+    clause.gloss ||= chapterGlosses[i] || TEN_WING_GLOSS_BY_TEXT[clause.text] || '';
   }
 }
 `;
