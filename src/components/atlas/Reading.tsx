@@ -221,6 +221,12 @@ function ChapterReader({ data, glyph, sideSub, school, bmKey, zhuNames, footLabe
         <div style={{ flex: 1, padding: '36px 60px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           <Mono>正在阅读 · {chapter.name} · 点句读注</Mono>
           <h1 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: 28, margin: '10px 0 2px' }}>{d.title} · {chapter.name}</h1>
+          {chapter.note && (
+            <div style={{ marginTop: 12, padding: '13px 16px', borderLeft: '2px solid var(--accent)', background: 'var(--accent-soft)', borderRadius: '0 8px 8px 0' }}>
+              <Mono>章旨</Mono>
+              <div style={{ fontFamily: 'var(--font-serif)', fontSize: 14.5, lineHeight: 1.85, marginTop: 6, color: 'var(--ink-2)' }}>{chapter.note}</div>
+            </div>
+          )}
           <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', overflowY: 'auto', paddingRight: 6 }}>
             {clauses.map((c, i) => {
               const o = open === i;

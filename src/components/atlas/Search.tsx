@@ -31,7 +31,10 @@ function buildCorpus(): Item[] {
 
   const chapterWorks: [string, ChapterWork][] = [['shiyi', TEN_WINGS], ['daode', DAODE], ['tanjing', TANJING], ['zhuangzi', ZHUANGZI], ['liezi', LIEZI], ['taiyi', TAIYI]];
   chapterWorks.forEach(([route, d]) => {
-    d.chapters.forEach((ch) => (ch.clauses || []).forEach((c) => push(route, d.title + '·' + ch.name, c.text, c.gloss)));
+    d.chapters.forEach((ch) => {
+      if (ch.note) push(route, d.title + '·' + ch.name + '·章旨', ch.note);
+      (ch.clauses || []).forEach((c) => push(route, d.title + '·' + ch.name, c.text, c.gloss));
+    });
   });
 
   // 六十四卦（全文）

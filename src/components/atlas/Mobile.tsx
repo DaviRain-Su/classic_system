@@ -266,6 +266,12 @@ function MReader({ id, back }: { id: string; back: () => void }) {
             ))}
           </div>
         )}
+        {d.chapters?.[chap]?.note && (
+          <div style={{ marginBottom: 12, padding: '12px 14px', borderLeft: '2px solid var(--accent)', background: 'var(--accent-soft)', borderRadius: '0 8px 8px 0' }}>
+            <MMono>章旨</MMono>
+            <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, lineHeight: 1.75, color: 'var(--ink-2)', marginTop: 6 }}>{d.chapters[chap].note}</div>
+          </div>
+        )}
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           {clauses.map((c, i) => {
             const o = open === i;
