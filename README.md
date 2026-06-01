@@ -59,6 +59,7 @@ The interaction system is already broad, but the content layer is intentionally 
 Ready or substantially implemented:
 
 - **I Ching / Zhouyi**: all 64 hexagrams include hexagram statements, line statements, Tuan Zhuan, Da Xiang, Xiao Xiang — each with project-written plain-language glosses (hexagram statement, lines, **and Tuan / Da Xiang / Xiao Xiang: 64 + 64 + 384 vernacular renderings**).
+- **I Ching visual systems**: the 64-hexagram matrix, hypercube projections, Fuxi circle-square diagram, casting flow, and the *Huangji Jingshi* twelve-message-hexagram cycle are available as interactive diagrams.
 - **Line-position analysis**: each line shows centrality/correctness plus the classic relational reading — correspondence (Ying), riding/supported (Cheng / Sheng), and proximity (Bi) — computed from the six lines.
 - **Detailed I Ching samples**: Qian, Kun, Tai, Pi, Ji Ji, and Wei Ji have the most complete polished reading experience.
 - **Historical I Ching notes**: both hexagram-statement-level and **line-level** commentary from Cheng Yi (*Yichuan Yizhuan*) and Zhu Xi (*Zhouyi Benyi*) — 64/64 hexagrams at the statement level, plus all 386 lines/uses at the line level — drawn mainly from the imperial *Yuzuan Zhouyi Zhezhong*.
@@ -123,6 +124,8 @@ src/components/atlas/
 ├─ Matrix.tsx           # 64-hexagram matrix and single-hexagram entry
 ├─ Cube.tsx             # hypercube / graph projections
 ├─ CircleSquare.tsx     # Fuxi circle-square diagram
+├─ HuangjiPan.tsx       # Shao Yong cosmic-period plate
+├─ XiaoXiCycle.tsx      # reusable twelve-message hexagram circular diagram
 ├─ cast.tsx             # hexagram casting tool
 ├─ Search.tsx           # corpus search
 ├─ Relations.tsx        # cross-text relation map

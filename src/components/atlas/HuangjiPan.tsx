@@ -1,43 +1,21 @@
-// 皇极经世 · 元会运世盘 — 十二消息卦环 + 中心阳长阴消渐变大卦 + 元会运世数表。
-// lines 自上而下（index 0 = 上爻），1=阳 0=阴。
-import { useState, useEffect } from 'react';
-import { Lines, MorphYao } from './primitives';
+// 皇极经世 · 元会运世盘 — 十二消息卦圆图 + 元会运世数表。
+import { useEffect, useState } from 'react';
 import { Mono } from './chrome';
-import { TopBar, type OpenHex } from './shared';
 import type { TrigramKey } from './data';
-
-interface Xiao { name: string; lines: number[]; yang: number; month: string; sym: string; }
-const XIAOXI: Record<string, Xiao> = {
-  fu: { name: '复', lines: [0, 0, 0, 0, 0, 1], yang: 1, month: '十一月·子', sym: '䷗' },
-  lin: { name: '临', lines: [0, 0, 0, 0, 1, 1], yang: 2, month: '十二月·丑', sym: '䷒' },
-  tai: { name: '泰', lines: [0, 0, 0, 1, 1, 1], yang: 3, month: '正月·寅', sym: '䷊' },
-  dzh: { name: '大壮', lines: [0, 0, 1, 1, 1, 1], yang: 4, month: '二月·卯', sym: '䷡' },
-  guai: { name: '夬', lines: [0, 1, 1, 1, 1, 1], yang: 5, month: '三月·辰', sym: '䷪' },
-  qian: { name: '乾', lines: [1, 1, 1, 1, 1, 1], yang: 6, month: '四月·巳', sym: '䷀' },
-  gou: { name: '姤', lines: [1, 1, 1, 1, 1, 0], yang: 5, month: '五月·午', sym: '䷫' },
-  dun: { name: '遁', lines: [1, 1, 1, 1, 0, 0], yang: 4, month: '六月·未', sym: '䷠' },
-  pi: { name: '否', lines: [1, 1, 1, 0, 0, 0], yang: 3, month: '七月·申', sym: '䷋' },
-  guan: { name: '观', lines: [1, 1, 0, 0, 0, 0], yang: 2, month: '八月·酉', sym: '䷓' },
-  bo: { name: '剥', lines: [1, 0, 0, 0, 0, 0], yang: 1, month: '九月·戌', sym: '䷖' },
-  kun: { name: '坤', lines: [0, 0, 0, 0, 0, 0], yang: 0, month: '十月·亥', sym: '䷁' },
-};
-const RING = ['qian', 'gou', 'dun', 'pi', 'guan', 'bo', 'kun', 'fu', 'lin', 'tai', 'dzh', 'guai'];
-const SEQ = ['fu', 'lin', 'tai', 'dzh', 'guai', 'qian', 'gou', 'dun', 'pi', 'guan', 'bo', 'kun'];
+import { TopBar, type OpenHex } from './shared';
+import { XiaoXiCycle, XIAOXI_HEXES, XIAOXI_SEQUENCE, type XiaoXiKey } from './XiaoXiCycle';
 
 export function HuangjiPan({ onBack, onOpenHex, onOpenCube }: { onBack: () => void; onOpenHex: OpenHex; onOpenCube: () => void }) {
   const [step, setStep] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const curKey = SEQ[step];
-  const cur = XIAOXI[curKey];
+  const curKey = XIAOXI_SEQUENCE[step] ?? 'fu';
+  const cur = XIAOXI_HEXES[curKey];
 
   useEffect(() => {
     if (!playing) return;
-    const t = setInterval(() => setStep((s) => (s + 1) % 12), 1100);
+    const t = setInterval(() => setStep((s) => (s + 1) % XIAOXI_SEQUENCE.length), 1100);
     return () => clearInterval(t);
   }, [playing]);
-
-  const cx = 285, cy = 270, R = 200;
-  const ringPt = (i: number) => { const a = (-90 + i * 30) * Math.PI / 180; return { x: cx + Math.cos(a) * R, y: cy + Math.sin(a) * R }; };
 
   const units: [string, string, string][] = [
     ['元', '12 会', '129600 年'],
@@ -46,40 +24,43 @@ export function HuangjiPan({ onBack, onOpenHex, onOpenCube }: { onBack: () => vo
     ['世', '30 年', '30 年'],
   ];
 
+  const selectXiaoXi = (key: XiaoXiKey) => {
+    const next = XIAOXI_SEQUENCE.indexOf(key);
+    if (next < 0) return;
+    setPlaying(false);
+    setStep(next);
+  };
+
   return (
     <div style={{ position: 'absolute', inset: 0, fontFamily: 'var(--font-body)', color: 'var(--ink)' }}>
       <TopBar title="皇极经世 · 元会运世盘" sub="邵雍 · 十二消息卦" onBack={onBack} />
       <div style={{ position: 'absolute', top: 74, left: 0, right: 0, bottom: 0, display: 'flex' }}>
-        <div style={{ width: 600, flex: '0 0 auto', borderRight: '1px solid var(--hair)', position: 'relative' }}>
-          {RING.map((k, i) => {
-            const p = ringPt(i); const g = XIAOXI[k]; const on = k === curKey;
-            const si = SEQ.indexOf(k);
-            return (
-              <div key={k} onClick={() => setStep(si)} style={{ position: 'absolute', left: p.x, top: p.y, transform: 'translate(-50%,-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
-                <div style={{ padding: 4, borderRadius: 6, background: on ? 'var(--accent-soft)' : 'transparent', boxShadow: on ? 'inset 0 0 0 1.4px var(--accent)' : 'none' }}>
-                  <Lines lines={g.lines} w={30} h={3} vgap={2.5} color={on ? 'var(--accent)' : g.yang >= 4 ? 'var(--ink)' : 'var(--ink-2)'} />
-                </div>
-                <span style={{ fontFamily: 'var(--font-serif)', fontSize: 12, fontWeight: on ? 700 : 500, color: on ? 'var(--accent)' : 'var(--ink-2)' }}>{g.name}</span>
-              </div>
-            );
-          })}
-          <div style={{ position: 'absolute', left: cx, top: cy, transform: 'translate(-50%,-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 7 }}>
-            {cur.lines.map((l, i) => <MorphYao key={i} broken={l === 0} w={84} h={9} gap={16} color="var(--accent)" />)}
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: 30, color: 'var(--ink)', marginTop: 8, lineHeight: 1 }}>{cur.name}</div>
-            <Mono dim>{cur.month} · {cur.yang}阳</Mono>
+        <div style={{ width: 620, flex: '0 0 auto', borderRight: '1px solid var(--hair)', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '18px 24px 88px' }}>
+          <div style={{ width: '100%', maxWidth: 560 }}>
+            <XiaoXiCycle selectedKey={curKey} onSelect={selectXiaoXi} />
           </div>
           <div style={{ position: 'absolute', bottom: 26, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
-            <button onClick={() => { setPlaying(false); setStep((s) => (s + 11) % 12); }} style={{ border: '1px solid var(--hair-2)', background: 'transparent', borderRadius: 999, width: 36, height: 36, cursor: 'pointer', color: 'var(--ink-2)', fontSize: 15 }}>‹</button>
+            <button onClick={() => { setPlaying(false); setStep((s) => (s + XIAOXI_SEQUENCE.length - 1) % XIAOXI_SEQUENCE.length); }} style={{ border: '1px solid var(--hair-2)', background: 'transparent', borderRadius: 999, width: 36, height: 36, cursor: 'pointer', color: 'var(--ink-2)', fontSize: 15 }}>‹</button>
             <button onClick={() => setPlaying((p) => !p)} style={{ border: 'none', background: 'var(--accent)', color: '#fff', borderRadius: 999, padding: '9px 24px', cursor: 'pointer', fontFamily: 'var(--font-serif)', fontSize: 14 }}>{playing ? '暂停' : '演示阳长阴消'}</button>
-            <button onClick={() => { setPlaying(false); setStep((s) => (s + 1) % 12); }} style={{ border: '1px solid var(--hair-2)', background: 'transparent', borderRadius: 999, width: 36, height: 36, cursor: 'pointer', color: 'var(--ink-2)', fontSize: 15 }}>›</button>
+            <button onClick={() => { setPlaying(false); setStep((s) => (s + 1) % XIAOXI_SEQUENCE.length); }} style={{ border: '1px solid var(--hair-2)', background: 'transparent', borderRadius: 999, width: 36, height: 36, cursor: 'pointer', color: 'var(--ink-2)', fontSize: 15 }}>›</button>
           </div>
         </div>
 
         <div style={{ flex: 1, padding: '38px 48px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           <Mono>加一倍法 · 以数推天地始终</Mono>
           <p style={{ fontSize: 13.5, lineHeight: 1.85, color: 'var(--ink-2)', margin: '10px 0 0' }}>
-            邵雍以十二<b style={{ color: 'var(--ink)' }}>消息卦</b>配一岁十二月：阳气自《复》一阳来复，渐长至《乾》纯阳，再自《姤》一阴始生，渐消至《坤》纯阴——一套以卦象记录<b style={{ color: 'var(--ink)' }}>阴阳消长</b>的时间模型。
+            邵雍以十二<b style={{ color: 'var(--ink)' }}>消息卦</b>配一岁十二月：阳气自《复》一阳来复，渐长至《乾》纯阳，再自《姤》一阴始生，渐消至《坤》纯阴——一套以卦象记录<b style={{ color: 'var(--ink)' }}>阴阳消长</b>的时间模型。此图以《复》居子月冬至之下，《姤》居午月夏至之上；右半为<b style={{ color: 'var(--seal)' }}>息</b>，左半为<b style={{ color: 'var(--accent)' }}>消</b>。
           </p>
+
+          <div style={{ marginTop: 18, padding: '12px 14px', border: '1px solid var(--hair)', borderRadius: 8, background: 'var(--paper-2)' }}>
+            <Mono dim>当前消息</Mono>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginTop: 8 }}>
+              <span style={{ fontFamily: 'var(--font-display)', fontSize: 34, color: 'var(--accent)', lineHeight: 1 }}>{cur.name}</span>
+              <span style={{ fontFamily: 'var(--font-serif)', fontSize: 14, color: 'var(--ink)' }}>{cur.month}</span>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--ink-3)' }}>{cur.yang}阳{6 - cur.yang}阴</span>
+            </div>
+            <p style={{ margin: '6px 0 0', fontFamily: 'var(--font-serif)', color: 'var(--ink-2)', fontSize: 13.5 }}>{cur.phase}。点击圆图任一卦，可停驻查看其月令位置与阴阳比例。</p>
+          </div>
 
           <div style={{ marginTop: 22 }}>
             <Mono dim>元 · 会 · 运 · 世 — 层层统摄</Mono>

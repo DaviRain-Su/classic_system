@@ -185,5 +185,19 @@ assert(/taiyi: TAIYI/.test(mobile), 'Mobile.tsx 应接入太乙金华宗旨阅�
 assert(/\['taiyi', TAIYI\]/.test(search), 'Search.tsx 应索引太乙金华宗旨');
 assert(/\['太乙金华宗旨', TAIYI\]/.test(relations), 'Relations.tsx 应采集太乙金华宗旨关联');
 
-if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性、十翼全文、历代易注（卦辞级+爻级 386 条）、道德经章旨/传统注读与道家列子/太乙精选覆盖正确。');
+// 10. 皇极经世：十二消息卦圆图必须按复底姤顶、右息左消接入皇极页与讲堂。
+const xiaoxi = file('../src/components/atlas/XiaoXiCycle.tsx');
+const huangji = file('../src/components/atlas/HuangjiPan.tsx');
+const yinyangFlux = file('../src/components/atlas/learn/widgets/YinYangFlux.tsx');
+const xiaoxiEntryN = (xiaoxi.match(/key: '/g) || []).length;
+assert(xiaoxiEntryN === 12, `XiaoXiCycle.tsx 十二消息卦应=12 项，实得 ${xiaoxiEntryN}`);
+for (const text of ['fu', 'gou', '冬至', '夏至', '右半「息」', '左半「消」', 'XIAOXI_SEQUENCE']) {
+  assert(xiaoxi.includes(text), `XiaoXiCycle.tsx 缺十二消息卦圆图关键内容：${text}`);
+}
+assert(/XIAOXI_SEQUENCE = \[\s*'fu'[\s\S]*'qian'[\s\S]*'gou'[\s\S]*'kun'/.test(xiaoxi), 'XiaoXiCycle.tsx 十二消息卦顺序应由复息至乾，再由姤消至坤');
+assert(/XiaoXiCycle/.test(huangji), 'HuangjiPan.tsx 应复用十二消息卦圆图');
+assert(/右半为<b[\s\S]*>息<\/b>，左半为<b[\s\S]*>消<\/b>/.test(huangji), 'HuangjiPan.tsx 应解释右息左消');
+assert(/XiaoXiCycle/.test(yinyangFlux), 'YinYangFlux.tsx 讲堂应嵌入十二消息卦圆图');
+
+if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性、十翼全文、历代易注（卦辞级+爻级 386 条）、道德经章旨/传统注读、道家列子/太乙精选与十二消息卦圆图覆盖正确。');
 else throw new Error(`结构自检失败：共 ${failures} 项`);

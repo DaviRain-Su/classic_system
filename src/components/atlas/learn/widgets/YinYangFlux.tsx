@@ -11,6 +11,7 @@
 //   其余 --paper/--ink/--accent/--seal/--accent-soft 与 --font-serif/--font-mono 仓库均有。
 
 import { useState, type CSSProperties } from "react";
+import { XiaoXiCycle, XIAOXI_SEQUENCE, type XiaoXiKey } from "../../XiaoXiCycle";
 
 const T = {
   paper: "var(--paper, #f7f6f4)",
@@ -161,6 +162,22 @@ export function YinYangFlux() {
             <span>乾（阳极）</span>
             <span>姤（一阴生）</span>
             <span>坤（阴极）</span>
+          </div>
+          <div style={{ marginTop: 18, paddingTop: 16, borderTop: `1px solid ${T.line}` }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 12, fontSize: 12, color: T.ink, opacity: 0.68 }}>
+              <span style={{ fontWeight: 700 }}>十二消息卦圆图</span>
+              <span>点击圆图节点同步滑块</span>
+            </div>
+            <div style={{ maxWidth: 520, margin: "8px auto 0" }}>
+              <XiaoXiCycle
+                selectedKey={XIAOXI_SEQUENCE[idx] ?? "fu"}
+                compact
+                onSelect={(key: XiaoXiKey) => {
+                  const next = XIAOXI_SEQUENCE.indexOf(key);
+                  if (next >= 0) setIdx(next);
+                }}
+              />
+            </div>
           </div>
         </div>
         <p style={{ fontSize: 12, marginTop: 8, ...muted() }}>※「一阴一阳之谓道」——道不是阴、也不是阳，而是这「一来一往」本身。</p>
