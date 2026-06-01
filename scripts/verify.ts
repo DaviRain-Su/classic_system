@@ -111,6 +111,12 @@ assert(xiciXiaGlossN === 36, `ten-wing-gloss.ts 系辞下传白话应=36 条，�
 for (const text of ['伏羲', '穷极则变', '知几', '忧患', '乾至健']) {
   assert(xiciXiaGloss.includes(text), `ten-wing-gloss.ts 缺系辞下传白话关键词：${text}`);
 }
+const shuoGuaGloss = tenWingGloss.match(/'说卦传': \[([\s\S]*?)\n  \]/)?.[1] ?? '';
+const shuoGuaGlossN = (shuoGuaGloss.match(/^\s{4}'/gm) || []).length;
+assert(shuoGuaGlossN === 18, `ten-wing-gloss.ts 说卦传白话应=18 条，实得 ${shuoGuaGlossN}`);
+for (const text of ['三才', '天地各定其位', '帝从震方发动', '乾为马', '坤象地']) {
+  assert(shuoGuaGloss.includes(text), `ten-wing-gloss.ts 缺说卦传白话关键词：${text}`);
+}
 
 if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性、十翼全文与历代易注（卦辞级+爻级 386 条）覆盖正确。');
 else throw new Error(`结构自检失败：共 ${failures} 项`);
