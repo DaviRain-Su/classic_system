@@ -93,6 +93,12 @@ for (const name of ['文言传 · 乾', '文言传 · 坤', '系辞上传', '系
 for (const text of ['一阴一阳之谓道', '有太极，是生两仪', '天地定位，山泽通气', '有天地，然后万物生焉', '《乾》刚《坤》柔']) {
   assert(tenWings.includes(text), `ten-wings.ts 缺关键经文：${text}`);
 }
+const tenWingGloss = file('../src/components/atlas/ten-wing-gloss.ts');
+const tenWingGlossN = (tenWingGloss.match(/^\s+'[^']+':\s+'/gm) || []).length;
+assert(tenWingGlossN >= 29, `ten-wing-gloss.ts 至少应覆盖文言传乾坤 29 条，实得 ${tenWingGlossN}`);
+for (const text of ['元者，善之长也', '潜龙勿用', '坤至柔而动也刚', '积善之家']) {
+  assert(tenWingGloss.includes(text), `ten-wing-gloss.ts 缺文言传白话键：${text}`);
+}
 
 if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性、十翼全文与历代易注（卦辞级+爻级 386 条）覆盖正确。');
 else throw new Error(`结构自检失败：共 ${failures} 项`);
