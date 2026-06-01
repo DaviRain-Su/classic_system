@@ -1,7 +1,7 @@
-// 经卷长轴阅读 — 乾/坤等全卦(可交互) / 道德经·庄子·坛经(多章) / 心经·常清静·系辞·阳明·阴符·参同契(逐句) / 占位。
+// 经卷长轴阅读 — 乾/坤等全卦(可交互) / 道德经·庄子·列子·坛经(多章) / 心经·常清静·系辞·阳明·阴符·参同契(逐句) / 占位。
 import { useState } from 'react';
 import {
-  QIAN, KUN, HEX_FULL, DAODE, ZHUANGZI, TANJING, YINFU, CANTONGQI, XINJING, QINGJING, YANGMING, XICI,
+  QIAN, KUN, HEX_FULL, DAODE, ZHUANGZI, LIEZI, TANJING, YINFU, CANTONGQI, XINJING, QINGJING, YANGMING, XICI,
   SHUOGUA, XUGUA, ZAGUA, WENYAN,
   JINGANG, BUER, BASHI, RUPUSA, ZHENGJIAN, ZHONGYONG, TAIJITU, XIMING,
   TRIGRAMS, SCHOOL_INFO, WORK_BY_ID, NODE_BY_ID,
@@ -383,6 +383,7 @@ export function Reading({ id, onBack, onOpen, onOpenHex, onOpenTrigram, onOpenSc
   if (HEX_FULL[numId]) return <ReadingGua data={HEX_FULL[numId]} bmKey={'gua:' + id} {...guaProps} />;
   if (id === 'daode') return <ChapterReader data={DAODE} glyph="道" sideSub="老子 · 八十一章" school="dao" bmKey="daode" zhuNames={['王弼', '河上公', '苏辙']} footLabel="道家 · 道德经" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} />;
   if (id === 'zhuangzi') return <ChapterReader data={ZHUANGZI} glyph="庄" sideSub="庄周 · 内七篇" school="dao" bmKey="zhuangzi" zhuNames={['郭象', '成玄英', '王夫之']} footLabel="道家 · 庄子" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} />;
+  if (id === 'liezi') return <ChapterReader data={LIEZI} glyph="列" sideSub="列御寇 · 冲虚精选" school="dao" bmKey="liezi" zhuNames={[]} footLabel="道家 · 列子" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} />;
   if (id === 'tanjing') return <ChapterReader data={TANJING} glyph="佛" sideSub="惠能 · 十品" school="fo" bmKey="tanjing" zhuNames={['宗宝', '德异', '契嵩']} footLabel="佛家 · 六祖坛经" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} />;
   if (id === 'yinfu') return <ClauseReader data={YINFU} glyph="符" sideTitle={YINFU.full!} sideSub={YINFU.author} school="dao" bmKey="yinfu" zhuNames={['李筌', '张果', '朱熹']} footLabel="道家 · 阴符经" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;
   if (id === 'cantongqi') return <ClauseReader data={CANTONGQI} glyph="丹" sideTitle={CANTONGQI.full!} sideSub={CANTONGQI.author} school="dao" bmKey="cantongqi" zhuNames={['彭晓', '朱熹', '陈致虚']} footLabel="道家 · 参同契" onBack={onBack} onOpen={onOpen} onOpenHex={onOpenHex} onOpenSchool={onOpenSchool} onOpenCube={onOpenCube} />;

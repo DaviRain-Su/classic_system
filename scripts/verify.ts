@@ -132,5 +132,25 @@ for (const text of ['两两杂举', '乾刚坤柔', '卦义速览表']) {
 const fullTenWingGlossN = tenWingGlossN + xiciShangGlossN + xiciXiaGlossN + shuoGuaGlossN + xuGuaGlossN + zaGuaGlossN;
 assert(fullTenWingGlossN === 128, `ten-wing-gloss.ts 十翼全文白话覆盖应=128 条，实得 ${fullTenWingGlossN}`);
 
-if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性、十翼全文与历代易注（卦辞级+爻级 386 条）覆盖正确。');
+// 8. 道家扩展内容：列子不能退回 soon 占位，且需接入阅读、移动端、搜索与关系图谱。
+const data = file('../src/components/atlas/data.ts');
+const reading = file('../src/components/atlas/Reading.tsx');
+const mobile = file('../src/components/atlas/Mobile.tsx');
+const search = file('../src/components/atlas/Search.tsx');
+const relations = file('../src/components/atlas/Relations.tsx');
+const liezi = data.match(/export const LIEZI: ChapterWork = \{([\s\S]*?)\n\};\n\nexport const YINFU/)?.[1] ?? '';
+const lieziChapters = (liezi.match(/name: '/g) || []).length;
+const lieziClauses = (liezi.match(/\{ text:/g) || []).length;
+assert(lieziChapters === 8, `data.ts 列子应含 8 篇精选，实得 ${lieziChapters}`);
+assert(lieziClauses === 34, `data.ts 列子精选应含 34 条，实得 ${lieziClauses}`);
+for (const text of ['有太易，有太初', '列子师老商氏', '愚公者', '意其邻之子']) {
+  assert(liezi.includes(text), `data.ts 缺列子精选关键词：${text}`);
+}
+assert(/id: 'liezi'[\s\S]*status: 'partial'/.test(data), 'WORKS 中列子状态应为 partial');
+assert(/id === 'liezi'/.test(reading), 'Reading.tsx 应接入列子阅读页');
+assert(/liezi: LIEZI/.test(mobile), 'Mobile.tsx 应接入列子阅读页');
+assert(/\['liezi', LIEZI\]/.test(search), 'Search.tsx 应索引列子');
+assert(/\['列子', LIEZI\]/.test(relations), 'Relations.tsx 应采集列子关联');
+
+if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性、十翼全文、历代易注（卦辞级+爻级 386 条）与列子精选覆盖正确。');
 else throw new Error(`结构自检失败：共 ${failures} 项`);
