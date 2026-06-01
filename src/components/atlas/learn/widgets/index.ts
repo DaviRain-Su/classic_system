@@ -14,3 +14,4 @@ export { SixSchools } from './SixSchools';
 export { TransformLab } from './TransformLab';
 export { SequencePairs } from './SequencePairs';
 export { GroupView } from './GroupView';
+export { XiaoXiLens } from './XiaoXiLens';

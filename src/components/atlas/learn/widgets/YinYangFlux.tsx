@@ -133,8 +133,18 @@ export function YinYangFlux() {
       <section>
         <h3 style={{ fontSize: 16, fontWeight: 700, color: T.accent, margin: "0 0 4px" }}>三 · 消长转化（十二消息卦）</h3>
         <p style={{ fontSize: 14, margin: "0 0 12px" }}>
-          阴阳从不静止。拖动滑块，看一阳如何自地底生起、逐爻盈满至乾，又如何一阴始生、逐爻退尽归坤——一年十二月的呼吸。
+          「消长转化」说的是此消彼长：阳长则阴消，阴长则阳消，六爻总数守恒。拖动滑块，看一阳如何自地底生起、逐爻盈满至乾，又如何一阴始生、逐爻退尽归坤——一年十二月的呼吸。
         </p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10, marginBottom: 12 }}>
+          <div style={{ ...card, padding: 12 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: T.seal }}>息 xi</div>
+            <p style={{ fontSize: 13, lineHeight: 1.7, margin: "5px 0 0" }}>阳爻自下而上生长：复、临、泰、大壮、夬、乾。起点是冬至的《复》，不是纯阳的《乾》。</p>
+          </div>
+          <div style={{ ...card, padding: 12 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: T.accent }}>消 xiao</div>
+            <p style={{ fontSize: 13, lineHeight: 1.7, margin: "5px 0 0" }}>阳爻退去，阴爻也自下而上生长：姤、遁、否、观、剥、坤。乾是顶点，下一步即反转。</p>
+          </div>
+        </div>
         <div style={card}>
           <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>

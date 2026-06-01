@@ -189,6 +189,9 @@ assert(/\['太乙金华宗旨', TAIYI\]/.test(relations), 'Relations.tsx 应采�
 const xiaoxi = file('../src/components/atlas/XiaoXiCycle.tsx');
 const huangji = file('../src/components/atlas/HuangjiPan.tsx');
 const yinyangFlux = file('../src/components/atlas/learn/widgets/YinYangFlux.tsx');
+const xiaoxiLens = file('../src/components/atlas/learn/widgets/XiaoXiLens.tsx');
+const widgetsIndex = file('../src/components/atlas/learn/widgets/index.ts');
+const curriculum = file('../src/components/atlas/learn/curriculum.ts');
 const xiaoxiEntryN = (xiaoxi.match(/key: '/g) || []).length;
 assert(xiaoxiEntryN === 12, `XiaoXiCycle.tsx 十二消息卦应=12 项，实得 ${xiaoxiEntryN}`);
 for (const text of ['fu', 'gou', '冬至', '夏至', '右半「息」', '左半「消」', 'XIAOXI_SEQUENCE']) {
@@ -198,6 +201,12 @@ assert(/XIAOXI_SEQUENCE = \[\s*'fu'[\s\S]*'qian'[\s\S]*'gou'[\s\S]*'kun'/.test(x
 assert(/XiaoXiCycle/.test(huangji), 'HuangjiPan.tsx 应复用十二消息卦圆图');
 assert(/右半为<b[\s\S]*>息<\/b>，左半为<b[\s\S]*>消<\/b>/.test(huangji), 'HuangjiPan.tsx 应解释右息左消');
 assert(/XiaoXiCycle/.test(yinyangFlux), 'YinYangFlux.tsx 讲堂应嵌入十二消息卦圆图');
+for (const text of ['XiaoXiLens', '12-cycle', 'Hamming weight', '坤→复', '乾→姤', 'XOR = 111111']) {
+  assert(xiaoxiLens.includes(text), `XiaoXiLens.tsx 缺六维闭环关键内容：${text}`);
+}
+assert(/export \{ XiaoXiLens \}/.test(widgetsIndex), 'widgets/index.ts 应注册 XiaoXiLens');
+assert(/id: '5\.4'[\s\S]*widget: 'XiaoXiLens'/.test(curriculum), 'curriculum.ts 应新增 5.4 十二消息卦六维闭环课程');
+assert(/消长转化不是阴阳混在一起/.test(curriculum), 'curriculum.ts 1.1 应补充消长守恒解释');
 
-if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性、十翼全文、历代易注（卦辞级+爻级 386 条）、道德经章旨/传统注读、道家列子/太乙精选与十二消息卦圆图覆盖正确。');
+if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性、十翼全文、历代易注（卦辞级+爻级 386 条）、道德经章旨/传统注读、道家列子/太乙精选、十二消息卦圆图与 Q6 透镜闭环覆盖正确。');
 else throw new Error(`结构自检失败：共 ${failures} 项`);

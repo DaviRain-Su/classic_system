@@ -23,6 +23,12 @@ export function HuangjiPan({ onBack, onOpenHex, onOpenCube }: { onBack: () => vo
     ['运', '12 世', '360 年'],
     ['世', '30 年', '30 年'],
   ];
+  const insights: [string, string][] = [
+    ['复为起点', '冬至阴极，一阳在初爻萌动，故消息循环从《复》起，不从纯阳《乾》起。'],
+    ['乾为顶点', '巳月六阳俱足，是阳气极盛；极盛之后即《姤》一阴始生。'],
+    ['错卦对称', '复↔姤、临↔遁、泰↔否、大壮↔观、夬↔剥、乾↔坤，皆为六爻全反。'],
+    ['四个枢纽', '复、大壮、姤、观对应冬至、春分、夏至、秋分，是卦气圆图的四正。'],
+  ];
 
   const selectXiaoXi = (key: XiaoXiKey) => {
     const next = XIAOXI_SEQUENCE.indexOf(key);
@@ -46,7 +52,7 @@ export function HuangjiPan({ onBack, onOpenHex, onOpenCube }: { onBack: () => vo
           </div>
         </div>
 
-        <div style={{ flex: 1, padding: '38px 48px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div style={{ flex: 1, padding: '38px 48px', display: 'flex', flexDirection: 'column', overflowY: 'auto', overflowX: 'hidden' }}>
           <Mono>加一倍法 · 以数推天地始终</Mono>
           <p style={{ fontSize: 13.5, lineHeight: 1.85, color: 'var(--ink-2)', margin: '10px 0 0' }}>
             邵雍以十二<b style={{ color: 'var(--ink)' }}>消息卦</b>配一岁十二月：阳气自《复》一阳来复，渐长至《乾》纯阳，再自《姤》一阴始生，渐消至《坤》纯阴——一套以卦象记录<b style={{ color: 'var(--ink)' }}>阴阳消长</b>的时间模型。此图以《复》居子月冬至之下，《姤》居午月夏至之上；右半为<b style={{ color: 'var(--seal)' }}>息</b>，左半为<b style={{ color: 'var(--accent)' }}>消</b>。
@@ -62,7 +68,16 @@ export function HuangjiPan({ onBack, onOpenHex, onOpenCube }: { onBack: () => vo
             <p style={{ margin: '6px 0 0', fontFamily: 'var(--font-serif)', color: 'var(--ink-2)', fontSize: 13.5 }}>{cur.phase}。点击圆图任一卦，可停驻查看其月令位置与阴阳比例。</p>
           </div>
 
-          <div style={{ marginTop: 22 }}>
+          <div style={{ marginTop: 14, display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 10 }}>
+            {insights.map(([title, text]) => (
+              <div key={title} style={{ padding: '10px 12px', border: '1px solid var(--hair)', borderRadius: 8, background: 'color-mix(in srgb, var(--paper-2) 86%, transparent)' }}>
+                <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, color: 'var(--ink)', fontWeight: 700 }}>{title}</div>
+                <div style={{ marginTop: 4, fontFamily: 'var(--font-serif)', fontSize: 12.5, color: 'var(--ink-2)', lineHeight: 1.72 }}>{text}</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ marginTop: 18 }}>
             <Mono dim>元 · 会 · 运 · 世 — 层层统摄</Mono>
             <div style={{ display: 'flex', flexDirection: 'column', marginTop: 10 }}>
               {units.map(([u, sub, total], i) => (
