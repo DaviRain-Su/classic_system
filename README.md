@@ -65,12 +65,12 @@ Ready or substantially implemented:
 - **Ten Wings**: Tuan and Xiang are embedded per hexagram; Xici Zhuan (expanded), Wenyan, Shuo Gua, Xu Gua, and Za Gua are readable as cross-linked texts with vernacular glosses; a separate complete Ten Wings source-text corpus is also bundled for full-text reading and search.
 - **Daoist texts**: the complete Dao De Jing (81 chapters), expanded selected passages from all seven Zhuangzi inner chapters, Qingjing Jing, Yinfu Jing, and the opening of Zhouyi Cantong Qi.
 - **Confucian texts**: Zhongyong, Taiji Tushuo, Ximing, Huangji Jingshi material, and Wang Yangming learning notes.
-- **Buddhist texts**: Heart Sutra, Diamond Sutra, Vimalakirti non-duality passage, Verses on the Eight Consciousnesses, selected Platform Sutra material across the listed sections, selected Bodhicaryavatara material, and a Four Dharma Seals guide.
+- **Buddhist texts**: Heart Sutra, Diamond Sutra, Vimalakirti non-duality passage, Verses on the Eight Consciousnesses, expanded selected Platform Sutra material across all ten traditional sections, selected Bodhicaryavatara material, and a Four Dharma Seals guide.
 - **Western comparison**: original bibliographic and conceptual commentary only; no copyrighted Western source text is bundled.
 
 Still expanding:
 
-- full Zhuangzi inner-chapter and Platform Sutra coverage
+- deeper full-text coverage beyond the current Zhuangzi inner-chapter and Platform Sutra selections
 - deeper Dao De Jing sentence-level notes and historical commentary
 - full vernacular glosses and sentence-level notes for the complete Ten Wings source-text corpus
 - stronger search ranking, pinyin search, fuzzy matching, and sentence-level deep linking
