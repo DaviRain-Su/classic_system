@@ -227,6 +227,12 @@ function ChapterReader({ data, glyph, sideSub, school, bmKey, zhuNames, footLabe
               <div style={{ fontFamily: 'var(--font-serif)', fontSize: 14.5, lineHeight: 1.85, marginTop: 6, color: 'var(--ink-2)' }}>{chapter.note}</div>
             </div>
           )}
+          {chapter.commentary && (
+            <div style={{ marginTop: 10, padding: '13px 16px', border: '1px solid var(--hair-2)', borderRadius: 8, background: 'var(--paper-2)' }}>
+              <Mono>传统注读</Mono>
+              <div style={{ fontFamily: 'var(--font-serif)', fontSize: 14.5, lineHeight: 1.85, marginTop: 6, color: 'var(--ink-2)' }}>{chapter.commentary}</div>
+            </div>
+          )}
           <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', overflowY: 'auto', paddingRight: 6 }}>
             {clauses.map((c, i) => {
               const o = open === i;

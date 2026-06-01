@@ -272,6 +272,12 @@ function MReader({ id, back }: { id: string; back: () => void }) {
             <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, lineHeight: 1.75, color: 'var(--ink-2)', marginTop: 6 }}>{d.chapters[chap].note}</div>
           </div>
         )}
+        {d.chapters?.[chap]?.commentary && (
+          <div style={{ marginBottom: 12, padding: '12px 14px', border: '1px solid var(--hair-2)', borderRadius: 8, background: 'var(--paper-2)' }}>
+            <MMono>传统注读</MMono>
+            <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13.5, lineHeight: 1.75, color: 'var(--ink-2)', marginTop: 6 }}>{d.chapters[chap].commentary}</div>
+          </div>
+        )}
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           {clauses.map((c, i) => {
             const o = open === i;

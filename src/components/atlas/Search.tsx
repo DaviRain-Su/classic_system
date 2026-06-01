@@ -33,6 +33,7 @@ function buildCorpus(): Item[] {
   chapterWorks.forEach(([route, d]) => {
     d.chapters.forEach((ch) => {
       if (ch.note) push(route, d.title + '·' + ch.name + '·章旨', ch.note);
+      if (ch.commentary) push(route, d.title + '·' + ch.name + '·传统注读', ch.commentary);
       (ch.clauses || []).forEach((c) => push(route, d.title + '·' + ch.name, c.text, c.gloss));
     });
   });

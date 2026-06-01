@@ -144,9 +144,18 @@ assert(daodeNoteN === 81, `data.ts 道德经章旨应=81 条，实得 ${daodeNot
 for (const text of ['道/名、有/无', '上善若水', '道法自然', '小国寡民', '圣人为而不争']) {
   assert(daodeNotes.includes(text), `data.ts 缺道德经章旨关键词：${text}`);
 }
+const daodeTraditionNotes = data.match(/const DAODE_TRADITION_NOTES = \[([\s\S]*?)\] as const;/)?.[1] ?? '';
+const daodeTraditionNoteN = (daodeTraditionNotes.match(/^\s+'/gm) || []).length;
+assert(daodeTraditionNoteN === 81, `data.ts 道德经传统注读应=81 条，实得 ${daodeTraditionNoteN}`);
+for (const text of ['王弼', '河上公', '苏辙', '道法自然', '小国寡民', '为而不争']) {
+  assert(daodeTraditionNotes.includes(text), `data.ts 缺道德经传统注读关键词：${text}`);
+}
 assert(/chapter\.note/.test(reading), 'Reading.tsx 应显示多章经文章旨');
+assert(/chapter\.commentary/.test(reading), 'Reading.tsx 应显示多章经文传统注读');
 assert(/d\.chapters\?\.\[chap\]\?\.note/.test(mobile), 'Mobile.tsx 应显示多章经文章旨');
+assert(/d\.chapters\?\.\[chap\]\?\.commentary/.test(mobile), 'Mobile.tsx 应显示多章经文传统注读');
 assert(/ch\.note/.test(search), 'Search.tsx 应索引多章经文章旨');
+assert(/ch\.commentary/.test(search), 'Search.tsx 应索引多章经文传统注读');
 const liezi = data.match(/export const LIEZI: ChapterWork = \{([\s\S]*?)\n\};\n\nexport const YINFU/)?.[1] ?? '';
 const lieziChapters = (liezi.match(/name: '/g) || []).length;
 const lieziClauses = (liezi.match(/\{ text:/g) || []).length;
@@ -176,5 +185,5 @@ assert(/taiyi: TAIYI/.test(mobile), 'Mobile.tsx 应接入太乙金华宗旨阅�
 assert(/\['taiyi', TAIYI\]/.test(search), 'Search.tsx 应索引太乙金华宗旨');
 assert(/\['太乙金华宗旨', TAIYI\]/.test(relations), 'Relations.tsx 应采集太乙金华宗旨关联');
 
-if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性、十翼全文、历代易注（卦辞级+爻级 386 条）、道德经章旨与道家列子/太乙精选覆盖正确。');
+if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性、十翼全文、历代易注（卦辞级+爻级 386 条）、道德经章旨/传统注读与道家列子/太乙精选覆盖正确。');
 else throw new Error(`结构自检失败：共 ${failures} 项`);

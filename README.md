@@ -63,7 +63,7 @@ Ready or substantially implemented:
 - **Detailed I Ching samples**: Qian, Kun, Tai, Pi, Ji Ji, and Wei Ji have the most complete polished reading experience.
 - **Historical I Ching notes**: both hexagram-statement-level and **line-level** commentary from Cheng Yi (*Yichuan Yizhuan*) and Zhu Xi (*Zhouyi Benyi*) — 64/64 hexagrams at the statement level, plus all 386 lines/uses at the line level — drawn mainly from the imperial *Yuzuan Zhouyi Zhezhong*.
 - **Ten Wings**: Tuan and Xiang are embedded per hexagram; Xici Zhuan (expanded), Wenyan, Shuo Gua, Xu Gua, and Za Gua are readable as cross-linked texts with vernacular glosses; the separate complete Ten Wings corpus is bundled for full-text reading and search, with full-corpus vernacular glosses layered across Wenyan, Xici, Shuo Gua, Xu Gua, and Za Gua.
-- **Daoist texts**: the complete Dao De Jing (81 chapters) with 81 chapter-guide notes, expanded selected passages from all seven Zhuangzi inner chapters, selected Liezi passages across all eight traditional chapters, selected Taiyi Jinhua Zongzhi passages, Qingjing Jing, Yinfu Jing, and the opening of Zhouyi Cantong Qi.
+- **Daoist texts**: the complete Dao De Jing (81 chapters) with 81 chapter-guide notes and 81 traditional reading notes, expanded selected passages from all seven Zhuangzi inner chapters, selected Liezi passages across all eight traditional chapters, selected Taiyi Jinhua Zongzhi passages, Qingjing Jing, Yinfu Jing, and the opening of Zhouyi Cantong Qi.
 - **Confucian texts**: Zhongyong, Taiji Tushuo, Ximing, Huangji Jingshi material, and Wang Yangming learning notes.
 - **Buddhist texts**: Heart Sutra, Diamond Sutra, Vimalakirti non-duality passage, Verses on the Eight Consciousnesses, expanded selected Platform Sutra material across all ten traditional sections, selected Bodhicaryavatara material, and a Four Dharma Seals guide.
 - **Western comparison**: original bibliographic and conceptual commentary only; no copyrighted Western source text is bundled.
@@ -71,7 +71,7 @@ Ready or substantially implemented:
 Still expanding:
 
 - deeper full-text coverage beyond the current Zhuangzi, Liezi, Taiyi Jinhua Zongzhi, and Platform Sutra selections
-- deeper Dao De Jing historical commentary and traditional note layers
+- deeper Dao De Jing sentence-level historical commentary
 - deeper sentence-level notes and historical commentary for the complete Ten Wings corpus
 - stronger search ranking, pinyin search, fuzzy matching, and sentence-level deep linking
 
@@ -189,7 +189,7 @@ static-site
 - Maintain the English and Chinese READMEs in parallel.
 - Add a real screenshot gallery and short interaction clips.
 - Expand the I Ching commentary layer from hexagram-level notes to line-level notes.
-- Deepen Dao De Jing historical commentary plus Zhuangzi, Platform Sutra, and Ten Wings commentary coverage.
+- Deepen Dao De Jing sentence-level historical commentary plus Zhuangzi, Platform Sutra, and Ten Wings commentary coverage.
 - Split the growing data layer into domain modules as the corpus expands.
 - Add stronger search: pinyin lookup, fuzzy matching, ranking, and sentence-level route anchors.
 - Improve accessibility with more semantic controls, labels, and keyboard navigation.
