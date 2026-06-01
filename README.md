@@ -62,7 +62,7 @@ Ready or substantially implemented:
 - **Line-position analysis**: each line shows centrality/correctness plus the classic relational reading — correspondence (Ying), riding/supported (Cheng / Sheng), and proximity (Bi) — computed from the six lines.
 - **Detailed I Ching samples**: Qian, Kun, Tai, Pi, Ji Ji, and Wei Ji have the most complete polished reading experience.
 - **Historical I Ching notes**: both hexagram-statement-level and **line-level** commentary from Cheng Yi (*Yichuan Yizhuan*) and Zhu Xi (*Zhouyi Benyi*) — 64/64 hexagrams at the statement level, plus all 386 lines/uses at the line level — drawn mainly from the imperial *Yuzuan Zhouyi Zhezhong*.
-- **Ten Wings**: Tuan and Xiang are embedded per hexagram; Xici Zhuan (expanded), Wenyan, Shuo Gua, Xu Gua, and Za Gua are readable as cross-linked texts with vernacular glosses; the separate complete Ten Wings corpus is bundled for full-text reading and search, with full Wenyan Zhuan, Xici Zhuan, and Shuo Gua Zhuan glosses now layered into that corpus.
+- **Ten Wings**: Tuan and Xiang are embedded per hexagram; Xici Zhuan (expanded), Wenyan, Shuo Gua, Xu Gua, and Za Gua are readable as cross-linked texts with vernacular glosses; the separate complete Ten Wings corpus is bundled for full-text reading and search, with full-corpus vernacular glosses layered across Wenyan, Xici, Shuo Gua, Xu Gua, and Za Gua.
 - **Daoist texts**: the complete Dao De Jing (81 chapters), expanded selected passages from all seven Zhuangzi inner chapters, Qingjing Jing, Yinfu Jing, and the opening of Zhouyi Cantong Qi.
 - **Confucian texts**: Zhongyong, Taiji Tushuo, Ximing, Huangji Jingshi material, and Wang Yangming learning notes.
 - **Buddhist texts**: Heart Sutra, Diamond Sutra, Vimalakirti non-duality passage, Verses on the Eight Consciousnesses, expanded selected Platform Sutra material across all ten traditional sections, selected Bodhicaryavatara material, and a Four Dharma Seals guide.
@@ -72,7 +72,7 @@ Still expanding:
 
 - deeper full-text coverage beyond the current Zhuangzi inner-chapter and Platform Sutra selections
 - deeper Dao De Jing sentence-level notes and historical commentary
-- remaining full-corpus Ten Wings glosses beyond the completed Wenyan Zhuan, Xici Zhuan, and Shuo Gua Zhuan layers
+- deeper sentence-level notes and historical commentary for the complete Ten Wings corpus
 - stronger search ranking, pinyin search, fuzzy matching, and sentence-level deep linking
 
 ## Tech Stack
@@ -208,7 +208,7 @@ static-site
 Chinese classical source texts used here are public-domain materials. The 64-hexagram corpus is assembled from public-domain/open repositories and processed by local build scripts:
 
 - `scripts/build_hex.mjs` composes hexagram and line text from [openqt/gua](https://github.com/openqt/gua) and Tuan / Xiang material from [bollwarm/ZHOUYI](https://github.com/bollwarm/ZHOUYI), with Traditional-to-Simplified conversion through [opencc-js](https://github.com/nk2028/opencc-js).
-- `scripts/build_ten_wings.mjs` extracts the complete Ten Wings source text from [bollwarm/ZHOUYI](https://github.com/bollwarm/ZHOUYI), also converted through `opencc-js`; project-written full-corpus glosses are layered separately in `src/components/atlas/ten-wing-gloss.ts`, currently covering complete Wenyan Zhuan, Xici Zhuan, and Shuo Gua Zhuan layers plus selected Ten Wings passages elsewhere in the app.
+- `scripts/build_ten_wings.mjs` extracts the complete Ten Wings source text from [bollwarm/ZHOUYI](https://github.com/bollwarm/ZHOUYI), also converted through `opencc-js`; project-written full-corpus glosses are layered separately in `src/components/atlas/ten-wing-gloss.ts`, currently covering all 128 generated Ten Wings reading clauses.
 - `scripts/build_jizhu.mjs` assembles public-domain historical commentary — Zhu Xi's *Zhouyi Benyi* and Cheng Yi's *Yichuan Yizhuan*, at both hexagram-statement and line level — mainly from the imperial *Yuzuan Zhouyi Zhezhong* (御纂周易折中, Qing dynasty; held in the [garychowcmu/daizhigev20](https://github.com/garychowcmu/daizhigev20) Daizhige corpus). A few gaps in that OCR (Hexagram 24's statement-level Benyi and Hexagram 1's line-5 notes) are filled from *Zhouyi Benyi Tongshi* and *Yichuan Yizhuan*.
 - Plain-language hexagram glosses and Western comparison notes are original project material.
 - The interface was iterated with assistance from Claude Design.

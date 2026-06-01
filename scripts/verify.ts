@@ -117,6 +117,20 @@ assert(shuoGuaGlossN === 18, `ten-wing-gloss.ts 说卦传白话应=18 条，实�
 for (const text of ['三才', '天地各定其位', '帝从震方发动', '乾为马', '坤象地']) {
   assert(shuoGuaGloss.includes(text), `ten-wing-gloss.ts 缺说卦传白话关键词：${text}`);
 }
+const xuGuaGloss = tenWingGloss.match(/'序卦传': \[([\s\S]*?)\n  \]/)?.[1] ?? '';
+const xuGuaGlossN = (xuGuaGloss.match(/^\s{4}'/gm) || []).length;
+assert(xuGuaGlossN === 2, `ten-wing-gloss.ts 序卦传白话应=2 条，实得 ${xuGuaGlossN}`);
+for (const text of ['上经从乾坤开始', '下经从人伦开始', '未济作终']) {
+  assert(xuGuaGloss.includes(text), `ten-wing-gloss.ts 缺序卦传白话关键词：${text}`);
+}
+const zaGuaGloss = tenWingGloss.match(/'杂卦传': \[([\s\S]*?)\n  \]/)?.[1] ?? '';
+const zaGuaGlossN = (zaGuaGloss.match(/^\s{4}'/gm) || []).length;
+assert(zaGuaGlossN === 1, `ten-wing-gloss.ts 杂卦传白话应=1 条，实得 ${zaGuaGlossN}`);
+for (const text of ['两两杂举', '乾刚坤柔', '卦义速览表']) {
+  assert(zaGuaGloss.includes(text), `ten-wing-gloss.ts 缺杂卦传白话关键词：${text}`);
+}
+const fullTenWingGlossN = tenWingGlossN + xiciShangGlossN + xiciXiaGlossN + shuoGuaGlossN + xuGuaGlossN + zaGuaGlossN;
+assert(fullTenWingGlossN === 128, `ten-wing-gloss.ts 十翼全文白话覆盖应=128 条，实得 ${fullTenWingGlossN}`);
 
 if (failures === 0) console.log('✓ 结构自检通过：八卦/六十四卦模式互异，错/综/交对合，互卦点验、64 卦内容完整性、十翼全文与历代易注（卦辞级+爻级 386 条）覆盖正确。');
 else throw new Error(`结构自检失败：共 ${failures} 项`);
