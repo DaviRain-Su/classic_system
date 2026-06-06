@@ -15,3 +15,4 @@ export { TransformLab } from './TransformLab';
 export { SequencePairs } from './SequencePairs';
 export { GroupView } from './GroupView';
 export { XiaoXiLens } from './XiaoXiLens';
+export { BianGua } from './BianGua';
